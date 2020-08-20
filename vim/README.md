@@ -22,7 +22,7 @@
 # Install
 
 ## Auto install
-`curl |bash`
+`curl https://raw.githubusercontent.com/windvalley/work-efficiency-utils/master/vim/vimrc_install.sh | bash`
 
 > 注意:
 一键安装会完整方式安装, 检查你的系统环境, 如果没有注意事项中的提到的环境问题,
