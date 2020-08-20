@@ -12,7 +12,7 @@
 "   * `vimrc`默认集成了Go开发插件`vim-go`, 需要系统已经有Go环境,
 "     并配置Go代理解决墙的问题. 如果没有此需求, 也可以提前注释掉Go相关的配置.
 "     配置Go代理方法:
-"     echo 'export GOPROXY=https://goproxy.io' >> ~/.bash_profile
+"     echo 'export GOPROXY=https://goproxy.io' >> ~/.zshrc
 "   * `Valloric/YouCompleteMe`插件依赖的项目非常多, 安装过程很慢,
 "     如果您确定不需要此插件, 可以提前注释掉以节省安装时间.
 "   * macOS和Linux类系统可正常使用, Windows系统未测试兼容性.
@@ -37,7 +37,7 @@
 "    python3 install.py --go-completer
 
 " 6. `crontab -e`报错问题解决(如果没有该错误, 忽略该步骤即可):
-"    echo 'export EDITOR=vim' >> ~/.bash_profile
+"    echo 'export EDITOR=vim' >> ~/.zshrc
 "    source ~/.zshrc
 
 " }}
