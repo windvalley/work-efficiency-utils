@@ -1,5 +1,6 @@
-# iterm2
+# Iterm2
 
+```
 command enter: 全屏/取消全屏
 
 command up/down: 光标在屏幕向上/向下移动
@@ -16,12 +17,15 @@ command u: 透明/取消透明
 command +/-/0: 文字放大/缩小/恢复正常
 
 command f: 查找关键字
+```
 
 
-# didaqingdan
+# Didaqingdan
 
+```
 command shift a: 添加新任务, 默认添加到收集箱; 可以再按tab键直接选择目标清单、优先级等;
 command shift o: 显示/隐藏mini窗口;
 command shift j: 显示/隐藏主窗口;
 command shift p: 开始/停止番茄专注;
+```
 

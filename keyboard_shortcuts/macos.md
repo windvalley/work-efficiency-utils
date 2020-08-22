@@ -1,5 +1,6 @@
 # MacOS
 
+```
 command space: 聚焦搜索
     it: 打开iterm2
     c: 打开vscode
@@ -85,4 +86,4 @@ command z: 撤销
 
  shift option h: 简体拼音输入法下使用半角符号
 shift option b: 给出各种特殊符号的清单供选择
-
+```
