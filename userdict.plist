@@ -680,5 +680,17 @@
  		<key>shortcut</key>
  		<string>banbenku</string>
  	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>公钥</string>
+ 		<key>shortcut</key>
+ 		<string>gongyao</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>私钥</string>
+ 		<key>shortcut</key>
+ 		<string>siyao</string>
+ 	</dict>
 </array>
 </plist>
