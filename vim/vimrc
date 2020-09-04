@@ -193,7 +193,6 @@ Plug 'kien/ctrlp.vim'
 Plug 'fisadev/vim-isort'
 
 " Markdown相关插件
-" :help markdown
 " [[ 跳转上一个标题
 " ]] 跳转下一个标题
 " zr 打开下一级折叠
@@ -218,6 +217,7 @@ call plug#end()
 " VIM各种插件配置 {{
 
 """""" Markdown 相关配置
+" :help vim-markdown
 let g:vim_markdown_math = 1
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_toc_autofit = 1
@@ -232,15 +232,24 @@ let g:vim_markdown_emphasis_multiline = 0
 "let g:vim_markdown_no_extensions_in_markdown = 1
 "let g:vim_markdown_auto_extension_ext = 'txt'
 
+" :help syntastic-markdown
+"let g:syntastic_markdown_mdl_exec = "markdownlint"
+"let g:syntastic_markdown_mdl_args = "markdownlint-cli"
+
+" :help markdown-preview
 let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
 nmap ,p :MarkdownPreview<CR>
 nmap ,pp <Plug>StopMarkdownPreview
 
-" 补充:
-" 通过命令行检查和自动修正markdown文件
+" :help syntastic-markdown
+" 1. 通过命令行检查和自动修正markdown文件
 " npm install -g markdownlint-cli
 " 检查: markdownlint foo.md
 " 修复: markdownlint -f foo.md
+" 2. 通过syntastic和mdl在编辑时进行检查, 无自动修复功能
+" sudo gem install mdl
+" mdl foo.md
+" mdl -l
 """"""""""""""""""""""""""
 
 """""" airblade/vim-gitgutter插件的配置,
