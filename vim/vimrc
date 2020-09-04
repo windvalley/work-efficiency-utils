@@ -192,6 +192,20 @@ Plug 'kien/ctrlp.vim'
 " VISUAL BLOCK模式下选择待调整的import区域: `ctrl+i`
 Plug 'fisadev/vim-isort'
 
+" Markdown相关插件
+" :help markdown
+" [[ 跳转上一个标题
+" ]] 跳转下一个标题
+" zr 打开下一级折叠
+" zR 打开所有折叠
+" zm 折叠当前段落
+" zM 折叠所有段落
+" :Toc 显示目录
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
+
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
 " 更新插件`:PlugUpdate`;
 " 删除插件: 先在上面注释掉相关插件, 然后`:PlugClean`;
@@ -203,13 +217,40 @@ call plug#end()
 
 " VIM各种插件配置 {{
 
-" airblade/vim-gitgutter插件的配置,
+"""""" Markdown 相关配置
+let g:vim_markdown_math = 1
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_toml_frontmatter = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_json_frontmatter = 1
+let g:vim_markdown_new_list_item_indent = 2
+let g:vim_markdown_autowrite = 1
+" 在超链接处, 按ge将以新标签页的形式打开链接
+let g:vim_markdown_edit_url_in = 'tab'
+let g:vim_markdown_emphasis_multiline = 0
+"let g:vim_markdown_no_extensions_in_markdown = 1
+"let g:vim_markdown_auto_extension_ext = 'txt'
+
+let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
+nmap ,p :MarkdownPreview<CR>
+nmap ,pp <Plug>StopMarkdownPreview
+
+" 补充:
+" 通过命令行检查和自动修正markdown文件
+" npm install -g markdownlint-cli
+" 检查: markdownlint foo.md
+" 修复: markdownlint -f foo.md
+""""""""""""""""""""""""""
+
+"""""" airblade/vim-gitgutter插件的配置,
 " 表示vim信息更新间隔2秒, 默认是4秒.
 set updatetime=2000
 
 " 哪些扩展名的文件开启vim-closetag插件的功能, 比如输入<div>自动补全</div>,
 " 默认支持*.html,*.xhtml,*.phtml, 其他文件想要支持加在这里即可.
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
+""""""""""""""""""""""""""
 
 """""" SirVer/ultisnips插件配置
 " 由上向下依次选择代码片段, 默认是tab
