@@ -99,6 +99,10 @@ Plug 'flazz/vim-colorschemes'
 " 命令行模式下`:w`将进行语法检查, 有错误将给出高亮提示.
 Plug 'vim-syntastic/syntastic'
 
+" https://github.com/dense-analysis/ale
+" ALE (Asynchronous Lint Engine) is a plugin providing linter(syntax checking and semantic errors)
+Plug 'dense-analysis/ale'
+
 " 搭建Go开发环境的Vim插件, 安装该插件的过程中,
 " 会自动安装该插件依赖的大量Go二进制工具.
 " 如果由于Go环境等问题导致自动安装失败,
@@ -205,6 +209,9 @@ Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
 
+" TOML插件
+Plug 'cespare/vim-toml'
+
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
 " 更新插件`:PlugUpdate`;
 " 删除插件: 先在上面注释掉相关插件, 然后`:PlugClean`;
@@ -216,7 +223,60 @@ call plug#end()
 
 " VIM各种插件配置 {{
 
-"""""" Markdown 相关配置
+"""""" 'vim-syntastic/syntastic'统一配置
+" Dockerfile
+" 需要先安装hadolint命令行工具: brew install hadolint
+" 忽略提示特定错误, 在出错行上方注释: # hadolint ignore=DL3003,SC1035
+let g:syntastic_dockerfile_checkers = ['hadolint']
+
+" Markdown
+" :help syntastic-markdown
+"let g:syntastic_markdown_mdl_exec = "markdownlint"
+"let g:syntastic_markdown_mdl_args = ""
+
+" Go语言
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+"let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+""""""""""""""""""""""""""
+
+"""""" 'dense-analysis/ale'配置
+" keep the sign gutter open at all times
+"let g:ale_sign_column_always = 1
+
+" How can I change the signs ALE uses?
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+
+" How can I change or disable the highlights ALE uses?
+"let g:ale_set_highlights = 0
+
+" How can I show errors or warnings in my statusline?
+let g:airline#extensions#ale#enabled = 1
+
+" How can I change the format for echo messages?
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" Disable warnings about trailing whitespace.
+"let b:ale_warn_about_trailing_whitespace = 0
+
+" If you don't want linters to run on opening a file
+"let g:ale_lint_on_enter = 0
+
+" How can I navigate between errors quickly?
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+" Go语言
+" 安装revive: 注意需要在go mod环境下执行该命令, 否则无法使用GOPROXY设置的代理
+" go get -u -v github.com/mgechev/revive
+let g:ale_linters = {
+\    'go': ['revive'],
+\}
+""""""""""""""""""""""""""
+
+"""""" Markdown相关插件配置
 " :help vim-markdown
 let g:vim_markdown_math = 1
 let g:vim_markdown_folding_disabled = 1
@@ -231,10 +291,6 @@ let g:vim_markdown_edit_url_in = 'tab'
 let g:vim_markdown_emphasis_multiline = 0
 "let g:vim_markdown_no_extensions_in_markdown = 1
 "let g:vim_markdown_auto_extension_ext = 'txt'
-
-" :help syntastic-markdown
-"let g:syntastic_markdown_mdl_exec = "markdownlint"
-"let g:syntastic_markdown_mdl_args = "markdownlint-cli"
 
 " :help markdown-preview
 let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
@@ -387,8 +443,6 @@ let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
-let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
 " 查看光标所在函数等的简要信息
 au FileType go nmap <Leader>i <Plug>(go-info)
