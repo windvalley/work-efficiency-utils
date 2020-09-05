@@ -692,5 +692,29 @@
  		<key>shortcut</key>
  		<string>siyao</string>
  	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>阈值</string>
+ 		<key>shortcut</key>
+ 		<string>yuzhi</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>市值</string>
+ 		<key>shortcut</key>
+ 		<string>shizhi</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>域</string>
+ 		<key>shortcut</key>
+ 		<string>yu</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>域帐号</string>
+ 		<key>shortcut</key>
+ 		<string>yuzhanghao</string>
+ 	</dict>
 </array>
 </plist>
