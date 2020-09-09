@@ -43,7 +43,7 @@ brew install axel
 # code statics
 brew install cloc
 
-# shellscript check
+# shell script check
 brew install shellcheck
 
 # tldr: Too Long Don't Read, give the common usage examples of a command.
@@ -70,3 +70,6 @@ brew install lolcat
 # for Go pprof
 brew install graphviz
 
+# mongodb
+brew tap mongodb/brew
+brew install mongodb-community

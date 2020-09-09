@@ -716,5 +716,23 @@
  		<key>shortcut</key>
  		<string>yuzhanghao</string>
  	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>进制</string>
+ 		<key>shortcut</key>
+ 		<string>jinzhi</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>赏我</string>
+ 		<key>shortcut</key>
+ 		<string>shangwo</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>联调</string>
+ 		<key>shortcut</key>
+ 		<string>liantiao</string>
+ 	</dict>
 </array>
 </plist>
