@@ -1,0 +1,204 @@
+" VIM基础环境配置 {{
+
+" 关闭兼容模式, 也就是不再兼容vi, 必需放在第一行
+set nocompatible
+
+" 自动检测文件类型, 以支持对不同文件类型使用不同的功能
+filetype on
+
+" 基于文件类型区别对待插件和缩进,
+" 比如对于.go文件, 按tab键将显示tab字符<---,
+" 其他类型文件, 按tab键显示4个空格----
+filetype plugin indent on
+
+" 重新设置mapleader键,
+" 即普通模式下的一些vim命令的prefix, 由默认的`/`改为`,`
+let mapleader = ","
+
+" 确定当前vim所在操作系统类型
+silent function! OSX()
+    return has('macunix')
+endfunction
+silent function! LINUX()
+    return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+silent function! WINDOWS()
+    return  (has('win32') || has('win64'))
+endfunction
+
+" }}
+
+" VIM的其他常用配置 {{
+
+" 代码高亮显示
+syntax on
+
+" 设置行号
+set nu
+" 设置行号颜色
+hi  LineNr  cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
+
+" 突出显示当前行
+set cursorline
+hi CursorLine   cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+" 突出显示当前列
+set cursorcolumn
+hi Cursorcolumn   cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+
+" tab键显示为>---, 行尾空格显示为-, 帮助我们及时发现规范问题
+set list listchars=tab:>-,trail:-
+" 非可见字符nbsp、tab、trail是由SpecialKey高亮组来定义的,
+" 所以这里使用SpecialKey来改变tab键和行尾空格的颜色样式.
+hi SpecialKey   cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
+
+" 第80列通过颜色标注, 提示我们代码长度不要超过80个字符.
+autocmd FileType * set colorcolumn=80
+hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
+
+" 插入模式下移动光标的快捷键:
+" `ctrl+l` 右, `ctrl+b` 左, `ctrl+k` 上, `ctrl+j` 下;
+" `ctrl+a`行首, `ctrl+e`行尾.
+inoremap <C-l> <Right>
+inoremap <C-b> <Left>
+inoremap <C-k> <Up>
+inoremap <C-j> <Down>
+imap <C-a> <Home>
+imap <C-e> <End>
+
+" 普通模式下允许光标移动到最后一个字符的右边.
+set virtualedit=onemore
+
+" 显示括号匹配
+set showmatch
+
+" 普通模式下显示输入的Vim命令
+set showcmd
+
+" 一个tab显示几个空格长度, 默认是8个空格, 这里改为4个空格.
+set ts=4
+" 将tab缩进用空格来表示, 提高效率
+set expandtab
+
+" 插入模式下按退格键的时候退回缩进的长度为4个空格, 默认是退回一个空格.
+set softtabstop=4
+
+" 普通模式下`shift+>>`和`shift+<<`或
+" 可视模式下`shift+>`和`shift+<`每次缩进4个空格, 默认是8个空格.
+set shiftwidth=4
+" 可视模式下进行`shift+>`和`shift+<`缩进操作时, 使不退出可视模式,
+" 这样可方便执行多行的连续缩进.
+vnoremap < <gv
+vnoremap > >gv
+
+" 启用智能缩进, 按回车键后自动缩进,
+" 注意启用此模式后, 粘贴代码时要先在命令行模式下`:set paste`
+set smartindent
+
+" 解决中文乱码问题
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8
+
+" 重新打开文件时, 光标恢复在上次离开时的位置.
+augroup resCur
+    autocmd!
+    autocmd BufReadPost * call setpos(".", getpos("'\""))
+augroup END
+
+" 插入模式下使用<BS> <Del> <C-W> <C-U>,
+" 解决无法回退删除等问题, 比如按backspace键无反应.
+set backspace=indent,eol,start
+
+" 显示标尺
+set ruler
+
+" 进行搜索时会快速找到结果, 随着输入的字符进行及时匹配
+set incsearch
+" 搜索关键字高亮显示
+set hlsearch
+" 搜索时忽略大小写
+set ignorecase
+" 如果同时打开了ignorecase, 那么对于搜索只有一个大写字母的搜索词, 将大小写敏感;
+" 其他情况都是大小写不敏感,
+" 比如: 搜索Test时, 将不匹配test, 但搜索test时, 将匹配Test.
+set smartcase
+
+" 保留撤销历史, Vim会在编辑时保存操作历史, 用来供用户撤消更改;
+" 默认情况下, 操作记录只在本次编辑时有效, 一旦编辑结束、文件关闭,
+" 操作历史就消失了;
+" 打开这个设置, 可以在文件关闭后, 操作记录保留在一个文件里面, 继续存在;
+" 这意味着, 重新打开一个文件, 可以撤销上一次编辑时的操作;
+" 撤消文件是跟原文件保存在一起的隐藏文件, 文件名以.un~开头.
+set undofile
+
+" 设置备份文件、交换文件、操作历史文件的保存位置.
+" 结尾的//表示生成的文件名带有绝对路径, 路径中用%替换目录分隔符,
+" 这样可以防止文件重名.
+" 注意需要提前创建如下相关目录: mkdir -p ~/.vim/.{backup,swp,undo}
+set backupdir=~/.vim/.backup//
+set directory=~/.vim/.swp//
+set undodir=~/.vim/.undo//
+
+" 出错时, 不要发出响声.
+set noerrorbells
+
+" Vim记住多少次历史操作.
+set history=1000
+
+" 打开文件监视.
+" 如果在编辑过程中文件发生外部改变(比如被别的编辑器编辑了), 就会发出提示.
+set autoread
+
+" 命令行模式下, 操作指令按下tab键自动补全.
+" 第1次按下tab, 会显示所有匹配的操作指令的清单;
+" 第2次按下tab, 会依次选择各个指令.
+set wildmenu
+set wildmode=longest:list,full
+
+" 复制粘贴相关的配置 {{
+
+" 通过ssh远程管理Linux系统使用vim时,
+" 可以在普通模式下使用鼠标(或`alt+鼠标`)选择文本, 通过`command+c`(macOS系统),
+" 将选中文本复制到macOS本地的剪贴板.
+" 这么做的局限性是只能复制屏幕可见范围的文本, 如果想一次性复制更多文本,
+" 可以先`cat 文件名`, 把内容全部输出到屏幕上, 然后再使用鼠标选择需要复制的文本,
+" 通过`command+c`和`command+v`进行复制和粘贴.
+"
+" 这么配置的场景是: macOS或Windows作为本地操作系统, Linux作为远程管理的操作系统,
+" 需要将远程Linux系统的vim的内容拷贝到本地操作系统的系统剪贴板.
+if LINUX()
+    " mouse=i表示对远程的Linux系统的vim只在插入模式下可以使用鼠标正常操作vim,
+    " 这样在普通模式下就可以通过鼠标来选择vim屏幕可见的文本,
+    " 使用command+c来将选择的复制到本地macOS的剪贴板了,
+    " 注意这时普通模式下使用的鼠标已经不是在操作vim了,
+    " 而是只是把她当成一般的文本内容而已.
+    set mouse=i
+else
+    " macOS系统的vim可以在全模式下使用鼠标操作vim.
+    set mouse=a
+endif
+
+" 打字的时候隐藏鼠标光标
+set mousehide
+
+" 普通模式下的`nyy`复制(n为数字), 或可视模式下选择内容后的`y`复制,
+" 除了可以将复制的内容粘贴(使用`p`)到其他vim实例,
+" 还可以将内容粘贴(`command+v`)到系统的其他任何可输入窗口.
+"
+" 注意: 以上所说的都是针对本地操作系统使用本地vim的情况,
+" 比如macOS本地的vim和本地的其他应用窗口之间,
+" Windows本地的vim和本地的其他应用窗口之间,
+" Linux本地的vim和本地桌面系统的其他应用窗口之间,
+" 不包括远程连接的操作系统的vim和本地应用的窗口之间.
+if has('clipboard')
+    if has('unnamedplus')
+        set clipboard=unnamed,unnamedplus " for Linux
+    else
+        set clipboard=unnamed " for macOS、Windows
+    endif
+endif
+
+" 普通模式下, 使用Y复制当前行光标之后的内容, 和C和D用法统一起来.
+nnoremap Y y$
+
+" }}
