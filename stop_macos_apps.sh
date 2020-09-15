@@ -6,8 +6,9 @@
 
 {
     ~/disconnect
-    ps -ef | grep -v grep | grep '/Applications/360' | awk '{print $2}' |
-        xargs kill
+    # shellcheck disable=SC2009
+    ps -ef | grep -v grep | grep '/Applications/360' | awk '{print $2}' | xargs kill
+    # shellcheck disable=SC2009
     ps -ef | grep -v grep | grep -i parallel | awk '{print $2}' | xargs kill
 
 } 2>/dev/null

@@ -5,9 +5,9 @@
 # Created Time: 2020-03-24 22:55:31
 
 
-WORK_DIR=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
+WORK_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PRIVATE_DIR=/private
-OS_VERSION=$(egrep -o '[0-9]+' /etc/centos-release|cut -c 1|head -1)
+OS_VERSION=$(grep -Eo '[0-9]+' /etc/centos-release|cut -c 1|head -1)
 
 
 disable_selinux(){
@@ -26,13 +26,13 @@ config_ntpdate(){
 }
 
 config_yum(){
-    if diff ${OS_VERSION}-CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+    if diff "${OS_VERSION}"-CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
     then
         return
     fi
 
     sudo cp /etc/yum.repos.d/CentOS-Base.repo{,.bak}
-    sudo cp ${OS_VERSION}-CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
+    sudo cp "${OS_VERSION}"-CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
     sudo yum makecache
     sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 }
@@ -42,7 +42,7 @@ install_tools(){
         elfutils-libelf-devel elfutils-libs libgcc libgomp libstdc++"
     local tools="net-tools curl wget bash-completion lsof zip unzip pcre pcre-devel
         zlib zlib-devel make sysstat bash-completion"
-    sudo yum install -y $kernel $tools
+    sudo yum install -y "$kernel" "$tools"
 }
 
 install_vim(){
@@ -53,7 +53,7 @@ install_vim(){
 
 install_python3(){
     sudo yum install -y python3
-    sudo \cp pip.conf /etc/
+    sudo cp pip.conf /etc/
     sudo pip3 install ipython
 }
 
@@ -98,7 +98,7 @@ EOF'
     sudo systemctl restart docker
 
     sudo groupadd docker
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker "$USER"
 
     # 需要root用户执行
     #curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
@@ -106,7 +106,7 @@ EOF'
 }
 
 main(){
-    cd $WORK_DIR
+    cd "$WORK_DIR" || exit 1
     disable_selinux
     config_ntpdate
     config_yum
@@ -119,5 +119,5 @@ main(){
     echo "finished!"
 }
 
-main &>${PRIVATE_DIR}/${0}.log
+main &>${PRIVATE_DIR}/"${0}".log
 

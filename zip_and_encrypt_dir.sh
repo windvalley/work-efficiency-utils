@@ -9,5 +9,5 @@ set -u
 DIR=$1
 
 
-zip -e -r ${DIR}.zip ${DIR}
+zip -e -r "${DIR}".zip "${DIR}"
 

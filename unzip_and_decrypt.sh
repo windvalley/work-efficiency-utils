@@ -8,5 +8,5 @@ set -u
 
 ZIP_FILE=$1
 
-unzip -o $ZIP_FILE
+unzip -o "$ZIP_FILE"
 

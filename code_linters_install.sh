@@ -33,8 +33,6 @@ brew install hadolint
 
 # Shell
 # https://github.com/koalaman/shellcheck
-# Usage:
-#   shellcheck *.sh
 brew install shellcheck
 
 
