@@ -17,8 +17,9 @@ command u: 透明/取消透明
 command +/-/0: 文字放大/缩小/恢复正常
 
 command f: 查找关键字
-```
 
+command shift i: 打开或关闭多标签页同时执行命令功能
+```
 
 # Didaqingdan
 
@@ -28,4 +29,3 @@ command shift o: 显示/隐藏mini窗口;
 command shift j: 显示/隐藏主窗口;
 command shift p: 开始/停止番茄专注;
 ```
-
