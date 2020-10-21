@@ -112,6 +112,11 @@ Plug 'fatih/vim-go', { 'tag': '*', 'do': ':GoUpdateBinaries' }
 " 普通模式下输入`gd`就可以自动分屏跳转到相关代码文件的该函数定义处.
 Plug 'dgryski/vim-godef'
 
+" 搭建Python3开发环境的Vim插件
+" <leader>r: 运行当前Python代码;
+" :
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+
 " 代码自动补全提示插件,
 " 在安装完插件后还需要做一些额外工作:
 " cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --go-completer
@@ -191,7 +196,7 @@ Plug 'airblade/vim-gitgutter'
 " `shift+h`和`shift+l`, 向左和向右选择标签页.
 Plug 'kien/ctrlp.vim'
 
-" 调整python import的顺序.
+" 调整python import的顺序(python需要提前安装isort模块).
 " `:Isort`;
 " VISUAL BLOCK模式下选择待调整的import区域: `ctrl+i`
 Plug 'fisadev/vim-isort'
@@ -204,7 +209,7 @@ Plug 'fisadev/vim-isort'
 " zm 折叠当前段落
 " zM 折叠所有段落
 " :Toc 显示目录
-Plug 'godlygeek/tabular'
+"Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
@@ -239,6 +244,12 @@ let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 """"""""""""""""""""""""""
 
+"""""" 'python-mode/python-mode'配置
+" doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
+let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
+
+""""""""""""""""""""""""""
+
 """""" 'dense-analysis/ale'配置
 " keep the sign gutter open at all times
 "let g:ale_sign_column_always = 1
@@ -268,11 +279,12 @@ let g:ale_echo_msg_warning_str = 'W'
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
-" Go语言
-" 安装revive: 注意需要在go mod环境下执行该命令, 否则无法使用GOPROXY设置的代理
+" 安装Go的revive: 注意需要在go mod环境下执行该命令, 否则无法使用GOPROXY设置的代理
 " go get -u -v github.com/mgechev/revive
+" 安装python的pylint工具: pip install pylint
 let g:ale_linters = {
 \    'go': ['revive'],
+\    'python': ['pylint'],
 \}
 """"""""""""""""""""""""""
 
