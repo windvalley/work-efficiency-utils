@@ -114,8 +114,14 @@ Plug 'dgryski/vim-godef'
 
 " 搭建Python3开发环境的Vim插件
 " <leader>r: 运行当前Python代码;
-" :
 Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+
+" 自动修复Python代码的插件
+" :BlackUpgrade 更新black命令
+" :BlackVersion 获取当前black的版本
+" :Black 格式化整个文件, 不支持只格式化部分代码
+" doc: https://github.com/psf/black/blob/407052724fa1c97ee8bcd4e96de650def00be03e/docs/editor_integration.md
+Plug 'psf/black', { 'branch': 'stable' }
 
 " 代码自动补全提示插件,
 " 在安装完插件后还需要做一些额外工作:
@@ -248,6 +254,16 @@ let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 " doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
 let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
 
+""""""""""""""""""""""""""
+
+"""""" 'psf/black' Python代码格式化插件配置
+let g:black_fast = 0 "(defaults to 0)
+let g:black_linelength = 79 "(defaults to 88)
+let g:black_skip_string_normalization = 0 "(defaults to 0)
+"let g:black_virtualenv = "(defaults to ~/.vim/black or ~/.local/share/nvim/black)
+
+" To run Black on save
+autocmd BufWritePre *.py execute ':Black'
 """"""""""""""""""""""""""
 
 """""" 'dense-analysis/ale'配置
