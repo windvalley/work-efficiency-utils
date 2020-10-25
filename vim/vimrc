@@ -203,8 +203,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'kien/ctrlp.vim'
 
 " 调整python import的顺序(python需要提前安装isort模块).
-" `:Isort`;
-" VISUAL BLOCK模式下选择待调整的import区域: `ctrl+i`
+" `:Isort` 自动调整import顺序
+" `ctrl+i` 在VISUAL BLOCK模式下选择待调整的import区域后, 再按该快捷键即可自动调整
 Plug 'fisadev/vim-isort'
 
 " Markdown相关插件
@@ -215,7 +215,7 @@ Plug 'fisadev/vim-isort'
 " zm 折叠当前段落
 " zM 折叠所有段落
 " :Toc 显示目录
-"Plug 'godlygeek/tabular'
+"Plug 'godlygeek/tabular' "前面已经安装了, 这里注释掉
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
