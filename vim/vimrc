@@ -480,13 +480,20 @@ au FileType go nmap <Leader>d <Plug>(go-doc)
 au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
 " go run 当前的go文件
 au FileType go nmap <leader>r <Plug>(go-run)
-" go build 当前的go文件
+" go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build
 au FileType go nmap <leader>b <Plug>(go-build)
 " go test 当前的go文件
 au FileType go nmap <leader>t <Plug>(go-test)
-" 查看光标所在的type和method是否正确
+" 查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上
 au FileType go nmap <Leader>s <Plug>(go-implements)
-"au FileType go nmap <Leader>e <Plug>(go-rename)
+" 查看有哪些地方调用了光标所在的函数, 选择列表中某一个, 然后回车, 将跳转到调用位置
+au FileType go nmap <Leader>f <Plug>(go-callers)
+" 查看函数调用链
+"au FileType go nmap <Leader>f <Plug>(go-callstack)
+
+" 查看当前包中可能的没有处理的errors
+nmap ,c :GoErrCheck<CR>
+
 
 """""""" for OpenResty/Lua
 func SetTitleForLua()
