@@ -734,5 +734,59 @@
  		<key>shortcut</key>
  		<string>liantiao</string>
  	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>万兆</string>
+ 		<key>shortcut</key>
+ 		<string>wanzhao</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>无责</string>
+ 		<key>shortcut</key>
+ 		<string>wuze</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>器</string>
+ 		<key>shortcut</key>
+ 		<string>qi</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>自增</string>
+ 		<key>shortcut</key>
+ 		<string>zizeng</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>极客</string>
+ 		<key>shortcut</key>
+ 		<string>jike</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>闭源</string>
+ 		<key>shortcut</key>
+ 		<string>biyuan</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>掩码</string>
+ 		<key>shortcut</key>
+ 		<string>yanma</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>范式</string>
+ 		<key>shortcut</key>
+ 		<string>fanshi</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>秒级</string>
+ 		<key>shortcut</key>
+ 		<string>miaoji</string>
+ 	</dict>
 </array>
 </plist>
