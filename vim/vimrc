@@ -128,6 +128,9 @@ Plug 'psf/black', { 'branch': 'stable' }
 " cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --go-completer
 Plug 'Valloric/YouCompleteMe'
 
+" offers nginx/openresty syntax highlight and directives completion
+Plug 'spacewander/openresty-vim'
+
 " 代码片段提示插件,
 " `<tab>`从头开始向下选择, `ctrl+k`从末尾开始向上选择, `,<tab>`将代码片段插入.
 Plug 'SirVer/ultisnips'
@@ -496,6 +499,8 @@ nmap ,c :GoErrCheck<CR>
 
 
 """""""" for OpenResty/Lua
+let g:ycm_seed_identifiers_with_syntax = 1
+
 func SetTitleForLua()
     " 自动获取文件名称, 不包含文件扩展名.
     let filename = expand('%:r')
