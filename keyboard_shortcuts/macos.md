@@ -1,6 +1,6 @@
 # MacOS
 
-```
+```text
 command space: 聚焦搜索
     it: 打开iterm2
     c: 打开vscode
@@ -38,7 +38,8 @@ command backspace: 删除选中文件
 
 command down: 进入选中文件夹或打开选中文件
 command up: 返回到上级目录
- command option v: 粘贴文件并删除原文件, 相当于剪切文件的操作
+command option p: 显示当前文件夹的路径信息
+ command option v: 拷贝文件后(command c), 粘贴文件并删除原文件, 相当于剪切文件的操作
 
 command option d: 显示/隐藏程序坞
 

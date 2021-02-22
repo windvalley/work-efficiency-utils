@@ -3,7 +3,9 @@
 `https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf`
 
 ## 通用
-```
+
+```text
+command shift p: dispaly lan -> enter -> zh-cn -> enter, 切换为中文环境
 command k command t: 主题配置
 command k command s: 快捷键配置
 command k command m: keymap
@@ -24,7 +26,8 @@ ctrl f5: 以非调试模式运行
 ```
 
 ## 活动栏
-```
+
+```text
 command shift e
 command shift f
  ctrl shift g
@@ -33,7 +36,8 @@ command shift x
 ```
 
 ## 面板
-```
+
+```text
 command j: 显示/隐藏面板
 ctrl `: 显示终端面板
 command shift y: 显示调试面板
@@ -42,7 +46,8 @@ command shift m: 显示问题面板
 ```
 
 ## 资源管理器
-```
+
+```text
 command shift e
 j
 k
@@ -64,7 +69,8 @@ command w: 使用上2个命令查看完后, 使用此命令关闭比较
 ## 编辑器(vim插件)
 
 - 任何模式下
-```
+
+```text
 command /: 单行注释
  shift option a: 多行注释
 command w: 关闭文件
@@ -76,7 +82,8 @@ command s: 保存新创建的文件, 输入文件名保存
 ```
 
 - NORMAL模式下
-```
+
+```text
  command d/gd: 跳转到光标所在函数的定义位置;
  command i: 快速查看函数定义, 而不是直接跳转到函数的所在文件;
  command u: 函数定义的预览悬停;
@@ -85,4 +92,3 @@ command s: 保存新创建的文件, 输入文件名保存
 > 通过command k command s跳转到快捷键设置页,
 > 搜索"定义"和"转到"即可找到相关设置项, 进行替代即可.
 ```
-
