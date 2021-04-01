@@ -107,7 +107,8 @@ Plug 'dense-analysis/ale'
 " 会自动安装该插件依赖的大量Go二进制工具.
 " 如果由于Go环境等问题导致自动安装失败,
 " 可后续通过Vim的命令行模式安装`:GoInstallBinaries`.
-Plug 'fatih/vim-go', { 'tag': '*', 'do': ':GoUpdateBinaries' }
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
 " Go的代码追踪插件, 光标移到相关函数,
 " 普通模式下输入`gd`就可以自动分屏跳转到相关代码文件的该函数定义处.
 Plug 'dgryski/vim-godef'
@@ -123,6 +124,7 @@ Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 " doc: https://github.com/psf/black/blob/407052724fa1c97ee8bcd4e96de650def00be03e/docs/editor_integration.md
 Plug 'psf/black', { 'branch': 'stable' }
 
+" NOTE: 在使用:PlugUpdate更新完所有插件后, 需要手动做如下工作:
 " 代码自动补全提示插件,
 " 在安装完插件后还需要做一些额外工作:
 " cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --go-completer
@@ -174,8 +176,11 @@ Plug 'godlygeek/tabular'
 " 自动补全引号(单引号/双引号/反引号)、括号(()[]{})的插件,
 Plug 'Raimondi/delimitMate'
 
-" 标签自动补全, 比如html标签
-Plug 'alvan/vim-closetag'
+" 标签自动补全, 比如html标签, 不太好用, 暂时注释掉
+"Plug 'alvan/vim-closetag'
+
+" 前端利器for html/css/js
+Plug 'mattn/emmet-vim'
 
 " 美化状态栏插件
 Plug 'vim-airline/vim-airline'
@@ -226,6 +231,17 @@ Plug 'iamcco/markdown-preview.vim'
 " TOML插件
 Plug 'cespare/vim-toml'
 
+" Vue插件
+"Plug 'posva/vim-vue'
+
+" Vastly improved Javascript indentation and syntax support
+Plug 'pangloss/vim-javascript'
+
+" format js, html, css
+Plug 'maksimr/vim-jsbeautify'
+
+
+" NOTE: 定期更新所有插件
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
 " 更新插件`:PlugUpdate`;
 " 删除插件: 先在上面注释掉相关插件, 然后`:PlugClean`;
@@ -236,6 +252,47 @@ call plug#end()
 
 
 " VIM各种插件配置 {{
+
+"""""" maksimr/vim-jsbeautify 配置
+" 普通模式下, 对文件的全部内容进行格式化
+autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
+autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
+autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+" 可视模式下选取部分代码进行格式化, 通过在普通模式下按v进入可视模式
+autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+autocmd FileType json vnoremap <buffer> <c-f> :call RangeJsonBeautify()<cr>
+autocmd FileType jsx vnoremap <buffer> <c-f> :call RangeJsxBeautify()<cr>
+autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+
+" 使用方法:
+" `ctrl+f`, 进行格式化
+""""""""""""""""""""""""""
+
+"""""" 'mattn/emmet-vim'配置
+" Enable in different mode,
+" If you don't want to enable emmet in all modes, you can use set these options in vimrc:
+"let g:user_emmet_mode='n'    "only enable normal mode functions.
+"let g:user_emmet_mode='inv'  "enable all functions, which is equal to
+"let g:user_emmet_mode='a'    "enable all function in all mode.
+
+" Enable just for html/css:
+"let g:user_emmet_install_global = 0
+"autocmd FileType html,css EmmetInstall
+
+" Redefine trigger key, to remap the default <C-Y> leader:
+"let g:user_emmet_leader_key='<C-Z>'
+
+" 使用方法:
+" https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
+" 1. 打开文件, 输入`html:5`, 然后`ctrl+y+,`即可自动生成html代码模版
+" 2. 输入`div`, 然后`ctrl+y+,`, 即可自动生成: <div></div>
+" 3. 输入`#foo`, 然后`ctrl+y+,`, 可自动生成: <div id="foo"></div>
+" 4. 输入`div>p>a`, 然后`ctrl+y+,`, 可自动生成: <div><p><a href=""></a></p></div>
+""""""""""""""""""""""""""
 
 """""" 'vim-syntastic/syntastic'统一配置
 " Dockerfile
@@ -265,8 +322,9 @@ let g:black_linelength = 79 "(defaults to 88)
 let g:black_skip_string_normalization = 0 "(defaults to 0)
 "let g:black_virtualenv = "(defaults to ~/.vim/black or ~/.local/share/nvim/black)
 
+" NOTE: 因修改开源项目, 未避免和原始项目出入较大, 暂时关闭
 " To run Black on save
-autocmd BufWritePre *.py execute ':Black'
+"autocmd BufWritePre *.py execute ':Black'
 """"""""""""""""""""""""""
 
 """""" 'dense-analysis/ale'配置
@@ -298,11 +356,13 @@ let g:ale_echo_msg_warning_str = 'W'
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
-" 安装Go的revive: 注意需要在go mod环境下执行该命令, 否则无法使用GOPROXY设置的代理
-" go get -u -v github.com/mgechev/revive
-" 安装python的pylint工具: pip install pylint
+" 需要提前在本地安装Go的检查工具:
+"     go get -u -v github.com/mgechev/revive
+"     go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.38.0
+" 安装python的pylint工具: 
+"     pip install pylint
 let g:ale_linters = {
-\    'go': ['revive'],
+\    'go': ['revive', 'golangci-lint'],
 \    'python': ['pylint'],
 \}
 """"""""""""""""""""""""""
@@ -328,6 +388,10 @@ let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
 nmap ,p :MarkdownPreview<CR>
 nmap ,pp <Plug>StopMarkdownPreview
 
+" NOTE: 因为markdown有些情况需要行尾有空格, 故暂时注释
+" 保存文件时自动去除行尾空格
+"autocmd BufWritePre *.sh,*.lua,*.py :%s/\s\+$//e
+
 " :help syntastic-markdown
 " 1. 通过命令行检查和自动修正markdown文件
 " npm install -g markdownlint-cli
@@ -337,15 +401,6 @@ nmap ,pp <Plug>StopMarkdownPreview
 " sudo gem install mdl
 " mdl foo.md
 " mdl -l
-""""""""""""""""""""""""""
-
-"""""" airblade/vim-gitgutter插件的配置,
-" 表示vim信息更新间隔2秒, 默认是4秒.
-set updatetime=2000
-
-" 哪些扩展名的文件开启vim-closetag插件的功能, 比如输入<div>自动补全</div>,
-" 默认支持*.html,*.xhtml,*.phtml, 其他文件想要支持加在这里即可.
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
 """"""""""""""""""""""""""
 
 """""" SirVer/ultisnips插件配置
@@ -469,6 +524,10 @@ let g:vim_isort_map = '<C-i>'
 """""""" for Go
 " 在安装完vim-go插件的前提下, 命令行模式下`:w`保存文件时将自动import和gofmt.
 let g:go_fmt_command = "goimports"
+" 本来计划使用如下两行替代上一行, 但对import的排序不是很符合要求, 暂时停用
+"let g:go_fmt_command="gopls"
+"let g:go_gopls_gofumpt=1
+
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
@@ -551,9 +610,9 @@ func SetTitleForShell()
     call setline(1, "\#!/usr/bin/env bash")
     call setline(2, "# " . current_filename)
     call setline(3, "#")
-    call setline(4, "# Author: windvalley") " 改成你自己的名字
-    call setline(5, "# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
-    call setline(6, "#")
+    "call setline(4, "# Author: windvalley") " 改成你自己的名字
+    "call setline(5, "# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
+    call setline(4, "")
     normal G
     normal o
     normal o
@@ -695,8 +754,8 @@ set autoread
 set wildmenu
 set wildmode=longest:list,full
 
-" 保存文件时自动去除行尾空格
-autocmd BufWritePre * :%s/\s\+$//e
+" 表示vim信息更新间隔2秒, 默认是4秒.
+set updatetime=2000
 
 
 " 复制粘贴相关的配置 {{
@@ -840,8 +899,8 @@ nnoremap Y y$
 " 6. `,,w`,普通模式下这个组合键将把光标下方的所有可见内容进行高亮符号标记,
 "    然后我们想让光标跳转到哪里, 就输入那里的高亮字符或字符组合.
 "    (easymotion/vim-easymotion)
-" 7. 扩展名为html,js等文件, 支持标签补全, 比如输入`<div>`默认补全`</div>`.
-"    (alvan/vim-closetag)
+" 7.
+"
 " 8. 各种括号、引号的自动补全功能, 比如输入`"`自动补全`"`.
 "    (Raimondi/delimitMate)
 " 9. 编写Go代码文件独有的情况:
