@@ -97,7 +97,7 @@ Plug 'flazz/vim-colorschemes'
 
 " 语法检查插件, 该插件几乎支持所有几十种主流语言的语法检查,
 " 命令行模式下`:w`将进行语法检查, 有错误将给出高亮提示.
-Plug 'vim-syntastic/syntastic'
+"Plug 'vim-syntastic/syntastic'
 
 " https://github.com/dense-analysis/ale
 " ALE (Asynchronous Lint Engine) is a plugin providing linter(syntax checking and semantic errors)
@@ -179,9 +179,6 @@ Plug 'Raimondi/delimitMate'
 " 标签自动补全, 比如html标签, 不太好用, 暂时注释掉
 "Plug 'alvan/vim-closetag'
 
-" 前端利器for html/css/js
-Plug 'mattn/emmet-vim'
-
 " 美化状态栏插件
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -231,15 +228,14 @@ Plug 'iamcco/markdown-preview.vim'
 " TOML插件
 Plug 'cespare/vim-toml'
 
-" Vue插件
-"Plug 'posva/vim-vue'
-
-" Vastly improved Javascript indentation and syntax support
-Plug 'pangloss/vim-javascript'
-
 " format js, html, css
 Plug 'maksimr/vim-jsbeautify'
 
+" 前端利器for html/css/js
+Plug 'mattn/emmet-vim'
+
+" Vue语法高亮插件, 注意会拖慢vim, 需要配置这条来解决: let g:vue_pre_processors = []
+Plug 'posva/vim-vue'
 
 " NOTE: 定期更新所有插件
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
@@ -252,6 +248,59 @@ call plug#end()
 
 
 " VIM各种插件配置 {{
+
+"""""" 'dense-analysis/ale'配置
+" 用于替代syntastic插件
+" NOTE: `:ALEInfo`, 用于查看当前文件的语法检查配置情况,
+" 内容尾部是对当前文件内容执行检查的日志, 可通过这些日志排查问题
+
+" How can I change the signs ALE uses?
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+
+" keep the sign gutter open at all times
+let g:ale_sign_column_always = 1
+
+" How can I change or disable the highlights ALE uses?
+"let g:ale_set_highlights = 0
+
+" How can I show errors or warnings in my statusline?
+let g:airline#extensions#ale#enabled = 1
+
+" How can I change the format for echo messages?
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+"let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" 新打开文件时不做check
+"let g:ale_lint_on_enter = 0
+
+" How can I navigate between errors quickly?
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+" NOTE:
+" 其他没有在这里配置的语言将使用ale默认配置的linter,
+" 可以使用`:ALEInfo`来查看使用了哪些默认的linter,
+" 然后需要提前安装相关的命令行工具即可.
+"
+" 需要提前在本地安装Go的检查工具:
+"     go get -u -v github.com/mgechev/revive
+"     go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.38.0
+" 安装python的pylint工具:
+"     pip install pylint
+let g:ale_linters = {
+\    'go': ['golangci-lint', 'revive'],
+\    'python': ['pylint'],
+\}
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines'],
+\   'javascript': ['prettier', 'eslint'],
+\}
+
+let g:ale_fix_on_save = 1
+""""""""""""""""""""""""""
 
 """""" maksimr/vim-jsbeautify 配置
 " 普通模式下, 对文件的全部内容进行格式化
@@ -294,22 +343,6 @@ autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
 " 4. 输入`div>p>a`, 然后`ctrl+y+,`, 可自动生成: <div><p><a href=""></a></p></div>
 """"""""""""""""""""""""""
 
-"""""" 'vim-syntastic/syntastic'统一配置
-" Dockerfile
-" 需要先安装hadolint命令行工具: brew install hadolint
-" 忽略提示特定错误, 在出错行上方注释: # hadolint ignore=DL3003,SC1035
-let g:syntastic_dockerfile_checkers = ['hadolint']
-
-" Markdown
-" :help syntastic-markdown
-"let g:syntastic_markdown_mdl_exec = "markdownlint"
-"let g:syntastic_markdown_mdl_args = ""
-
-" Go语言
-let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
-"let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-""""""""""""""""""""""""""
-
 """""" 'python-mode/python-mode'配置
 " doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
 let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
@@ -325,46 +358,6 @@ let g:black_skip_string_normalization = 0 "(defaults to 0)
 " NOTE: 因修改开源项目, 未避免和原始项目出入较大, 暂时关闭
 " To run Black on save
 "autocmd BufWritePre *.py execute ':Black'
-""""""""""""""""""""""""""
-
-"""""" 'dense-analysis/ale'配置
-" keep the sign gutter open at all times
-"let g:ale_sign_column_always = 1
-
-" How can I change the signs ALE uses?
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-
-" How can I change or disable the highlights ALE uses?
-"let g:ale_set_highlights = 0
-
-" How can I show errors or warnings in my statusline?
-let g:airline#extensions#ale#enabled = 1
-
-" How can I change the format for echo messages?
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-"let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-
-" Disable warnings about trailing whitespace.
-"let b:ale_warn_about_trailing_whitespace = 0
-
-" If you don't want linters to run on opening a file
-"let g:ale_lint_on_enter = 0
-
-" How can I navigate between errors quickly?
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
-
-" 需要提前在本地安装Go的检查工具:
-"     go get -u -v github.com/mgechev/revive
-"     go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.38.0
-" 安装python的pylint工具: 
-"     pip install pylint
-let g:ale_linters = {
-\    'go': ['revive', 'golangci-lint'],
-\    'python': ['pylint'],
-\}
 """"""""""""""""""""""""""
 
 """""" Markdown相关插件配置
@@ -388,16 +381,11 @@ let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
 nmap ,p :MarkdownPreview<CR>
 nmap ,pp <Plug>StopMarkdownPreview
 
-" NOTE: 因为markdown有些情况需要行尾有空格, 故暂时注释
-" 保存文件时自动去除行尾空格
-"autocmd BufWritePre *.sh,*.lua,*.py :%s/\s\+$//e
-
-" :help syntastic-markdown
 " 1. 通过命令行检查和自动修正markdown文件
 " npm install -g markdownlint-cli
 " 检查: markdownlint foo.md
 " 修复: markdownlint -f foo.md
-" 2. 通过syntastic和mdl在编辑时进行检查, 无自动修复功能
+" 2. mdl工具, 无自动修复功能
 " sudo gem install mdl
 " mdl foo.md
 " mdl -l
@@ -416,6 +404,11 @@ let g:UltiSnipsExpandTrigger = ',<tab>'
 "let g:airline_theme = 'molokai'
 let g:airline_left_sep='›'
 let g:airline_right_sep='‹'
+"""""""""""""""""""""""""""
+
+"""""" posva/vim-vue 插件
+" 解决vim-vue插件导致的vim速度变慢
+let g:vue_pre_processors = []
 """""""""""""""""""""""""""
 
 """""" NERDTree插件的配置
@@ -519,7 +512,22 @@ let g:vim_isort_map = '<C-i>'
 " }}
 
 
-" Go/Lua/Python/Shell等语言相关配置 {{
+" Go/Javascript/Lua/Python/Shell等语言相关配置 {{
+
+" 保存文件时自动去除行尾空格;
+" *.py和*.go其他插件已经支持此功能, 不在此再次设置
+autocmd BufWritePre *.sh,*.lua,*.js,*.html,*.vue :%s/\s\+$//e
+
+"""""""" for Javascript
+" 缩进使用2个空格等配置
+au BufNewFile,BufRead *.html,*.js,*.vue set tabstop=2
+au BufNewFile,BufRead *.html,*.js,*.vue set softtabstop=2
+au BufNewFile,BufRead *.html,*.js,*.vue set shiftwidth=2
+au BufNewFile,BufRead *.html,*.js,*.vue set expandtab
+au BufNewFile,BufRead *.html,*.js,*.vue set autoindent
+au BufNewFile,BufRead *.html,*.js,*.vue set fileformat=unix
+
+"""""""""""""""""""""
 
 """""""" for Go
 " 在安装完vim-go插件的前提下, 命令行模式下`:w`保存文件时将自动import和gofmt.
@@ -548,7 +556,7 @@ au FileType go nmap <leader>b <Plug>(go-build)
 au FileType go nmap <leader>t <Plug>(go-test)
 " 查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上
 au FileType go nmap <Leader>s <Plug>(go-implements)
-" 查看有哪些地方调用了光标所在的函数, 选择列表中某一个, 然后回车, 将跳转到调用位置
+" 查看有哪些地方调用了光标所在的函数, 从弹出的列表中选择一个, 然后回车, 将跳转到调用位置
 au FileType go nmap <Leader>f <Plug>(go-callers)
 " 查看函数调用链
 "au FileType go nmap <Leader>f <Plug>(go-callstack)
@@ -556,6 +564,13 @@ au FileType go nmap <Leader>f <Plug>(go-callers)
 " 查看当前包中可能的没有处理的errors
 nmap ,c :GoErrCheck<CR>
 
+" gd操作时, 以什么方式跳转到新的页面:
+"   1: 上下分屏的方式跳转到新的页面, 此为默认的方式
+"   2: 打开新标签页的方式跳转到新的页面
+"   3: 水平分屏的方式跳转到新的页面
+let g:godef_split=2
+" gd操作时, 如果函数在同一个文件中时不需要打开新窗口
+"let g:godef_same_file_in_same_window=1
 
 """""""" for OpenResty/Lua
 let g:ycm_seed_identifiers_with_syntax = 1
