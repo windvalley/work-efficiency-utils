@@ -1,8 +1,14 @@
-" windvalley vimrc
-
-
-" 使用vimrc文件配置VIM的方法 {{
+" vimrc by @windvalley
 " vim: set foldmarker={{,}} foldlevel=0 foldmethod=marker:
+
+
+" 查看折叠内容的方法:
+"   za: 普通模式下按`za`, 表示当光标在关闭折叠上时打开之, 在打开折叠上时关闭之;
+"       在打开的折叠内部任意处按`za`, 也会关闭折叠.
+"   zA: 是`za`的递归操作, 针对嵌套折叠的场景.
+
+
+" 使用本文件(vimrc)配置VIM的方法 {{
 
 " 注意事项:
 "   * vim版本在8.0以上, 通过vim --version查看.
@@ -45,7 +51,7 @@
 
 " VIM基础环境配置 {{
 
-" 关闭兼容模式, 也就是不再兼容vi, 必需放在第一行
+" 关闭兼容模式, 也就是不再兼容VI, 必需放在第一行
 set nocompatible
 
 " 自动检测文件类型, 以支持对不同文件类型使用不同的功能
@@ -56,11 +62,10 @@ filetype on
 " 其他类型文件, 按tab键显示4个空格----
 filetype plugin indent on
 
-" 重新设置mapleader键,
-" 即普通模式下的一些vim命令的prefix, 由默认的`/`改为`,`
+" 重新设置mapleader键, 即普通模式下一些VIM命令的prefix, 由默认的`/`改为`,`
 let mapleader = ","
 
-" 确定当前vim所在操作系统类型
+" 确定当前VIM所在操作系统类型
 silent function! OSX()
     return has('macunix')
 endfunction
@@ -87,6 +92,7 @@ endfunction
 " 注意这里插件名称不包括插件作者名字和/.
 call plug#begin('~/.vim/plugged')
 
+"""""""" VIM主题
 " 集成了900多种流行的VIM颜色主题的插件, 包括有名的molokai主题,
 " 可在~/.vim/plugged/vim-colorschemes/colors/目录下查看主题名称,
 " 一个文件一个主题, 也可以通过命令行方式`:colorscheme `,
@@ -95,50 +101,24 @@ call plug#begin('~/.vim/plugged')
 " 当然也可以在命令行模式进行主题切换, 即时看到颜色效果: `:colorscheme shine`
 Plug 'flazz/vim-colorschemes'
 
-" 语法检查插件, 该插件几乎支持所有几十种主流语言的语法检查,
-" 命令行模式下`:w`将进行语法检查, 有错误将给出高亮提示.
-"Plug 'vim-syntastic/syntastic'
-
+"""""""" 代码检查
 " https://github.com/dense-analysis/ale
 " ALE (Asynchronous Lint Engine) is a plugin providing linter(syntax checking and semantic errors)
+" 命令行模式下`:w`将进行语法检查, 有错误将给出高亮提示.
 Plug 'dense-analysis/ale'
 
-" 搭建Go开发环境的Vim插件, 安装该插件的过程中,
-" 会自动安装该插件依赖的大量Go二进制工具.
-" 如果由于Go环境等问题导致自动安装失败,
-" 可后续通过Vim的命令行模式安装`:GoInstallBinaries`.
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
-" Go的代码追踪插件, 光标移到相关函数,
-" 普通模式下输入`gd`就可以自动分屏跳转到相关代码文件的该函数定义处.
-Plug 'dgryski/vim-godef'
-
-" 搭建Python3开发环境的Vim插件
-" <leader>r: 运行当前Python代码;
-Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
-
-" 自动修复Python代码的插件
-" :BlackUpgrade 更新black命令
-" :BlackVersion 获取当前black的版本
-" :Black 格式化整个文件, 不支持只格式化部分代码
-" doc: https://github.com/psf/black/blob/407052724fa1c97ee8bcd4e96de650def00be03e/docs/editor_integration.md
-Plug 'psf/black', { 'branch': 'stable' }
-
-" NOTE: 在使用:PlugUpdate更新完所有插件后, 需要手动做如下工作:
-" 代码自动补全提示插件,
-" 在安装完插件后还需要做一些额外工作:
-" cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --go-completer
+"""""""" 代码补全
+" NOTE: 安装完该插件后或在使用`:PlugUpdate`更新完所有插件后, 需要手动做如下工作:
+"    cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --go-completer
 Plug 'Valloric/YouCompleteMe'
-
-" offers nginx/openresty syntax highlight and directives completion
-Plug 'spacewander/openresty-vim'
 
 " 代码片段提示插件,
 " `<tab>`从头开始向下选择, `ctrl+k`从末尾开始向上选择, `,<tab>`将代码片段插入.
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
-" Vim侧边栏目录树插件,
+"""""""" 目录树相关 {{
+
 " 命令行模式下`:NERDTree`, 则在左侧显示目录树窗口, 再次执行隐藏窗口,
 " 已映射为快捷键: `,w`
 Plug 'scrooloose/nerdtree'
@@ -153,6 +133,95 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 " 命令行模式下`:Tagbar`, 则右边栏显示视图, 再次`:Tagbar`隐藏,
 " 已映射为快捷键来方便操作: `,e`
 Plug 'majutsushi/tagbar'
+
+" 帮助我们快速查找和管理项目文件的插件.
+" `ctrl+p`将在当前窗口下面列出当前项目的所有文件,
+" `ctrl+k`和`ctrl+j`在列出的文件中向上或向下选择文件,
+" `ctrl+t`在新标签页中打开文件,
+" `shift+h`和`shift+l`, 向左和向右选择标签页.
+Plug 'kien/ctrlp.vim'
+
+" 深度集成git的插件
+Plug 'tpope/vim-fugitive'
+" git commit浏览插件, 该插件依赖vim-fugitive插件.
+" `:GV`命令行模式下打开commit浏览, 这个包含当前git repo的所有commit;
+" `:GV!`这个只看当前文件的commit历史;
+" `o`或`O`或回车, 打开光标所在commit;
+" `q`命令模式下退出commit浏览.
+Plug 'junegunn/gv.vim'
+" 标记git repo文件的变化,
+" `]c`普通模式下光标跳到后一个变化处,
+" `[c`普通模式下光标跳到前一个变化处.
+Plug 'airblade/vim-gitgutter'
+
+" }}
+
+"""""""" UI显示相关
+" 美化状态栏插件
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'bling/vim-bufferline'
+
+" 彩虹括号插件, 层级较多的括号场景使用不同颜色区分.
+Plug 'luochen1990/rainbow'
+
+"""""""" 编程语言相关 {{
+
+"""""""" Go
+" 搭建Go开发环境的Vim插件, 安装该插件的过程中,
+" 会自动安装该插件依赖的大量Go二进制工具.
+" 如果由于Go环境等问题导致自动安装失败,
+" 可后续通过Vim的命令行模式安装`:GoInstallBinaries`.
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" Go的代码追踪插件, 光标移到相关函数,
+" 普通模式下输入`gd`就可以自动分屏跳转到相关代码文件的该函数定义处.
+Plug 'dgryski/vim-godef'
+
+"""""""" python
+" <leader>r: 运行当前Python代码;
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+" 自动修复Python代码的插件
+"   :BlackUpgrade 更新black命令
+"   :BlackVersion 获取当前black的版本
+"   :Black 格式化整个文件, 不支持只格式化部分代码
+" doc: https://github.com/psf/black/blob/407052724fa1c97ee8bcd4e96de650def00be03e/docs/editor_integration.md
+Plug 'psf/black', { 'branch': 'stable' }
+" 调整python import的顺序(python需要提前安装isort模块).
+" `:Isort` 自动调整import顺序
+" `ctrl+i` 在VISUAL BLOCK模式下选择待调整的import区域后, 再按该快捷键即可自动调整
+Plug 'fisadev/vim-isort'
+
+"""""""" openresty
+" offers nginx/openresty syntax highlight and directives completion
+Plug 'spacewander/openresty-vim'
+
+"""""""" javascript/html/css/vue
+" format js, html, css
+Plug 'maksimr/vim-jsbeautify'
+" 前端利器for html/css/js
+Plug 'mattn/emmet-vim'
+" Vue语法高亮插件, 注意会拖慢vim, 需要配置这条来解决: let g:vue_pre_processors = []
+Plug 'posva/vim-vue'
+
+"""""""" markdown
+" 基本用法:
+"   [[ 跳转上一个标题
+"   ]] 跳转下一个标题
+"   zr 打开下一级折叠
+"   zR 打开所有折叠
+"   zm 折叠当前段落
+"   zM 折叠所有段落
+"   :Toc 显示目录
+Plug 'plasticboy/vim-markdown'
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
+
+"""""""" toml
+Plug 'cespare/vim-toml'
+
+" }}
+
+"""""""" 效率相关 {{
 
 " 方便注释的插件,
 " 普通模式下或可视模式下, 快捷键`,c空格`注释或取消注释选中的代码.
@@ -176,81 +245,22 @@ Plug 'godlygeek/tabular'
 " 自动补全引号(单引号/双引号/反引号)、括号(()[]{})的插件,
 Plug 'Raimondi/delimitMate'
 
-" 标签自动补全, 比如html标签, 不太好用, 暂时注释掉
-"Plug 'alvan/vim-closetag'
+" }}
 
-" 美化状态栏插件
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'bling/vim-bufferline'
-
-" 彩虹括号插件, 层级较多的括号场景使用不同颜色区分.
-Plug 'luochen1990/rainbow'
-
-" 深度集成git的插件
-Plug 'tpope/vim-fugitive'
-" git commit浏览插件, 该插件依赖vim-fugitive插件.
-" `:GV`命令行模式下打开commit浏览, 这个包含当前git repo的所有commit;
-" `:GV!`这个只看当前文件的commit历史;
-" `o`或`O`或回车, 打开光标所在commit;
-" `q`命令模式下退出commit浏览.
-Plug 'junegunn/gv.vim'
-" 标记git repo文件的变化,
-" `]c`普通模式下光标跳到后一个变化处,
-" `[c`普通模式下光标跳到前一个变化处.
-Plug 'airblade/vim-gitgutter'
-
-" 帮助我们快速查找和管理项目文件的插件.
-" `ctrl+p`将在当前窗口下面列出当前项目的所有文件,
-" `ctrl+k`和`ctrl+j`在列出的文件中向上或向下选择文件,
-" `ctrl+t`在新标签页中打开文件,
-" `shift+h`和`shift+l`, 向左和向右选择标签页.
-Plug 'kien/ctrlp.vim'
-
-" 调整python import的顺序(python需要提前安装isort模块).
-" `:Isort` 自动调整import顺序
-" `ctrl+i` 在VISUAL BLOCK模式下选择待调整的import区域后, 再按该快捷键即可自动调整
-Plug 'fisadev/vim-isort'
-
-" Markdown相关插件
-" [[ 跳转上一个标题
-" ]] 跳转下一个标题
-" zr 打开下一级折叠
-" zR 打开所有折叠
-" zm 折叠当前段落
-" zM 折叠所有段落
-" :Toc 显示目录
-"Plug 'godlygeek/tabular' "前面已经安装了, 这里注释掉
-Plug 'plasticboy/vim-markdown'
-Plug 'iamcco/mathjax-support-for-mkdp'
-Plug 'iamcco/markdown-preview.vim'
-
-" TOML插件
-Plug 'cespare/vim-toml'
-
-" format js, html, css
-Plug 'maksimr/vim-jsbeautify'
-
-" 前端利器for html/css/js
-Plug 'mattn/emmet-vim'
-
-" Vue语法高亮插件, 注意会拖慢vim, 需要配置这条来解决: let g:vue_pre_processors = []
-Plug 'posva/vim-vue'
-
-" NOTE: 定期更新所有插件
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
-" 更新插件`:PlugUpdate`;
-" 删除插件: 先在上面注释掉相关插件, 然后`:PlugClean`;
-" 要更新vim-plug本身, 请输入`:PlugUpgrade`;
+" 更新插件`:PlugUpdate`, "NOTE: 建议定期更新所有插件;
+" 删除插件: 先在上面注释掉或删除相关插件, 然后`:PlugClean`;
+" 如果想更新vim-plug本身, 请输入`:PlugUpgrade`;
 call plug#end()
 
 " }}
 
 
-" VIM各种插件配置 {{
+" VIM主要配置 {{
 
-"""""" 'dense-analysis/ale'配置
-" 用于替代syntastic插件
+"""""""" 代码检查配置 {{
+
+" ale用于替代syntastic插件
 " NOTE: `:ALEInfo`, 用于查看当前文件的语法检查配置情况,
 " 内容尾部是对当前文件内容执行检查的日志, 可通过这些日志排查问题
 
@@ -300,116 +310,9 @@ let g:ale_fixers = {
 \}
 
 let g:ale_fix_on_save = 1
-""""""""""""""""""""""""""
+" }}
 
-"""""" maksimr/vim-jsbeautify 配置
-" 普通模式下, 对文件的全部内容进行格式化
-autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
-autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
-autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
-
-" 可视模式下选取部分代码进行格式化, 通过在普通模式下按v进入可视模式
-autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
-autocmd FileType json vnoremap <buffer> <c-f> :call RangeJsonBeautify()<cr>
-autocmd FileType jsx vnoremap <buffer> <c-f> :call RangeJsxBeautify()<cr>
-autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
-autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
-
-" 使用方法:
-" `ctrl+f`, 进行格式化
-""""""""""""""""""""""""""
-
-"""""" 'mattn/emmet-vim'配置
-" Enable in different mode,
-" If you don't want to enable emmet in all modes, you can use set these options in vimrc:
-"let g:user_emmet_mode='n'    "only enable normal mode functions.
-"let g:user_emmet_mode='inv'  "enable all functions, which is equal to
-"let g:user_emmet_mode='a'    "enable all function in all mode.
-
-" Enable just for html/css:
-"let g:user_emmet_install_global = 0
-"autocmd FileType html,css EmmetInstall
-
-" Redefine trigger key, to remap the default <C-Y> leader:
-"let g:user_emmet_leader_key='<C-Z>'
-
-" 使用方法:
-" https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
-" 1. 打开文件, 输入`html:5`, 然后`ctrl+y+,`即可自动生成html代码模版
-" 2. 输入`div`, 然后`ctrl+y+,`, 即可自动生成: <div></div>
-" 3. 输入`#foo`, 然后`ctrl+y+,`, 可自动生成: <div id="foo"></div>
-" 4. 输入`div>p>a`, 然后`ctrl+y+,`, 可自动生成: <div><p><a href=""></a></p></div>
-""""""""""""""""""""""""""
-
-"""""" 'python-mode/python-mode'配置
-" doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
-let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
-
-""""""""""""""""""""""""""
-
-"""""" 'psf/black' Python代码格式化插件配置
-let g:black_fast = 0 "(defaults to 0)
-let g:black_linelength = 79 "(defaults to 88)
-let g:black_skip_string_normalization = 0 "(defaults to 0)
-"let g:black_virtualenv = "(defaults to ~/.vim/black or ~/.local/share/nvim/black)
-
-" NOTE: 因修改开源项目, 未避免和原始项目出入较大, 暂时关闭
-" To run Black on save
-"autocmd BufWritePre *.py execute ':Black'
-""""""""""""""""""""""""""
-
-"""""" Markdown相关插件配置
-" :help vim-markdown
-let g:vim_markdown_math = 1
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_toc_autofit = 1
-let g:vim_markdown_toml_frontmatter = 1
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_json_frontmatter = 1
-let g:vim_markdown_new_list_item_indent = 2
-let g:vim_markdown_autowrite = 1
-" 在超链接处, 按ge将以新标签页的形式打开链接
-let g:vim_markdown_edit_url_in = 'tab'
-let g:vim_markdown_emphasis_multiline = 0
-"let g:vim_markdown_no_extensions_in_markdown = 1
-"let g:vim_markdown_auto_extension_ext = 'txt'
-
-" :help markdown-preview
-let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
-nmap ,p :MarkdownPreview<CR>
-nmap ,pp <Plug>StopMarkdownPreview
-
-" 1. 通过命令行检查和自动修正markdown文件
-" npm install -g markdownlint-cli
-" 检查: markdownlint foo.md
-" 修复: markdownlint -f foo.md
-" 2. mdl工具, 无自动修复功能
-" sudo gem install mdl
-" mdl foo.md
-" mdl -l
-""""""""""""""""""""""""""
-
-"""""" SirVer/ultisnips插件配置
-" 由上向下依次选择代码片段, 默认是tab
-"let g:UltiSnipsJumpForwardTrigger =
-" 由下向上依次选择代码片段, ctrl+k
-let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-" 使用mapleader键和tab键的组合来插入选中的代码片段.
-let g:UltiSnipsExpandTrigger = ',<tab>'
-""""""""""""""""""""""""""
-
-"""""" vim-airline相关插件配置
-"let g:airline_theme = 'molokai'
-let g:airline_left_sep='›'
-let g:airline_right_sep='‹'
-"""""""""""""""""""""""""""
-
-"""""" posva/vim-vue 插件
-" 解决vim-vue插件导致的vim速度变慢
-let g:vue_pre_processors = []
-"""""""""""""""""""""""""""
+"""""""" 目录树相关配置 {{
 
 """""" NERDTree插件的配置
 " 普通模式下显示或隐藏目录树的快捷键: `,w`
@@ -485,6 +388,33 @@ let g:tagbar_autopreview = 1
 let g:tagbar_sort = 0
 """""""""""""""""""
 
+"""""" vim-airline相关插件配置
+"let g:airline_theme = 'molokai'
+let g:airline_left_sep='›'
+let g:airline_right_sep='‹'
+"""""""""""""""""""""""""""
+
+" }}
+
+"""""""" 代码补全配置 {{
+
+"""""" SirVer/ultisnips插件配置
+" 由上向下依次选择代码片段, 默认是tab
+"let g:UltiSnipsJumpForwardTrigger =
+" 由下向上依次选择代码片段, ctrl+k
+let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
+" 使用mapleader键和tab键的组合来插入选中的代码片段.
+let g:UltiSnipsExpandTrigger = ',<tab>'
+""""""""""""""""""""""""""
+
+" }}
+
+"""""""" 效率工具配置 {{
+
+" 保存文件时自动去除行尾空格;
+" *.py和*.go其他插件已经支持此功能, 不在此再次设置
+autocmd BufWritePre *.sh,*.lua,*.js,*.html,*.vue :%s/\s\+$//e
+
 """"""""" godlygeek/tabular插件配置
 nmap <Leader>a& :tabularize /&<CR>
 vmap <Leader>a& :tabularize /&<CR>
@@ -502,34 +432,11 @@ nmap <Leader>a,, :tabularize /,\zs<CR>
 vmap <Leader>a,, :tabularize /,\zs<CR>
 nmap <Leader>a<Bar> :tabularize /<Bar><CR>
 vmap <Leader>a<Bar> :tabularize /<Bar><CR>
-"""""""""""""""""""""""
-
-"""""""" isort插件配置
-let g:vim_isort_python_version = 'python3'
-let g:vim_isort_map = '<C-i>'
-"""""""""""""""""""
 
 " }}
 
+"""""""" Go {{
 
-" Go/Javascript/Lua/Python/Shell等语言相关配置 {{
-
-" 保存文件时自动去除行尾空格;
-" *.py和*.go其他插件已经支持此功能, 不在此再次设置
-autocmd BufWritePre *.sh,*.lua,*.js,*.html,*.vue :%s/\s\+$//e
-
-"""""""" for Javascript
-" 缩进使用2个空格等配置
-au BufNewFile,BufRead *.html,*.js,*.vue set tabstop=2
-au BufNewFile,BufRead *.html,*.js,*.vue set softtabstop=2
-au BufNewFile,BufRead *.html,*.js,*.vue set shiftwidth=2
-au BufNewFile,BufRead *.html,*.js,*.vue set expandtab
-au BufNewFile,BufRead *.html,*.js,*.vue set autoindent
-au BufNewFile,BufRead *.html,*.js,*.vue set fileformat=unix
-
-"""""""""""""""""""""
-
-"""""""" for Go
 " 在安装完vim-go插件的前提下, 命令行模式下`:w`保存文件时将自动import和gofmt.
 let g:go_fmt_command = "goimports"
 " 本来计划使用如下两行替代上一行, 但对import的排序不是很符合要求, 暂时停用
@@ -572,29 +479,10 @@ let g:godef_split=2
 " gd操作时, 如果函数在同一个文件中时不需要打开新窗口
 "let g:godef_same_file_in_same_window=1
 
-"""""""" for OpenResty/Lua
-let g:ycm_seed_identifiers_with_syntax = 1
+" }}
 
-func SetTitleForLua()
-    " 自动获取文件名称, 不包含文件扩展名.
-    let filename = expand('%:r')
-    let lua_module_name = join(["_M.name = \"", filename, "\""], "")
+"""""""" Python {{
 
-    call setline(1, "local ngx = require \"ngx\"")
-    call setline(2, "")
-    call setline(3, "")
-    call setline(4, "local _M = {}")
-    call setline(5, "")
-    call setline(6, "_M._VERSION = 0.1")
-    call setline(7, lua_module_name)
-    call setline(8, "")
-    normal G
-    normal o
-    normal o
-endfunc
-autocmd bufnewfile *.lua call SetTitleForLua()
-
-"""""""" for Python
 " 新建.py结尾的文件时, 自动输入一些内容
 func SetTitleForPython()
     call setline(1, "\#!/usr/bin/env python3")
@@ -619,7 +507,107 @@ function! NoShabang(line1, current_file)
 endfunction
 autocmd BufWritePost *.py call NoShabang(getline(1), expand("%:p"))
 
-"""""""" for Shell
+"""""" 'python-mode/python-mode'配置
+" doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
+let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
+
+"""""" 'psf/black' Python代码格式化插件配置
+let g:black_fast = 0 "(defaults to 0)
+let g:black_linelength = 79 "(defaults to 88)
+let g:black_skip_string_normalization = 0 "(defaults to 0)
+"let g:black_virtualenv = "(defaults to ~/.vim/black or ~/.local/share/nvim/black)
+
+" NOTE: 因修改开源项目, 未避免和原始项目出入较大, 暂时关闭
+" To run Black on save
+"autocmd BufWritePre *.py execute ':Black'
+
+"""""""" isort插件配置
+let g:vim_isort_python_version = 'python3'
+let g:vim_isort_map = '<C-i>'
+
+" }}
+
+"""""""" OpenResty/Lua {{
+let g:ycm_seed_identifiers_with_syntax = 1
+
+func SetTitleForLua()
+    " 自动获取文件名称, 不包含文件扩展名.
+    let filename = expand('%:r')
+    let lua_module_name = join(["_M.name = \"", filename, "\""], "")
+
+    call setline(1, "local ngx = require \"ngx\"")
+    call setline(2, "")
+    call setline(3, "")
+    call setline(4, "local _M = {}")
+    call setline(5, "")
+    call setline(6, "_M._VERSION = 0.1")
+    call setline(7, lua_module_name)
+    call setline(8, "")
+    normal G
+    normal o
+    normal o
+endfunc
+autocmd bufnewfile *.lua call SetTitleForLua()
+
+" }}
+
+"""""""" Javascript/vue/html/css {{
+
+" js/html/vue, 缩进使用2个空格等配置
+au BufNewFile,BufRead *.html,*.js,*.vue set tabstop=2
+au BufNewFile,BufRead *.html,*.js,*.vue set softtabstop=2
+au BufNewFile,BufRead *.html,*.js,*.vue set shiftwidth=2
+au BufNewFile,BufRead *.html,*.js,*.vue set expandtab
+au BufNewFile,BufRead *.html,*.js,*.vue set autoindent
+au BufNewFile,BufRead *.html,*.js,*.vue set fileformat=unix
+
+"""""" maksimr/vim-jsbeautify 配置
+" 使用方法:
+"   `ctrl+f`, 进行格式化
+
+" 普通模式下, 对文件的全部内容进行格式化
+autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
+autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
+autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+" 可视模式下选取部分代码进行格式化, 通过在普通模式下按v进入可视模式
+autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+autocmd FileType json vnoremap <buffer> <c-f> :call RangeJsonBeautify()<cr>
+autocmd FileType jsx vnoremap <buffer> <c-f> :call RangeJsxBeautify()<cr>
+autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+
+"""""" posva/vim-vue 插件
+" 解决vim-vue插件导致的vim速度变慢
+let g:vue_pre_processors = []
+
+"""""" 'mattn/emmet-vim'配置
+" 使用方法:
+" https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
+" 1. 打开文件, 输入`html:5`, 然后`ctrl+y+,`即可自动生成html代码模版
+" 2. 输入`div`, 然后`ctrl+y+,`, 即可自动生成: <div></div>
+" 3. 输入`#foo`, 然后`ctrl+y+,`, 可自动生成: <div id="foo"></div>
+" 4. 输入`div>p>a`, 然后`ctrl+y+,`, 可自动生成: <div><p><a href=""></a></p></div>
+
+" Enable in different mode,
+" If you don't want to enable emmet in all modes, you can use set these options in vimrc:
+"let g:user_emmet_mode='n'    "only enable normal mode functions.
+"let g:user_emmet_mode='inv'  "enable all functions, which is equal to
+"let g:user_emmet_mode='a'    "enable all function in all mode.
+
+" Enable just for html/css:
+"let g:user_emmet_install_global = 0
+"autocmd FileType html,css EmmetInstall
+
+" Redefine trigger key, to remap the default <C-Y> leader:
+"let g:user_emmet_leader_key='<C-Z>'
+
+" }}
+
+"""""""" Shell {{
+
 func SetTitleForShell()
     let current_filename = expand('%:t')
     call setline(1, "\#!/usr/bin/env bash")
@@ -638,8 +626,43 @@ autocmd bufnewfile *.sh call SetTitleForShell()
 
 " }}
 
+"""""""" Markdown {{
 
-" VIM的其他常用配置 {{
+" :help vim-markdown
+let g:vim_markdown_math = 1
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_toml_frontmatter = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_json_frontmatter = 1
+let g:vim_markdown_new_list_item_indent = 2
+let g:vim_markdown_autowrite = 1
+" 在超链接处, 按ge将以新标签页的形式打开链接
+let g:vim_markdown_edit_url_in = 'tab'
+let g:vim_markdown_emphasis_multiline = 0
+"let g:vim_markdown_no_extensions_in_markdown = 1
+"let g:vim_markdown_auto_extension_ext = 'txt'
+
+" :help markdown-preview
+let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
+nmap ,p :MarkdownPreview<CR>
+nmap ,pp <Plug>StopMarkdownPreview
+
+" 1. 通过命令行检查和自动修正markdown文件
+" npm install -g markdownlint-cli
+" 检查: markdownlint foo.md
+" 修复: markdownlint -f foo.md
+" 2. mdl工具, 无自动修复功能
+" sudo gem install mdl
+" mdl foo.md
+" mdl -l
+
+" }}
+
+" }}
+
+
+" VIM其他常用配置 {{
 
 " 启用颜色主题方案,
 " 常用方案备选: molokai, peaksea, ir_black,
@@ -657,6 +680,7 @@ hi  LineNr  cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
 " 突出显示当前行
 set cursorline
 hi CursorLine   cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+
 " 突出显示当前列
 set cursorcolumn
 hi Cursorcolumn   cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
@@ -672,8 +696,7 @@ autocmd FileType * set colorcolumn=80
 hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
 
 " 插入模式下移动光标的快捷键:
-" `ctrl+f` 右, `ctrl+b` 左, `ctrl+p` 上, `ctrl+n` 下;
-" `ctrl+a`行首, `ctrl+e`行尾.
+"   `ctrl+f` 右, `ctrl+b` 左, `ctrl+p` 上, `ctrl+n` 下, `ctrl+a`行首, `ctrl+e`行尾.
 inoremap <C-f> <Right>
 inoremap <C-b> <Left>
 inoremap <C-p> <Up>
@@ -683,6 +706,9 @@ imap <C-e> <End>
 
 " 普通模式下允许光标移动到最后一个字符的右边.
 set virtualedit=onemore
+
+" 普通模式下, 使用Y复制当前行光标之后的内容, 和C和D用法统一起来.
+nnoremap Y y$
 
 " 显示括号匹配
 set showmatch
@@ -698,6 +724,10 @@ set expandtab
 " 插入模式下按退格键的时候退回缩进的长度为4个空格, 默认是退回一个空格.
 set softtabstop=4
 
+" 启用智能缩进, 按回车键后自动缩进,
+" 注意启用此模式后, 粘贴代码时要先在命令行模式下`:set paste`
+set smartindent
+
 " 普通模式下`shift+>>`和`shift+<<`或
 " 可视模式下`shift+>`和`shift+<`每次缩进4个空格, 默认是8个空格.
 set shiftwidth=4
@@ -705,10 +735,6 @@ set shiftwidth=4
 " 这样可方便执行多行的连续缩进.
 vnoremap < <gv
 vnoremap > >gv
-
-" 启用智能缩进, 按回车键后自动缩进,
-" 注意启用此模式后, 粘贴代码时要先在命令行模式下`:set paste`
-set smartindent
 
 " 解决中文乱码问题
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
@@ -739,9 +765,8 @@ set ignorecase
 " 比如: 搜索Test时, 将不匹配test, 但搜索test时, 将匹配Test.
 set smartcase
 
-" 保留撤销历史, Vim会在编辑时保存操作历史, 用来供用户撤消更改;
-" 默认情况下, 操作记录只在本次编辑时有效, 一旦编辑结束、文件关闭,
-" 操作历史就消失了;
+" 保留撤销历史, VIM会在编辑时保存操作历史, 用来供用户撤消更改;
+" 默认情况下, 操作记录只在本次编辑时有效, 一旦编辑结束、文件关闭, 操作历史就消失了;
 " 打开这个设置, 可以在文件关闭后, 操作记录保留在一个文件里面, 继续存在;
 " 这意味着, 重新打开一个文件, 可以撤销上一次编辑时的操作;
 " 撤消文件是跟原文件保存在一起的隐藏文件, 文件名以.un~开头.
@@ -756,11 +781,10 @@ set nobackup
 " 出错时, 不要发出响声.
 set noerrorbells
 
-" Vim记住多少次历史操作.
+" VIM记住多少次历史操作.
 set history=1000
 
-" 打开文件监视.
-" 如果在编辑过程中文件发生外部改变(比如被别的编辑器编辑了), 就会发出提示.
+" 打开文件监视, 如果在编辑过程中文件发生外部改变(比如被别的编辑器编辑了), 就会发出提示.
 set autoread
 
 " 命令行模式下, 操作指令按下tab键自动补全.
@@ -769,7 +793,7 @@ set autoread
 set wildmenu
 set wildmode=longest:list,full
 
-" 表示vim信息更新间隔2秒, 默认是4秒.
+" 表示VIM信息更新间隔2秒, 默认是4秒.
 set updatetime=2000
 
 
@@ -828,17 +852,13 @@ if has('clipboard')
     endif
 endif
 
-" 普通模式下, 使用Y复制当前行光标之后的内容, 和C和D用法统一起来.
-nnoremap Y y$
-
 " }}
 
 " }}
 
 
-" 暂时没有启用, 但以后可能会启用的功能配置 {{
+" 备用配置 {{
 
-""""""""""" 注释部分统一放到文件最后, 需要的话再启用
 " 当一行字符长度超过80时, 会自动换行.
 "set textwidth=80
 
@@ -892,8 +912,9 @@ nnoremap Y y$
 " }}
 
 
-" 配置后的VIM使用技巧总结, 供参考 {{
-" VIM插件提供的技巧有单独把插件名称在末尾标记.
+" VIM的部分使用技巧 {{
+
+" NOTE: VIM插件提供的技巧, 会把插件名称在技巧末尾标记.
 
 " 1. `:w`命令行模式下保存代码文件的时候, 将自动检查语法错误并提示,
 "    适用于各种主流编程语言. (vim-syntastic/syntastic)
@@ -914,11 +935,9 @@ nnoremap Y y$
 " 6. `,,w`,普通模式下这个组合键将把光标下方的所有可见内容进行高亮符号标记,
 "    然后我们想让光标跳转到哪里, 就输入那里的高亮字符或字符组合.
 "    (easymotion/vim-easymotion)
-" 7.
-"
-" 8. 各种括号、引号的自动补全功能, 比如输入`"`自动补全`"`.
+" 7. 各种括号、引号的自动补全功能, 比如输入`"`自动补全`"`.
 "    (Raimondi/delimitMate)
-" 9. 编写Go代码文件独有的情况:
+" 8. 编写Go代码文件独有的情况:
 "    按tab键将显示tab字符表示, 编写其他文件按tab键将是4个空格的字符表示;
 "    `:w`命令行模式下保存文件将自动gofmt和goimport;
 "    `,i`普通模式下, 窗口底部显示光标所在函数等的简要信息;
@@ -928,37 +947,37 @@ nnoremap Y y$
 "    `,b`普通模式下, go build 编译当前的go文件. (fatih/vim-go)
 "    `gd`, 普通模式下将分屏跳转到光标所在函数名称的原始代码文件的函数定义部分.
 "    (dgryski/vim-godef)
-" 10. 默认开启代码中的成对括号用不同颜色来区分, 方便识别,
+" 9. 默认开启代码中的成对括号用不同颜色来区分, 方便识别,
 "     可用`:RainbowToggle`来关闭或开启. (luochen1990/rainbow)
-" 11. `,w`, 普通模式下打开或关闭左侧目录树,
+" 10. `,w`, 普通模式下打开或关闭左侧目录树,
 "     `t`, 选择文件后使用这个命令来以标签页形式打开文件,
 "     `shift+l`或`gt`在多个标签页中向右移动选择,
 "     `shift+h`或`gT`在多个标签页中向左移动选择. (scrooloose/nerdtree)
-" 12. `,e`, 普通模式下打开右侧大纲窗口. (majutsushi/tagbar)
-" 13. `ctrl+ww`, 普通模式下, 光标在多个分屏窗口之间移动.
-" 14. `ctrl+bfpn`, 插入模式下左右上下移动光标.
-" 15. `ysw"`, 普通模式下光标所在单词使用`"`包裹, 不包括光标前的字符;
+" 11. `,e`, 普通模式下打开右侧大纲窗口. (majutsushi/tagbar)
+" 12. `ctrl+ww`, 普通模式下, 光标在多个分屏窗口之间移动.
+" 13. `ctrl+bfpn`, 插入模式下左右上下移动光标.
+" 14. `ysw"`, 普通模式下光标所在单词使用`"`包裹, 不包括光标前的字符;
 "     `ysiw"`, 普通模式下光标所在的完整单词使用`"`包裹, 包括光标前的字符;
 "     `ysiW"`, 以空格作为分隔符来作为单词, 特殊符号也可以作为单词的一部分了;
 "     `ys3w"`, 普通模式下以光标所在位置为起始位置向右的3个单词使用`"`包裹;
 "     `yss"`, 以光标所在行为单位包裹;
 "     `ds"`, 普通模式下删除光标周围的双引号`"`;
 "     `cs"'`, 普通模式下把光标所在周围的双引号替换为单引号. (tpope/vim-surround)
-" 16. *和#, 普通模式下匹配当前光标所在单词并跳转到下一个单词或上一个单词.
-" 17. `:%s/dst/sub/`, 命令行模式下这种方式替换字符串时,
+" 15. *和#, 普通模式下匹配当前光标所在单词并跳转到下一个单词或上一个单词.
+" 16. `:%s/dst/sub/`, 命令行模式下这种方式替换字符串时,
 "     会实时高亮显示要替换的字符串.
-" 18. `,a:`, 普通模式下或可视模式下, 将对齐`:`符号,
+" 17. `,a:`, 普通模式下或可视模式下, 将对齐`:`符号,
 "     同理对齐什么符号就相应输入什么符号;
 "     `,a::`, 对`:`的另外一种对齐方式. (godlygeek/tabular)
-" 19. `shift+>`和`shift+<`, 在普通模式(连续按两次>或<)和
+" 18. `shift+>`和`shift+<`, 在普通模式(连续按两次>或<)和
 "     可视模式下均可进行代码缩进,
 "     可视模式下执行缩进操作不会退出可视模式, 故可连续多次操作缩进.
-" 20. `ctrl+p`将在当前窗口下面列出当前打开文件根目录下的所有文件,
+" 19. `ctrl+p`将在当前窗口下面列出当前打开文件根目录下的所有文件,
 "     `ctrl+k`和`ctrl+j`在列出的文件中向上或向下选择文件,
 "     `ctrl+t`在新标签页中打开选中文件,
 "     `ctrl+x`和`ctrl+v`水平和垂直切分打开选中文件,
 "     `shift+l`和`shift+h`, 向左和向右选择标签页. (kien/ctrlp.vim)
-" 21. 使用宏的方法:
+" 20. 使用宏的方法:
 "     比如给文本的每一行的行首和行尾都加上双引号.
 "     普通模式下`qa`, q是宏指令, 表明开始录制宏, a为宏的名称,
 "     可以是a-z的任何字母, 然后我们给一行的行首和行尾都加上双引号,
@@ -967,7 +986,7 @@ nnoremap Y y$
 "     然后命令行方式`: normal @a`, 所有行就都完成双引号包裹了,
 "     还有一种方法是直接通过命令行方式选择需要实施宏的行`:% normal @a`,
 "     %表示所有行.
-" 22. 文本对象的快捷编辑:
+" 21. 文本对象的快捷编辑:
 "     1) 普通模式下:
 "     `yw`复制光标后的单词, 包括空格, 不包括光标前的字符;
 "     `yiw`复制光标所在的单词, 不包括空格, 包括光标前的字符;
@@ -984,5 +1003,5 @@ nnoremap Y y$
 "     `$`, 光标跳转到行尾;
 "     `A`, 光标跳转到行尾并进入插入模式;
 "     `I`, 光标跳转到行首并进入插入模式;
-"
+
 " }}

@@ -28,4 +28,3 @@ cd ~/.vim/plugged/YouCompleteMe/ || exit 1
 /usr/local/python3/bin/python3 install.py --go-completer || exit 1
 
 echo 'export EDITOR=vim' >> ~/.zshrc
-
