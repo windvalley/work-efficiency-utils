@@ -291,25 +291,50 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " NOTE:
 " 其他没有在这里配置的语言将使用ale默认配置的linter,
-" 可以使用`:ALEInfo`来查看使用了哪些默认的linter,
-" 然后需要提前安装相关的命令行工具即可.
-"
-" 需要提前在本地安装Go的检查工具:
-"     go get -u -v github.com/mgechev/revive
-"     go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.38.0
-" 安装python的pylint工具:
-"     pip install pylint
+" 可以使用`:ALEInfo`来查看当前文件使用了哪些默认的linter.
+" 注意需要在本地安装涉及到的命令行工具:
+"   brew update
+"   brew install golangci-lint lua luarocks tidy-html5 shellcheck jq
+"   luarocks install luacheck
+"   npm install -g eslint jshint standard eslint-plugin-vue vls \
+"       proselint alex write-good stylelint markdownlint jsonlint
+"   pip3 install pylint flake8 yamllint
+"   go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.39.0
+"   go get -u github.com/mgechev/revive
+"   sudo gem install mdl
 let g:ale_linters = {
 \    'go': ['golangci-lint', 'revive'],
-\    'python': ['pylint'],
+\    'python': ['pylint', 'flake8'],
+\    'lua': ['luac', 'luacheck'],
+\    'sh': ['shellcheck'],
+\    'javascript': ['eslint', 'jshint', 'standard'],
+\    'vue': ['eslint', 'vls'],
+\    'html': ['tidy', 'stylelint', 'alex', 'writegood', 'proselint'],
+\    'yaml': ['yamllint'],
+\    'json': ['jq', 'jsonlint'],
+\    'markdown': ['mdl', 'markdownlint', 'proselint', 'alex'],
 \}
 
+" 安装相关的命令行工具:
+"   npm install -g prettier importjs lua-fmt
+"   pip3 install autoimport black isort
+"   go get mvdan.cc/sh/v3/cmd/shfmt
+" prettier等工具自身就有trim_whitespace和remove_trailing_lines的能力, 所以不用重复添加.
 let g:ale_fixers = {
-\   '*': ['remove_trailing_lines'],
-\   'javascript': ['prettier', 'eslint'],
+\    'python': ['autoimport', 'black', 'isort',
+\        'add_blank_lines_for_python_control_statements'],
+\    'lua': ['luafmt', 'trim_whitespace', 'remove_trailing_lines'],
+\    'sh': ['shfmt'],
+\    'javascript': ['eslint', 'importjs'],
+\    'vue': ['eslint'],
+\    'html': ['prettier'],
+\    'json': ['jq'],
+\    'yaml': ['prettier'],
+\    'markdown': ['prettier'],
 \}
 
 let g:ale_fix_on_save = 1
+
 " }}
 
 """""""" 目录树相关配置 {{
@@ -412,8 +437,8 @@ let g:UltiSnipsExpandTrigger = ',<tab>'
 """""""" 效率工具配置 {{
 
 " 保存文件时自动去除行尾空格;
-" *.py和*.go其他插件已经支持此功能, 不在此再次设置
-autocmd BufWritePre *.sh,*.lua,*.js,*.html,*.vue :%s/\s\+$//e
+" *.py和*.go相关插件已经支持此功能, 其他语言已经通过ale配置, 此条注释不再使用.
+"autocmd BufWritePre *.sh,*.lua,*.js,*.html,*.vue,*.toml,*.yaml,*.yml :%s/\s\+$//e
 
 """"""""" godlygeek/tabular插件配置
 nmap <Leader>a& :tabularize /&<CR>
@@ -553,31 +578,31 @@ autocmd bufnewfile *.lua call SetTitleForLua()
 
 """""""" Javascript/vue/html/css {{
 
-" js/html/vue, 缩进使用2个空格等配置
-au BufNewFile,BufRead *.html,*.js,*.vue set tabstop=2
-au BufNewFile,BufRead *.html,*.js,*.vue set softtabstop=2
-au BufNewFile,BufRead *.html,*.js,*.vue set shiftwidth=2
-au BufNewFile,BufRead *.html,*.js,*.vue set expandtab
-au BufNewFile,BufRead *.html,*.js,*.vue set autoindent
-au BufNewFile,BufRead *.html,*.js,*.vue set fileformat=unix
+" js/html/vue, 缩进使用2个空格等配置, 已通过ale配置, 此配置注释掉
+"au BufNewFile,BufRead *.html,*.js,*.vue set tabstop=2
+"au BufNewFile,BufRead *.html,*.js,*.vue set softtabstop=2
+"au BufNewFile,BufRead *.html,*.js,*.vue set shiftwidth=2
+"au BufNewFile,BufRead *.html,*.js,*.vue set expandtab
+"au BufNewFile,BufRead *.html,*.js,*.vue set autoindent
+"au BufNewFile,BufRead *.html,*.js,*.vue set fileformat=unix
 
 """""" maksimr/vim-jsbeautify 配置
 " 使用方法:
 "   `ctrl+f`, 进行格式化
 
 " 普通模式下, 对文件的全部内容进行格式化
-autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
-autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
-autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+"autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+"autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
+"autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
+"autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+"autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
 
 " 可视模式下选取部分代码进行格式化, 通过在普通模式下按v进入可视模式
-autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
-autocmd FileType json vnoremap <buffer> <c-f> :call RangeJsonBeautify()<cr>
-autocmd FileType jsx vnoremap <buffer> <c-f> :call RangeJsxBeautify()<cr>
-autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
-autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
+"autocmd FileType javascript vnoremap <buffer>  <c-f> :call RangeJsBeautify()<cr>
+"autocmd FileType json vnoremap <buffer> <c-f> :call RangeJsonBeautify()<cr>
+"autocmd FileType jsx vnoremap <buffer> <c-f> :call RangeJsxBeautify()<cr>
+"autocmd FileType html vnoremap <buffer> <c-f> :call RangeHtmlBeautify()<cr>
+"autocmd FileType css vnoremap <buffer> <c-f> :call RangeCSSBeautify()<cr>
 
 """""" posva/vim-vue 插件
 " 解决vim-vue插件导致的vim速度变慢
