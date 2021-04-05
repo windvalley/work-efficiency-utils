@@ -1,6 +1,8 @@
 # MacOS
 
 ```text
+shift option k: 打印
+
 command space: 聚焦搜索
     it: 打开iterm2
     c: 打开vscode
@@ -59,7 +61,7 @@ command shift tab: 向左切换应用
 
 command shift [ / ]: 向左/向右切换标签页
 ctrl tab / ctrl shift tab: 向右/向左切换标签页
-command 1/2/3...: 切换到具体的某一个标签页
+ command number: 切换到具体的某一个标签页, 如果number是9, 则表示切换到最后一个标签页
 > 以上标签页操作方式, 基本上适用于任何有标签页的应用, 比如终端、VSCode、浏览器等
 
 ctrl [: 也可以作为esc的功能

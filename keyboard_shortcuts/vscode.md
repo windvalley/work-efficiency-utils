@@ -58,7 +58,7 @@ l : 打开文件(文件名斜体), 这时如果不对该文件做编辑, 继续�
 
  ctrl tab: 如果只按一次就是切换到上一个标签, 否则就是在列表中顺序选择.
 ctrl shift tab: 相反顺序选择标签
- command 1/2/3...
+ command number: 切换到第number个标签, number为9表示最后一个标签
 
 command p: 输入关键字选择文件打开
 command k d: 当前文件编辑后尚未保存, 比较和上一次保存时的文件内容的区别
@@ -66,7 +66,7 @@ command k c: 比较当前文件与剪贴板的区别
 command w: 使用上2个命令查看完后, 使用此命令关闭比较
 ```
 
-## 编辑器(vim插件)
+## 编辑器(vim 插件)
 
 - 任何模式下
 
@@ -81,7 +81,7 @@ command n: 创建新文件
 command s: 保存新创建的文件, 输入文件名保存
 ```
 
-- NORMAL模式下
+- NORMAL 模式下
 
 ```text
  command d/gd: 跳转到光标所在函数的定义位置;

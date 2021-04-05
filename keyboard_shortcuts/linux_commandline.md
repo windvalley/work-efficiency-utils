@@ -1,6 +1,6 @@
 # Linux commandline(zsh)
 
-```
+```text
 光标移动:
     ctrl f/b/p/n: emacs键位, 右左上下, forward/backward/previous/next
     ctrl a/e: 行首/行尾
@@ -27,4 +27,3 @@ ctrl r: 搜索历史命令
     z foo: 如果之前去过目录名称含有foo关键字的目录,
            则z foo就可以直接切换到最常去的包含该关键字的目录(按权重).
 ```
-

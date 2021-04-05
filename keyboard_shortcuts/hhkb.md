@@ -1,6 +1,6 @@
 # HHKB
 
-```
+```text
 shift option k: 打印, 带有图标的快捷键要重点练习
 
 fn d: 静音/取消静音

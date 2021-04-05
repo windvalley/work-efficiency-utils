@@ -1,6 +1,6 @@
 # Chrome
 
-```
+```text
 command option i: 进入开发者模式
 command l: 光标移动到地址栏
 command w: 关闭标签页
@@ -8,10 +8,12 @@ command shift t: 恢复上一次关闭的标签页
 command r / command shift r: 刷新浏览器/强制刷新浏览器
 command t: 打开标签页
 command shift [ / ]: 向左/向右移动标签页
+command number: 直接切换到第number个标签页, 如果number是9, 则直接切换到最后一个标签页
 ```
 
 ## vimium
-```
+
+```text
 ?: 随时查看快捷键帮助文档
 shift j/k: 向左/向右切换标签页
 << / >>: 向左/向右变更标签页的位置
