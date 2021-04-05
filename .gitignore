@@ -2,3 +2,4 @@ vpn/
 .vagrant
 *.log
 *.swp
+.DS_Store
