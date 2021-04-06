@@ -296,24 +296,37 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 "   brew update
 "   brew install golangci-lint lua luarocks tidy-html5 shellcheck jq
 "   luarocks install luacheck
-"   npm install -g eslint jshint standard eslint-plugin-vue vls \
+"   npm install -g eslint standard eslint-plugin-vue vls \
 "       proselint alex write-good stylelint markdownlint jsonlint
 "   pip3 install pylint flake8 yamllint
 "   go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.39.0
 "   go get -u github.com/mgechev/revive
 "   sudo gem install mdl
+" eslint配置文件, 项目根目录下的.eslintrc.json, 需要通过如下命令生成, 我们这里使用standard风格:
+"   eslint --init, 也可以在package.json里创建一个eslintConfig属性来定义你的配置.
+" prettier配置文件, 项目根目录下的.prettierrc.json:
+"    {
+"      "singleQuote": true,
+"      "semi": false
+"    }
 let g:ale_linters = {
 \    'go': ['golangci-lint', 'revive'],
 \    'python': ['pylint', 'flake8'],
 \    'lua': ['luac', 'luacheck'],
 \    'sh': ['shellcheck'],
-\    'javascript': ['eslint', 'jshint', 'standard'],
-\    'vue': ['eslint', 'vls'],
+\    'javascript': ['eslint', 'standard'],
+\    'vue': ['vls'],
 \    'html': ['tidy', 'stylelint', 'alex', 'writegood', 'proselint'],
 \    'yaml': ['yamllint'],
 \    'json': ['jq', 'jsonlint'],
 \    'markdown': ['mdl', 'markdownlint', 'proselint', 'alex'],
 \}
+
+" 覆盖掉~/.vim/plugged/ale/ale_linters/go/golangci_lint.vim中的个别默认配置.
+" golanci-lint run 命令不加额外参数, 解决默认加的--enable-all参数导致的错误.
+call ale#Set('go_golangci_lint_options', '')
+" golangci-lint run 命令以包为单位进行检查, 解决默认以文件方式检查时的typecheck错误误报的问题.
+call ale#Set('go_golangci_lint_package', 1)
 
 " 安装相关的命令行工具:
 "   npm install -g prettier importjs lua-fmt
