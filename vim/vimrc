@@ -109,13 +109,8 @@ Plug 'dense-analysis/ale'
 
 """""""" 代码补全
 " NOTE: 安装完该插件后或在使用`:PlugUpdate`更新完所有插件后, 需要手动做如下工作:
-"    cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --go-completer
+"    cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --all
 Plug 'Valloric/YouCompleteMe'
-
-" 代码片段提示插件,
-" `<tab>`从头开始向下选择, `ctrl+k`从末尾开始向上选择, `,<tab>`将代码片段插入.
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 
 """""""" 目录树相关 {{
 
@@ -168,14 +163,9 @@ Plug 'luochen1990/rainbow'
 """""""" 编程语言相关 {{
 
 """""""" Go
-" 搭建Go开发环境的Vim插件, 安装该插件的过程中,
-" 会自动安装该插件依赖的大量Go二进制工具.
-" 如果由于Go环境等问题导致自动安装失败,
-" 可后续通过Vim的命令行模式安装`:GoInstallBinaries`.
+" 搭建Go开发环境的Vim插件, 安装该插件的过程中, 会自动安装该插件依赖的大量Go二进制工具.
+" 如果由于Go环境等问题导致自动安装失败, 可后续通过Vim的命令行模式安装`:GoInstallBinaries`.
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-" Go的代码追踪插件, 光标移到相关函数,
-" 普通模式下输入`gd`就可以自动分屏跳转到相关代码文件的该函数定义处.
-Plug 'dgryski/vim-godef'
 
 """""""" python
 " <leader>r: 运行当前Python代码;
@@ -258,7 +248,95 @@ call plug#end()
 
 " VIM主要配置 {{
 
-"""""""" 代码检查配置 {{
+"""""""" 代码自动补全配置 {{
+
+"""""" Valloric/YouCompleteMe 配置
+" doc: https://github.com/ycm-core/YouCompleteMe
+
+" gd 跳转到函数定义处, 然后可以通过 ctrl o/i 来回跳转;
+" 支持的文件类型:
+"    c, cpp, objc(object-c), objcpp, cuda, cs(c#), go, java, javascript, python, rust, typescript
+"    NOTE: gd 快捷键已被 go-vim 插件的配置占用来实现类似能力, 此处的配置对Go不起作用.
+"
+" 如果 ycm_goto_buffer_command 设置了非 same-buffer 的值, 默认是在窗口上方分屏跳转.
+"map gd :YcmCompleter GoTo<CR>
+"
+" 新打开标签页的方式跳转, 需要 ycm_goto_buffer_command 设置非 same-buffer 的值, 否则不会打开新的标签页.
+map gd :tab YcmCompleter GoTo<CR>
+"
+" 右侧分屏的方式跳转, 需要 ycm_goto_buffer_command 设置非 same-buffer 的值, 否则不会分屏跳转.
+"map gd :rightbelow vertical YcmCompleter GoTo <CR>
+
+" gf 跳转到引用当前光标所在对象的位置, 会列出引用光标所在对象的所有文件,
+" 然后我们选择一个文件名回车, 即可跳转到引用位置.
+" 支持的文件类型:
+"    c, cpp, objc, objcpp, cuda, java, javascript, python, typescript, rust
+"    官方每当没写支持Go, 但是实测支持Go.
+map gr :YcmCompleter GoToReferences<CR>
+
+" 以什么方式打开 gd 命令跳转的位置.
+" Default: 'same-buffer'
+"    'same-buffer': 覆盖当前窗口;
+"    'split-or-existing-window': 如果要跳转的位置之前已经打开了一个标签页,
+"                                就直接跳转到那个已经打开的页面, 否则新打开一个标签页;
+"    'split': 不管要跳转的位置之前有没有已经打开了, 都再新打开一个标签页;
+let g:ycm_goto_buffer_command = 'split-or-existing-window'
+
+" 基于语义补全的快捷键:
+" 语义补全非字符补全, 字符补全是根据当前所有 buffer 中收集到的符号来提示,
+" 符号补全只有一个符号名, 不能像语义补全一样给出参数格式, 返回值等丰富信息;
+"
+" 默认是用 CTRL+SPACE 来触发语义补全的, 中文操作系统下,
+" CTRL+SPACE 被系统劫持用作输入法切换, 无法正确传到终端, 所以需要自定义 CTRL+l,
+" 有了这个快捷键, 就解决了只能通过`.`号来触发语义补全的局限性了.
+let g:ycm_key_invoke_completion = '<c-l>'
+
+" 自动语义补全配置, 无需按 ctrl l 即可自动做语义补全提示:
+" 默认的 . / -> / :: 语义补全触发符号是不会被覆盖的, 只会追加成新的 trigger,
+" 这里我们追加了一个正则表达式, 代表相关语言的源文件中, 用户只需要输入1个字母, 即可自动弹出语义补全.
+let g:ycm_semantic_triggers =  {
+\    'go,python,lua': ['re!\w{1}'],
+\    'javascript,typescript': ['re!\w{1}'],
+\    'c,cpp,java,rust,erlang,perl,perl6': ['re!\w{1}'],
+\ }
+
+" 默认值: 0
+" When this option is set to 1,
+" YCM's identifier completer will seed its identifier database with the keywords of the programming language you're writing.
+let g:ycm_seed_identifiers_with_syntax = 1
+
+" 默认值: 2
+" 从键入第几个字符开始进行自动匹配提示
+let g:ycm_min_num_of_chars_for_completion = 1
+
+" 默认值: 0
+" 值为1表示从注释中输入也能补全
+let g:ycm_complete_in_comments = 0
+
+" 默认值: 1
+" 值为1表示在字符串中输入也能补全
+let g:ycm_complete_in_strings = 1
+
+" 默认值: 0
+" 注释和字符串中的文字也被收入到补全数据库中
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+
+" 默认值是: CursorHold, 表示光标停留在函数一小会儿后自动展示文档;
+" 值为空, 则表示禁用此功能.
+let g:ycm_auto_hover = 'CurorHold'
+" 设置此map后, 上面的 let g:ycm_auto_hover = 'CurorHold' 功能自动失效, 需要通过`, shift d`来触发文档显示.
+nmap <leader>D <plug>(YCMHover)
+
+" 默认值: 1
+" 是否启用YCM提供的代码静态检查功能, 由于我们使用ale, 所以这里禁用
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_error_symbol = '>>'
+let g:ycm_warning_symbol = '>'
+""""""""""""""""""""""""""
+
+" }}
+
+"""""""" 代码静态检查配置 {{
 
 " ale用于替代syntastic插件
 " NOTE: `:ALEInfo`, 用于查看当前文件的语法检查配置情况,
@@ -292,6 +370,7 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 " NOTE:
 " 其他没有在这里配置的语言将使用ale默认配置的linter,
 " 可以使用`:ALEInfo`来查看当前文件使用了哪些默认的linter.
+"
 " 注意需要在本地安装涉及到的命令行工具:
 "   brew update
 "   brew install golangci-lint lua luarocks tidy-html5 shellcheck jq
@@ -302,20 +381,27 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 "   go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.39.0
 "   go get -u github.com/mgechev/revive
 "   sudo gem install mdl
+"
 " eslint配置文件, 项目根目录下的.eslintrc.json, 需要通过如下命令生成, 我们这里使用standard风格:
-"   eslint --init, 也可以在package.json里创建一个eslintConfig属性来定义你的配置.
+"   eslint --init
+"   或 vue create project-demo(需要选择手动配置, 选择standard风格), 将配置生成到package.json的eslintConfig字段.
 " prettier配置文件, 项目根目录下的.prettierrc.json:
 "    {
 "      "singleQuote": true,
 "      "semi": false
 "    }
+"
+" 对于Python项目, 如果使用虚拟环境, 需要在虚拟环境下安装相关lint工具, 拿poetry依赖工具举例:
+"    poetry init
+"    poetry shell
+"    poetry add pylint flake8 autoimport black isort -D
 let g:ale_linters = {
 \    'go': ['golangci-lint', 'revive'],
 \    'python': ['pylint', 'flake8'],
 \    'lua': ['luac', 'luacheck'],
 \    'sh': ['shellcheck'],
 \    'javascript': ['eslint', 'standard'],
-\    'vue': ['vls'],
+\    'vue': ['eslint', 'vls'],
 \    'html': ['tidy', 'stylelint', 'alex', 'writegood', 'proselint'],
 \    'yaml': ['yamllint'],
 \    'json': ['jq', 'jsonlint'],
@@ -330,12 +416,15 @@ call ale#Set('go_golangci_lint_package', 1)
 
 " 安装相关的命令行工具:
 "   npm install -g prettier importjs lua-fmt
-"   pip3 install autoimport black isort
+"   pip3 install black isort
 "   go get mvdan.cc/sh/v3/cmd/shfmt
 " prettier等工具自身就有trim_whitespace和remove_trailing_lines的能力, 所以不用重复添加.
+"
+" 注意:
+" 不要使用python的autoimport工具, 重新排版的import可能发生错误;
+" 用于python的isort, 可选择性使用, 我这里也不启用, 直接用black的import排版能力即可.
 let g:ale_fixers = {
-\    'python': ['autoimport', 'black', 'isort',
-\        'add_blank_lines_for_python_control_statements'],
+\    'python': ['black', 'add_blank_lines_for_python_control_statements'],
 \    'lua': ['luafmt', 'trim_whitespace', 'remove_trailing_lines'],
 \    'sh': ['shfmt'],
 \    'javascript': ['eslint', 'importjs'],
@@ -434,19 +523,6 @@ let g:airline_right_sep='‹'
 
 " }}
 
-"""""""" 代码补全配置 {{
-
-"""""" SirVer/ultisnips插件配置
-" 由上向下依次选择代码片段, 默认是tab
-"let g:UltiSnipsJumpForwardTrigger =
-" 由下向上依次选择代码片段, ctrl+k
-let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-" 使用mapleader键和tab键的组合来插入选中的代码片段.
-let g:UltiSnipsExpandTrigger = ',<tab>'
-""""""""""""""""""""""""""
-
-" }}
-
 """""""" 效率工具配置 {{
 
 " 保存文件时自动去除行尾空格;
@@ -477,9 +553,6 @@ vmap <Leader>a<Bar> :tabularize /<Bar><CR>
 
 " 在安装完vim-go插件的前提下, 命令行模式下`:w`保存文件时将自动import和gofmt.
 let g:go_fmt_command = "goimports"
-" 本来计划使用如下两行替代上一行, 但对import的排序不是很符合要求, 暂时停用
-"let g:go_fmt_command="gopls"
-"let g:go_gopls_gofumpt=1
 
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
@@ -497,25 +570,27 @@ au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
 au FileType go nmap <leader>r <Plug>(go-run)
 " go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build
 au FileType go nmap <leader>b <Plug>(go-build)
-" go test 当前的go文件
-au FileType go nmap <leader>t <Plug>(go-test)
 " 查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上
 au FileType go nmap <Leader>s <Plug>(go-implements)
 " 查看有哪些地方调用了光标所在的函数, 从弹出的列表中选择一个, 然后回车, 将跳转到调用位置
 au FileType go nmap <Leader>f <Plug>(go-callers)
-" 查看函数调用链
-"au FileType go nmap <Leader>f <Plug>(go-callstack)
 
-" 查看当前包中可能的没有处理的errors
-nmap ,c :GoErrCheck<CR>
+" go test 当前的go文件
+au FileType go nmap <leader>t <Plug>(go-test)
+" 查看当前代码文件的测试覆盖率
+au FileType go nmap <Leader>c <Plug>(go-coverage)
 
-" gd操作时, 以什么方式跳转到新的页面:
-"   1: 上下分屏的方式跳转到新的页面, 此为默认的方式
-"   2: 打开新标签页的方式跳转到新的页面
-"   3: 水平分屏的方式跳转到新的页面
-let g:godef_split=2
-" gd操作时, 如果函数在同一个文件中时不需要打开新窗口
-"let g:godef_same_file_in_same_window=1
+" NOTE: Go 跳转到函数定义处的4种方式, 能力均由vim-go插件提供, 和YCM配置无关.
+"
+" 快捷键1: gd 默认以覆盖当前页面的方式跳转到函数定义处, vim-go插件默认行为, 无需配置.
+" 快捷键2: ds 上下分屏跳转到函数定义处
+au FileType go nmap ds <Plug>(go-def-split)
+" 快捷键3: dv 左右分屏跳转到函数定义处
+au FileType go nmap dv <Plug>(go-def-vertical)
+" 快捷键4: dt 新开一个标签页的方式跳转到函数定义处
+au FileType go nmap dt <Plug>(go-def-tab)
+" 以上4条如果光标所在函数定义处就是在当前页面, 则直接在当前页跳转, 并不打开新页面;
+" 如果在当前页面内跳转, 推荐使用 ctrl o/i 来回跳转切换, 以提高效率.
 
 " }}
 
@@ -547,16 +622,22 @@ autocmd BufWritePost *.py call NoShabang(getline(1), expand("%:p"))
 
 """""" 'python-mode/python-mode'配置
 " doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
-let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
+
+" 专心用YCM, 禁用rope
+let g:pymode_rope = 0
+
+" 已经使用ale来做检查, 禁用pymode的检查
+let g:pymode_lint = 0
+"let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
 
 """""" 'psf/black' Python代码格式化插件配置
 let g:black_fast = 0 "(defaults to 0)
-let g:black_linelength = 79 "(defaults to 88)
+let g:black_linelength = 120 "(defaults to 88)
 let g:black_skip_string_normalization = 0 "(defaults to 0)
 "let g:black_virtualenv = "(defaults to ~/.vim/black or ~/.local/share/nvim/black)
 
-" NOTE: 因修改开源项目, 未避免和原始项目出入较大, 暂时关闭
 " To run Black on save
+" 已改为由ale插件实现相关功能, 此处注释掉.
 "autocmd BufWritePre *.py execute ':Black'
 
 """""""" isort插件配置
@@ -566,8 +647,6 @@ let g:vim_isort_map = '<C-i>'
 " }}
 
 """""""" OpenResty/Lua {{
-let g:ycm_seed_identifiers_with_syntax = 1
-
 func SetTitleForLua()
     " 自动获取文件名称, 不包含文件扩展名.
     let filename = expand('%:r')
@@ -599,7 +678,7 @@ autocmd bufnewfile *.lua call SetTitleForLua()
 "au BufNewFile,BufRead *.html,*.js,*.vue set autoindent
 "au BufNewFile,BufRead *.html,*.js,*.vue set fileformat=unix
 
-"""""" maksimr/vim-jsbeautify 配置
+"""""" maksimr/vim-jsbeautify 配置, 已通过ale设置自动修复, 这里的配置不再使用
 " 使用方法:
 "   `ctrl+f`, 进行格式化
 
