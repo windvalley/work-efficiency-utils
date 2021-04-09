@@ -2,10 +2,8 @@
 # vimrc_install.sh
 #
 
-
 VIMRC_URL="https://raw.githubusercontent.com/windvalley/work-efficiency-utils/master/vim/vimrc"
 PLUG_VIM_URL="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-
 
 cp ~/.vimrc ~/.vimrc."$(date +%F_%T)"
 mv ~/.vim ~/.vim."$(date +%F_%T)"
@@ -25,6 +23,6 @@ vim +PlugInstall +qa <<EOF
 EOF
 
 cd ~/.vim/plugged/YouCompleteMe/ || exit 1
-/usr/local/python3/bin/python3 install.py --go-completer || exit 1
+python3 install.py --all || exit 1
 
-echo 'export EDITOR=vim' >> ~/.zshrc
+echo 'export EDITOR=vim' >>~/.zshrc
