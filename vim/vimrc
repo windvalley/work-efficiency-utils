@@ -15,7 +15,7 @@
 " 安装 VIM 及依赖:
 "    *** macOS ***
 "    brew install cmake python mono go nodejs
-"    brew install ctags
+"    brew install ctags rg
 "    brew install macvim
 "
 "    *** Linux ***
@@ -142,18 +142,19 @@ Plug 'tpope/vim-fugitive'
 "    `o`或`O`或回车, 打开光标所在commit;
 "    `q`, 命令模式下退出commit浏览.
 Plug 'junegunn/gv.vim'
-" 标记通过git管理的文件的变化, 文件左侧会通过显示 + 或 - 来提示文件变化.
+" 标记通过git管理的文件的变化, 文件左侧会通过显示 +(添加) 或 -(删除) 或 ~(变更) 来提示文件变化.
 "    `]c`普通模式下光标跳到后一个变化处,
 "    `[c`普通模式下光标跳到前一个变化处.
 Plug 'airblade/vim-gitgutter'
 
 " 美化状态栏插件.
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'bling/vim-bufferline'
+Plug 'itchyny/lightline.vim'
 
 " 彩虹括号插件, 层级较多的括号场景使用不同颜色区分.
 Plug 'luochen1990/rainbow'
+
+" 缩进线插件.
+Plug 'Yggdroot/indentLine'
 
 " ********************** 编程语言 ********************************************
 """""""" Go
@@ -187,18 +188,16 @@ Plug 'posva/vim-vue'
 "   :Toc 显示目录
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/mathjax-support-for-mkdp'
+" 打开浏览器预览markdown文本的插件.
 Plug 'iamcco/markdown-preview.vim'
 
 """""""" toml
 Plug 'cespare/vim-toml'
 
 " ********************** 效率相关 ********************************************
-" 帮助我们快速查找和管理项目文件的插件.
-" `ctrl+p`将在当前窗口下面列出当前项目的所有文件,
-" `ctrl+k`和`ctrl+j`在列出的文件中向上或向下选择文件,
-" `ctrl+t`在新标签页中打开文件,
-" `shift+h`和`shift+l`, 向左和向右选择标签页.
-Plug 'kien/ctrlp.vim'
+
+" 快速打开想要的文件, 类似grep搜索文件内容等, 替代ctrlp插件.
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
 " 方便注释的插件, 普通模式下或可视模式下:
 " `, c <space>` 注释或取消注释选中的代码.
@@ -219,8 +218,9 @@ Plug 'Raimondi/delimitMate'
 
 
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
-" 更新插件: `:PlugUpdate`, 建议定期更新所有插件;
-" 删除插件: `:PlugClean`, 需要先在上面注释掉或删除相关插件, 然后重新打开此文件执行;
+" 查看状态: `:PlugStatus`, 查看当前状态, 安装进度等;
+" 更新插件: `:PlugUpdate`, 更新所有插件, 建议定期更新所有插件;
+" 删除插件: `:PlugClean`, 卸载插件, 需要先在上面注释掉或删除相关插件, 然后重新打开此文件执行此命令;
 " 更新 vim-plug 本身: `:PlugUpgrade`.
 call plug#end()
 
@@ -315,32 +315,44 @@ let g:ycm_warning_symbol = '>'
 
 """""""" 代码静态检查配置 {{
 
-" ale用于替代syntastic插件
+" ale用于替代syntastic插件.
 " NOTE: `:ALEInfo`, 用于查看当前文件的语法检查配置情况,
-" 内容尾部是对当前文件内容执行检查的日志, 可通过这些日志排查问题
+" 内容尾部是对当前文件内容执行检查的日志, 可通过这些日志排查问题.
+" doc: https://github.com/dense-analysis/ale
 
-" How can I change the signs ALE uses?
+" 定制显示在行左侧的错误提示符和警告提示符.
+" 默认值: '>>'
 let g:ale_sign_error = '>>'
+" 默认值: '--'
 let g:ale_sign_warning = '--'
 
-" keep the sign gutter open at all times
-let g:ale_sign_column_always = 1
+" 左侧的错误/警告提示列是否一直保持打开.
+" 默认值: 0
+let g:ale_sign_column_always = 0
 
-" How can I change or disable the highlights ALE uses?
-"let g:ale_set_highlights = 0
+" 用于错误或警告提示的字符串.
+" 默认值: 'Error'
+let g:ale_echo_msg_error_str = 'Error'
+" 默认值: 'Warning'
+let g:ale_echo_msg_warning_str = 'Warning'
 
-" How can I show errors or warnings in my statusline?
-let g:airline#extensions#ale#enabled = 1
+" 设置提示信息的输出格式.
+" 默认值: '%code: %%s'
+let g:ale_echo_msg_format = '[%linter%] %code: %%s [%severity%]'
 
-" How can I change the format for echo messages?
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-"let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+" 新打开文件时是否lint.
+" 默认值: 1
+let g:ale_lint_on_enter = 1
 
-" 新打开文件时不做check
-"let g:ale_lint_on_enter = 0
+" 保存文件时是否进行lint.
+" 默认值: 1
+let g:ale_lint_on_save = 1
 
-" How can I navigate between errors quickly?
+" 保存文件时是否进行fix.
+" 默认值: 0
+let g:ale_fix_on_save = 1
+
+" 使用 ctrl k/j 在错误提示之间跳转.
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
@@ -412,8 +424,6 @@ let g:ale_fixers = {
 \    'markdown': ['prettier'],
 \}
 
-let g:ale_fix_on_save = 1
-
 " }}
 
 """""""" 目录树相关配置 {{
@@ -422,7 +432,7 @@ let g:ale_fix_on_save = 1
 " 普通模式下显示或隐藏目录树的快捷键: `,w`
 map ,w :NERDTreeToggle<CR>
 
-" 系统命令行直接vim的时候(不接任何文件), 自动打开目录树.
+" 系统命令行直接运行 vim 的时候(不接任何文件), 自动打开目录树.
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
@@ -494,11 +504,79 @@ let g:tagbar_autopreview = 1
 let g:tagbar_sort = 0
 """""""""""""""""""
 
-"""""" vim-airline相关插件配置
-"let g:airline_theme = 'molokai'
-let g:airline_left_sep='›'
-let g:airline_right_sep='‹'
+"""""" itchyny/lightline.vim 配置
+" 本选项的值影响最后一个窗口何时有状态行:
+"     0: 永不
+"     1: 只有在有至少两个窗口时
+"     2: 总是
+" 默认值: 1
+" 为了单窗口也可以显示状态栏, 此处设置为2.
+set laststatus=2
+
+" 由于此插件已经帮我们美化显示了当前的 VIM 模式, 所以 VIM 自带的模式显示可以去除.
+set noshowmode
+
+" 定制状态栏的主题颜色.
+" doc: https://github.com/itchyny/lightline.vim
+let g:lightline = {
+\ 'colorscheme': 'solarized',
+\ }
 """""""""""""""""""""""""""
+
+"""""" Yggdroot/indentLine 插件配置
+" 是否显示缩进线.
+" 默认值: 1
+let g:indentLine_enabled = 1
+
+" 自定义缩进线样式.
+" 默认值: '¦'
+let g:indentLine_char = '¦'
+
+" 不同层级显示不同的缩进线.
+" 默认值: []
+let g:indentLine_char_list = ['¦', '┆', '┊']
+
+" 缩进线的颜色定义
+let g:indentLine_defaultGroup = 'SpecialKey'
+"""""""""""""""""""""""""""
+
+" }}
+
+"""""""" 效率相关 {{
+
+"""""" Yggdroot/LeaderF 插件配置
+" 需要在系统上提前安装 rg 命令: brew install rg
+" doc: https://github.com/Yggdroot/LeaderF
+
+" normal模式下 ff  进入文件搜索的 模糊搜索方式;
+" 再 ctrl r  进入 正则匹配 方式;
+let g:Lf_ShortcutF = "ff"
+
+" 显示最近打开过的文件列表.
+noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+
+" 搜索当前文件的内容.
+noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+
+" 从普通模式下按 rg 进入命令行模式下, 然后输入要搜索的文本(支持正则表达式),
+" 回车即可显示此项目内包含此文本的文件列表;
+" 在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
+" 然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后, 按 t 将以新建标签页的方式打开选择的文件.
+noremap rg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+
+" 可视模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
+xnoremap rg :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
+
+" rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, 普通模式下按 rc 即可.
+noremap rc :<C-U>Leaderf! rg --recall<CR>
+
+" 弹出独立的窗口来显示搜索文件.
+let g:Lf_WindowPosition = 'popup'
+" 弹出的窗口占终端的百分比, 0.8 即80%.
+let g:Lf_PopupWidth = 0.8
+let g:Lf_PreviewInPopup = 1
 
 " }}
 
@@ -816,25 +894,32 @@ endif
 " 常用配置 {{
 
 " 启用颜色主题方案,
-" 常用方案备选: molokai, peaksea, ir_black,
+" 常用方案备选: molokai, solarized, peaksea, ir_black
 " 其他主题名称见~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
-colorscheme molokai
+colorscheme solarized
 
 " 代码高亮显示.
-syntax on
+syntax enable
 
 " 显示行号.
 set nu
 " 设置行号颜色.
 hi LineNr cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
 
+" 设置 提示列 的颜色方案;
+" 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列, 
+" gitgutter 插件的文件变化信息也会出现在此列.
+hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+
 " 突出显示当前行.
 set cursorline
-hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+" 可在使用 molokai 主题时选择开启.
+"hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
 
 " 突出显示当前列.
 set cursorcolumn
-hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+" 可在使用 molokai 主题时选择开启.
+"hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
 
 " tab 键显示为 >---, 行尾空格显示为 -, 帮助我们及时发现规范问题.
 set list listchars=tab:>-,trail:-
@@ -844,7 +929,8 @@ hi SpecialKey cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
 
 " 第80列通过颜色标注, 提示我们对单行代码长度的掌控.
 autocmd FileType * set colorcolumn=80
-hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
+" 可在使用 molokai 主题时选择开启.
+"hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
 
 " 普通模式下允许光标移动到最后一个字符的右边.
 set virtualedit=onemore
@@ -869,7 +955,7 @@ set softtabstop=4
 " 启用智能缩进, 按回车键后自动缩进, 注意启用此模式后, 粘贴代码时要先在命令行模式下`:set paste`.
 set smartindent
 
-" 显示标尺.
+" 显示当前光标所在的行号和列号.
 set ruler
 
 " 进行搜索时会快速找到结果, 随着输入的字符进行及时匹配.
@@ -894,19 +980,25 @@ set noerrorbells
 set wildmenu
 set wildmode=longest:list,full
 
-" 表示VIM信息更新间隔2秒, 默认是4秒.
-set updatetime=2000
+" 如果过了这么多毫秒数以后还没有任何输入, 把交换文件写入磁盘, 也用于 CursorHold 自动命令事件.
+" 默认值: 4000(毫秒)
+set updatetime=1000
 
 " 打字的时候隐藏鼠标光标.
 set mousehide
+
+" 当一行字符长度超过多少个字符时, 会自动换行, 注意会加上换行符;
+" 我这里配置这个的目的是解决 .vimrc 的注释内容超过80个字符就自动换行的问题.
+set textwidth=1000
 
 " }}
 
 
 " 备用配置 {{
 
-" 当一行字符长度超过80时, 会自动换行.
-"set textwidth=80
+" 输入的文字到达终端边缘时不自动折行, 所谓折行指的是一行内容视觉上显示为多行,
+" 不是真正的加换行符的换行.
+"set nowrap
 
 " 保存文件时自动去除行尾空格, 注意已经通过ale配置, 此条注释不再使用.
 "autocmd BufWritePre *.sh,*.lua,*.js,*.html,*.vue,*.toml,*.yaml,*.yml :%s/\s\+$//e
@@ -914,7 +1006,7 @@ set mousehide
 " 退出插入模式时指定类型的文件将自动保存.
 "au InsertLeave *.go,*.lua,*.sh,*.py,*.js,*.md write
 
-" :wq退出文件后, 屏幕依然显示该文件内容.
+" 退出文件后, 屏幕依然显示该文件内容.
 "set t_ti= t_te=
 
 " 显示标签页.
@@ -1010,7 +1102,10 @@ set mousehide
 "       ,)/]/}/"/'/`  将可视模式下选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹. (**自定义配置**)
 "
 " ** 移动光标:
-"                w/W  向右移动一个单词位置, 光标在单词开头, 大写表示忽略标点符号, 可前置数字表示移动的单词数量.
+"               kjhl  上下左右移动光标.
+"              gk/gj  对于折行的情况, 向上/向下 在折行间移动光标.
+"                w/W  向右移动一个单词位置, 光标在单词开头,
+"                     大写表示特殊符号也算单词的组成部分, 可前置数字表示移动的单词数量.
 "                e/E  同上, 区别是移动到单词末尾.
 "                b/B  向左移动一个单词位置, 光标在单词开头, 其他同 w/W.
 "                  0  光标跳转到行首.
@@ -1090,6 +1185,21 @@ set mousehide
 "             ctrl l  编写各种主流语言代码时, 输入1个字符时就会自动有代码补全提示,
 "                     也可使用`ctrl l`主动触发语义补全提示, 然后按tab键进行选择.
 "
+" ** Yggdroot/LeaderF (https://github.com/Yggdroot/LeaderF)
+"                 ff  进入文件搜索的 模糊搜索 方式;
+"             ctrl r  在 ff 命令的基础上, 按这个快捷键进入文件搜索的 正则匹配 方式;
+"                ,fm  显示最近打开过的文件列表.
+"                ,ft  显示当前文件的 tags 列表.
+"                ,fl  显示当前文件的去除空行的所有行.
+"                 rg  1) 从 normal 模式下按 rg 进入命令行模式下, 然后输入要搜索的文本(支持正则表达式),
+"                        回车即可显示此项目内包含此文本的文件列表;
+"                        在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
+"                        然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后,
+"                        按 t 将以新建标签页的方式打开选择的文件.
+"                     2) 可视模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
+
+"                 rc  rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, 普通模式下按 rc 即可.
+"
 " ** preservim/nerdcommenter (https://github.com/preservim/nerdcommenter)
 "          ,c<space>  注释或取消注释光标所在行, 或可视模式下选择多行来注释或取消注释.
 "                ,cc  只注释, 如果原来就有注释则多一层注释.
@@ -1166,6 +1276,9 @@ set mousehide
 "                     3) 输入 #foo 然后按此快捷键, 可自动生成: <div id="foo"></div>
 "                     4) 输入 div>p>a , 然后按此快捷键, 可自动生成: <div><p><a href=""></a></p></div>
 "
+" ** iamcco/markdown-preview.vim (https://github.com/iamcco/markdown-preview.vim)
+"                 ,p  自动打开浏览器预览当前的 .md Markdown文件.
+"                ,pp  关闭浏览器中的打开的预览.
 " }}
 
 """""""""" VIM 实例练习 {{
