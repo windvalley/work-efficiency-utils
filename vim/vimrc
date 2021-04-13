@@ -14,11 +14,20 @@
 
 " 安装 VIM 及依赖:
 "    *** macOS ***
+"    # 用于目录树文件图标显示
+"    brew tap homebrew/cask-fonts && brew install font-hack-nerd-font
+"
 "    brew install cmake python mono go nodejs
 "    brew install ctags rg
 "    brew install macvim
 "
 "    *** Linux ***
+"    # 用于目录树文件图标显示
+"    mkdir -p ~/.local/share/fonts
+"    cd ~/.local/share/fonts && \
+"       curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" \
+"       https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+"
 "    * CentOS7
 "    sudo yum -y remove vim-common vim-enhanced vim-filesystem
 "    sudo yum -y install gcc-c++ make ncurses ncurses-devel python3 ctags git
@@ -73,6 +82,8 @@
 " 关闭兼容模式, 也就是不再兼容VI, 必需放在第一行
 set nocompatible
 
+set encoding=utf8
+
 " VIM记住多少次历史操作.
 set history=1000
 
@@ -114,17 +125,15 @@ Plug 'flazz/vim-colorschemes'
 Plug 'dense-analysis/ale'
 
 " ********************** 代码补全 ********************************************
-" NOTE: 安装完该插件后或在使用`:PlugUpdate`更新完所有插件后, 需要手动做如下工作:
+" NOTE: `:PlugInstall`安装完该插件后或在使用`:PlugUpdate`更新完所有插件后, 需要手动做如下工作:
 "    cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --all
 Plug 'ycm-core/YouCompleteMe'
 
 " ********************** GUI *************************************************
-" 命令行模式下`:NERDTree`, 则在左侧显示目录树窗口, 再次执行隐藏窗口,
-" 已映射为快捷键: `,w`
-Plug 'scrooloose/nerdtree'
-" 使多个标签页共享目录树窗口的插件
-Plug 'jistr/vim-nerdtree-tabs'
-" 目录树支持git插件
+" 在 VIM 窗口左侧显示目录树窗口.
+Plug 'preservim/nerdtree'
+
+" 使目录树支持 git 的插件.
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " 为正在编辑的文件生成大纲视图, 包括接口/方法/变量等,
@@ -134,27 +143,42 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 " 已映射为快捷键来方便操作: `,e`
 Plug 'majutsushi/tagbar'
 
-" 深度集成git的插件
+" 深度集成 git 的插件
 Plug 'tpope/vim-fugitive'
-" git commit浏览插件, 该插件依赖vim-fugitive插件.
+
+" git commit 的浏览插件, 该插件依赖vim-fugitive插件.
 "    `:GV` 命令行模式下打开commit浏览, 这个包含当前git repo的所有commit;
 "    `:GV!` 这个只看当前文件的commit历史;
 "    `o`或`O`或回车, 打开光标所在commit;
 "    `q`, 命令模式下退出commit浏览.
 Plug 'junegunn/gv.vim'
-" 标记通过git管理的文件的变化, 文件左侧会通过显示 +(添加) 或 -(删除) 或 ~(变更) 来提示文件变化.
+
+" 标记通过 git 管理的文件的变化, 文件左侧会通过显示 +(添加) 或 -(删除) 或 ~(变更) 来提示文件变化.
 "    `]c`普通模式下光标跳到后一个变化处,
 "    `[c`普通模式下光标跳到前一个变化处.
 Plug 'airblade/vim-gitgutter'
 
 " 美化状态栏插件.
 Plug 'itchyny/lightline.vim'
+" 为 lightline 插件提供显示 ale 检查出来的错误或警告的统计信息;
+" 另外安装此插件可以解决 vim 打开文件同时显示目录树窗口的场景时,
+" 无法正常加载 lightline 状态栏的问题.
+Plug 'maximbaz/lightline-ale'
 
 " 彩虹括号插件, 层级较多的括号场景使用不同颜色区分.
 Plug 'luochen1990/rainbow'
 
 " 缩进线插件.
 Plug 'Yggdroot/indentLine'
+
+" 为目录树或LeaderF等插件显示文件类型.
+" NOTE:
+" 1) 需要提前安装 nerd-fonts, 并设置iterm2 (或其他类型终端) 的字体为 Hack Nerd Font 或 Hack Nerd Font Mono;
+"   # doc: https://github.com/ryanoasis/nerd-fonts#font-installation
+"   brew tap homebrew/cask-fonts && brew install font-hack-nerd-font
+" 2) 此插件要安装在目录树等插件的后面.
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " ********************** 编程语言 ********************************************
 """""""" Go
@@ -172,8 +196,10 @@ Plug 'spacewander/openresty-vim'
 """""""" javascript/html/css/vue
 " 前端利器 html/css/js
 Plug 'mattn/emmet-vim'
+
 " 格式化 js, html, css
 Plug 'maksimr/vim-jsbeautify'
+
 " Vue 语法高亮插件, 注意会拖慢 VIM, 需要配置这条来解决: `let g:vue_pre_processors = []`
 Plug 'posva/vim-vue'
 
@@ -187,7 +213,9 @@ Plug 'posva/vim-vue'
 "   zM 折叠所有段落
 "   :Toc 显示目录
 Plug 'plasticboy/vim-markdown'
+
 Plug 'iamcco/mathjax-support-for-mkdp'
+
 " 打开浏览器预览markdown文本的插件.
 Plug 'iamcco/markdown-preview.vim'
 
@@ -340,7 +368,35 @@ let g:ale_echo_msg_warning_str = 'Warning'
 " 默认值: '%code: %%s'
 let g:ale_echo_msg_format = '[%linter%] %code: %%s [%severity%]'
 
-" 新打开文件时是否lint.
+" 设置 location list, 将 ale linter 发现的错误或警告的具体位置列表信息添加进去.
+" NOTE: 这里如果设置为1, 会和 autocmd BufWinEnter * silent NERDTreeMirror 这条配置产生冲突.
+" 默认值: 1
+let g:ale_set_loclist = 0
+
+" 如果 location list 不为空, 是否打开一个独立的窗口显示其信息.
+" 默认值: 0
+let g:ale_open_list = 0
+" 错误信息窗口的高度, 在 g:ale_open_list 设置为1时才有效果.
+" 默认值: 10
+let g:ale_list_window_size = 5
+
+" 错误或警告信息全部修复后, 是否保留错误信息窗口, 1 表示保留.
+" 默认值: 0
+let g:ale_keep_list_window_open = 0
+
+" 退出文件时, 也一同退出错误信息窗口(loclist).
+augroup CloseLoclistWindowGroup
+    autocmd!
+    autocmd QuitPre * if empty(&buftype) | lclose | endif
+augroup END
+
+" 光标停留在错误处时, 是否触发悬浮窗来显示错误信息.
+" NOTE: 仅支持 Neovim.
+" 默认值: 0
+let g:ale_floating_preview = 1
+let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰']
+
+" 新打开文件时是否自动lint.
 " 默认值: 1
 let g:ale_lint_on_enter = 1
 
@@ -385,19 +441,19 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 "    poetry shell
 "    poetry add pylint flake8 autoimport black isort -D
 let g:ale_linters = {
-\    'go': ['golangci-lint', 'revive'],
-\    'python': ['pylint', 'flake8'],
-\    'lua': ['luac', 'luacheck'],
-\    'sh': ['shellcheck'],
-\    'javascript': ['eslint', 'standard'],
-\    'vue': ['eslint', 'vls'],
-\    'html': ['tidy', 'stylelint', 'alex', 'writegood', 'proselint'],
-\    'yaml': ['yamllint'],
-\    'json': ['jq', 'jsonlint'],
-\    'markdown': ['mdl', 'markdownlint', 'proselint', 'alex'],
-\}
+    \    'go': ['golangci-lint', 'revive'],
+    \    'python': ['pylint', 'flake8'],
+    \    'lua': ['luac', 'luacheck'],
+    \    'sh': ['shellcheck'],
+    \    'javascript': ['eslint', 'standard'],
+    \    'vue': ['eslint', 'vls'],
+    \    'html': ['tidy', 'stylelint', 'alex', 'writegood', 'proselint'],
+    \    'yaml': ['yamllint'],
+    \    'json': ['jq', 'jsonlint'],
+    \    'markdown': ['mdl', 'markdownlint', 'proselint', 'alex'],
+    \ }
 
-" 覆盖掉~/.vim/plugged/ale/ale_linters/go/golangci_lint.vim中的个别默认配置.
+" 覆盖掉~/.vim/plugged/ale/ale_linters/go/golangci_lint.vim中的个别默认配置;
 " golanci-lint run 命令不加额外参数, 解决默认加的--enable-all参数导致的错误.
 call ale#Set('go_golangci_lint_options', '')
 " golangci-lint run 命令以包为单位进行检查, 解决默认以文件方式检查时的typecheck错误误报的问题.
@@ -413,80 +469,83 @@ call ale#Set('go_golangci_lint_package', 1)
 " 不要使用python的autoimport工具, 重新排版的import可能发生错误;
 " 用于python的isort, 可选择性使用, 我这里也不启用, 直接用black的import排版能力即可.
 let g:ale_fixers = {
-\    'python': ['black', 'add_blank_lines_for_python_control_statements'],
-\    'lua': ['luafmt', 'trim_whitespace', 'remove_trailing_lines'],
-\    'sh': ['shfmt'],
-\    'javascript': ['eslint', 'importjs'],
-\    'vue': ['eslint'],
-\    'html': ['prettier'],
-\    'json': ['jq'],
-\    'yaml': ['prettier'],
-\    'markdown': ['prettier'],
-\}
+    \    'python': ['black', 'add_blank_lines_for_python_control_statements'],
+    \    'lua': ['luafmt', 'trim_whitespace', 'remove_trailing_lines'],
+    \    'sh': ['shfmt'],
+    \    'javascript': ['eslint', 'importjs'],
+    \    'vue': ['eslint'],
+    \    'html': ['prettier'],
+    \    'json': ['jq'],
+    \    'yaml': ['prettier'],
+    \    'markdown': ['prettier'],
+    \ }
 
 " }}
 
 """""""" 目录树相关配置 {{
 
 """""" NERDTree插件的配置
-" 普通模式下显示或隐藏目录树的快捷键: `,w`
-map ,w :NERDTreeToggle<CR>
+" doc: https://github.com/preservim/nerdtree
 
-" 系统命令行直接运行 vim 的时候(不接任何文件), 自动打开目录树.
+" ,w  普通模式下显示或隐藏目录树的快捷键.
+nnoremap ,w :NERDTreeToggle<CR>
+
+" ,m  在新的标签页上可以使用此命令来复用已经存在的目录树窗口, 而不是重新建一个.
+nnoremap ,m :NERDTreeMirror<CR>
+
+" 设置目录树窗口宽度.
+let NERDTreeWinSize=35
+
+" 打开目录树. 如果 vim 后面接了文件, 则将光标自动移动到文件窗口.
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
 
-" 目录树中目录折叠与展开的箭头表示, 默认是▸和▾
+" 如果文件都退出了, 只剩目录树窗口的情况下自动退出 VIM.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" 每新打开一个标签页都显示当前已存在的目录树窗口.
+" NOTE: 这个配置会和 let g:ale_set_loclist = 1 产生冲突,
+"   如果确定要此配置, 需要设置: let g:ale_set_loclist = 0
+autocmd BufWinEnter * silent NERDTreeMirror
+
+" 当项目下新增或删除文件时, 目录树窗口中自动更新变化, 省去了在目录树窗口中手动按 R 的动作了;
+" 注意, 需要光标移动到目录树窗口中或重新打开目录树窗口来触发更新动作.
+autocmd BufEnter NERD_tree_* | execute 'normal R'
+
+" 目录树中目录折叠与展开的样式.
+" 默认值: '▸' 和 '▾'
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
-" 设置目录树窗口宽度.
-let NERDTreeWinSize=30
-
-" nerdtree-git-plugin的配置
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-\ }
-
-" 标签页切换快捷键: 普通模式下`shift+h`向左, `shift+l`向右
+" 标签页切换快捷键: 普通模式下`shift+h`向左, `shift+l`向右.
 map <S-h> gT
 map <S-l> gt
 
-" 是否显示隐藏文件
-" Default: 0
+" 是否显示隐藏文件.
+" 默认值: 0
 let NERDTreeShowHidden=1
 
-" 忽略文件的显示, 开启这个将默认显示隐藏文件.
+" 忽略哪些文件的显示, 开启这个将默认显示隐藏文件.
 let NERDTreeIgnore=['\.pyc$','__pycache__','\.swp$']
 
-" 是否显示目录树的行号
-" Default: 0
+" 是否显示目录树的行号.
+" 默认值: 0
 let NERDTreeShowLineNumbers=0
+"""""""""""""""""""
 
-" 打开文件时, 自动显示目录树
-"autocmd vimenter * NERDTree
-
-" 如果文件都退出了, 只剩目录树窗口的情况下自动退出vim.
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.istabTree()) | q | endif
-
-" NERDTree窗口常用快捷键介绍(普通模式下):
-" 1. `Ctrl+ww`会在目录树窗口和其他窗口之间来回切换光标;
-" 2. j向上移动光标, k向下移动光标, h向左移动光标, l键向右移动光标,
-"    按回车键或o键展开目录或打开文件;
-" 3. 如果光标选择文件后直接回车或o键的话, 将在原文件窗口打开新文件,
-"    视觉上覆盖掉了原文件, 所以建议光标移到某个文件后按t键,
-"    这样将以新标签的形式打开文件, T键则是静默的打开(光标不切换过去);
-" 4. 如果有多个文件标签, `gt`将向后切换文件, `gT`将向前切换文件,
-"    已设置了快捷键映射, 可通过`Shift+l`和`shift+h`切换;
+"""""" nerdtree-git-plugin 的配置
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+    \   "Modified"  : "✹",
+    \   "Staged"    : "✚",
+    \   "Untracked" : "✭",
+    \   "Renamed"   : "➜",
+    \   "Unmerged"  : "═",
+    \   "Deleted"   : "✖",
+    \   "Dirty"     : "✗",
+    \   "Clean"     : "✔︎",
+    \   'Ignored'   : '☒',
+    \   "Unknown"   : "?"
+    \ }
 """""""""""""""""""
 
 """""" Tagbar插件配置
@@ -494,13 +553,15 @@ let NERDTreeShowLineNumbers=0
 nmap ,e :TagbarToggle<CR>
 
 " 设置Tagbar窗口宽度
-let g:tagbar_width = 30
+let g:tagbar_width = 35
 
 " 开启自动预览,
 " 随着光标在tabar窗口中的标签上移动, 代码窗口顶部会出现一个实时的代码预览窗口.
 let g:tagbar_autopreview = 1
 
-" 关闭排序, 即按标签本身在代码文件中的位置排序.
+" 根据 tag 的名称排序
+" 默认值: 1
+" 设置为 0 表示禁用排序, 即按标签本身在代码文件中的位置排序.
 let g:tagbar_sort = 0
 """""""""""""""""""
 
@@ -519,8 +580,50 @@ set noshowmode
 " 定制状态栏的主题颜色.
 " doc: https://github.com/itchyny/lightline.vim
 let g:lightline = {
-\ 'colorscheme': 'solarized',
-\ }
+    \ 'colorscheme': 'solarized',
+    \ }
+"""""""""""""""""""""""""""
+
+"""""" 'maximbaz/lightline-ale' 配置
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_ok = "\uf00c"
+" 以下三条指令的字符串值结尾多一个空格, 用来解决图标和数字重叠的问题.
+let g:lightline#ale#indicator_infos = "\uf129 "
+let g:lightline#ale#indicator_warnings = "\uf071 "
+let g:lightline#ale#indicator_errors = "\uf05e "
+
+let g:lightline.component_expand = {
+    \  'linter_checking': 'lightline#ale#checking',
+    \  'linter_infos': 'lightline#ale#infos',
+    \  'linter_warnings': 'lightline#ale#warnings',
+    \  'linter_errors': 'lightline#ale#errors',
+    \  'linter_ok': 'lightline#ale#ok',
+    \ }
+
+let g:lightline.component_type = {
+    \  'linter_checking': 'right',
+    \  'linter_infos': 'right',
+    \  'linter_warnings': 'warning',
+    \  'linter_errors': 'error',
+    \  'linter_ok': 'right',
+    \ }
+
+" 其中 'gitbranch' 依赖 vim-fugitive 插件.
+let g:lightline.active = {
+    \  'left': [ [ 'mode', 'paste' ],
+    \            [ 'gitbranch', 'readonly', 'filename', 'modified' ],
+    \  ],
+    \  'right': [ [ 'lineinfo' ],
+    \             [ 'percent' ],
+    \             [ 'fileformat', 'fileencoding', 'filetype' ],
+    \             [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+    \  ],
+    \ }
+
+" 显示当前 git 分支, 依赖 vim-fugitive 插件.
+let g:lightline.component_function = {
+    \  'gitbranch': 'FugitiveHead'
+    \ }
 """""""""""""""""""""""""""
 
 """""" Yggdroot/indentLine 插件配置
@@ -539,6 +642,19 @@ let g:indentLine_char_list = ['¦', '┆', '┊']
 " 缩进线的颜色定义
 let g:indentLine_defaultGroup = 'SpecialKey'
 """""""""""""""""""""""""""
+
+"""""" 'ryanoasis/vim-devicons' 配置
+" doc: https://github.com/ryanoasis/vim-devicons
+"
+" 启用文件类型显示.
+" 默认值: 1
+let g:webdevicons_enable = 1
+
+" 为 gvim/mvim 设置字体和字号.
+" NOTE: 如果使用 iterm2 终端, 需要通过更改 iterm2 的font字体才可以, 此处的配置对 iterm2 无效;
+"   Iterm2: Preferences -> Text -> Font, 选择 Hack Nerd Font 或 Hack Nerd Font Mono.
+set guifont=Hack_Nerd_Font:h13
+"""""""""""""""""""
 
 " }}
 
@@ -799,8 +915,6 @@ let $LANG='en'
 set langmenu=en
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
-" 设置 utf8 为标准编码, en_US 为标准语言.
-set encoding=utf8
 
 " ,) / ,] / ,} / ," / ,' / ,` 将可视模式下选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹.
 vnoremap <leader>) <esc>`>a)<esc>`<i(<esc>
@@ -901,13 +1015,20 @@ colorscheme solarized
 " 代码高亮显示.
 syntax enable
 
+" 指定何时显示页面标签:
+"   0: 永远不会
+"   1: 至少有两个标签页时才会
+"   2: 永远会
+" 默认值: 1
+set showtabline=2
+
 " 显示行号.
 set nu
 " 设置行号颜色.
 hi LineNr cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
 
 " 设置 提示列 的颜色方案;
-" 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列, 
+" 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列,
 " gitgutter 插件的文件变化信息也会出现在此列.
 hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
 
@@ -1008,13 +1129,6 @@ set textwidth=1000
 
 " 退出文件后, 屏幕依然显示该文件内容.
 "set t_ti= t_te=
-
-" 显示标签页.
-"set tabpagemax=20
-"set showtabline=2
-
-" 显示状态栏.
-"set laststatus=2
 
 " 打开英语单词的拼写检查.
 "set spell spelllang=en_us
@@ -1197,12 +1311,15 @@ set textwidth=1000
 "                        然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后,
 "                        按 t 将以新建标签页的方式打开选择的文件.
 "                     2) 可视模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
-
 "                 rc  rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, 普通模式下按 rc 即可.
 "
 " ** preservim/nerdcommenter (https://github.com/preservim/nerdcommenter)
-"          ,c<space>  注释或取消注释光标所在行, 或可视模式下选择多行来注释或取消注释.
-"                ,cc  只注释, 如果原来就有注释则多一层注释.
+"       [n],c<space>  注释或取消注释光标所在行, 或可视模式下选择多行来注释或取消注释.
+"             [n],cc  只注释, 如果原来就有注释则多一层注释.
+"             [n],cm  对被选区域用一对注释符进行注释, 比如由 // 改为 /* */.
+"             [n],cs  添加较美观的注释.
+"             [n],cy  添加注释并复制被被注释的部分.
+"             [n],cA  跳转到该行结尾添加注释符号，并进入 insert 模式.
 "
 " ** easymotion/vim-easymotion (https://github.com/easymotion/vim-easymotion)
 "                ,,w  把光标下方的所有可见内容进行高亮符号标记, 想让光标跳转到哪里,
@@ -1252,6 +1369,18 @@ set textwidth=1000
 " ** majutsushi/tagbar (https://github.com/preservim/tagbar)
 "                 ,e  打开右侧大纲窗口.
 "
+" ** tpope/vim-fugitive (https://github.com/tpope/vim-fugitive)
+"        :Git status  类似 git status.
+"           :Git log  类似 git log, 光标移动到一个 commit 行,
+"                     然后按 o 或 O 或 enter, 打开 commit 详细内容浏览,
+"                     q 退出浏览窗口, ctrl o/i 来回跳转.
+"          :Git diff  类似 git diff.
+"         :Git blame  类似 git blame, 等等, 都可以直接在 VIM 的命令行模式运行.
+"
+" ** junegunn/gv.vim (https://github.com/junegunn/gv.vim)
+"                :GV  类似 :Git log.
+"               :GV!  这个只看当前文件的 git log.
+
 " ** tpope/vim-surround (https://github.com/tpope/vim-surround)
 "               ysw"  使光标所在单词使用`"`包裹, 不包括光标前的字符.
 "              ysiw"  光标所在的完整单词使用`"`包裹, 包括光标前的字符.
@@ -1261,13 +1390,6 @@ set textwidth=1000
 "                ds"  删除光标周围的双引号.
 "               cs"'  把光标所在周围的双引号替换为单引号.
 "               cst'  将类似 <div>hello world</div> 变为 'hello world'.
-"
-" ** kien/ctrlp.vim (https://github.com/kien/ctrlp.vim)
-"             ctrl p  将在当前窗口下面列出当前打开文件根目录下的所有文件.
-"           ctrl k/j  在列出的文件中向上或向下选择文件.
-"             ctrl t  在新标签页中打开选中文件.
-"           ctrl x/v  水平和垂直切分打开选中文件.
-"              enter  覆盖当前页面的方式打开选中文件.
 "
 " ** mattn/emmet-vim (https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL)
 "           ctrl y ,  打开 *.html 文件:
