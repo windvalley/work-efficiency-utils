@@ -17,6 +17,13 @@
 "    # 用于目录树文件图标显示
 "    brew tap homebrew/cask-fonts && brew install font-hack-nerd-font
 "
+"    # 从 insert 切换到 normal 模式时自动切换输入法功能需要的系统依赖安装:
+"    git clone https://github.com/myshov/xkbswitch-macosx.git
+"    cp xkbswitch-macosx/bin/xkbswitch /usr/local/bin/
+"    git clone https://github.com/myshov/libxkbswitch-macosx
+"    cp libxkbswitch-macosx/bin/libxkbswitch.dylib /usr/local/lib/
+"
+"    # macvim 安装
 "    brew install cmake python mono go nodejs
 "    brew install ctags rg
 "    brew install macvim
@@ -243,6 +250,9 @@ Plug 'tpope/vim-surround'
 
 " 自动补全引号(单引号/双引号/反引号)、括号(()[]{})的插件.
 Plug 'Raimondi/delimitMate'
+
+" 切换到普通模式时切换到英文输入法.
+Plug 'lyokha/vim-xkbswitch'
 
 
 " 最后命令行模式下执行`:PlugInstall`自动安装上面未安装的插件;
@@ -693,6 +703,36 @@ let g:Lf_WindowPosition = 'popup'
 " 弹出的窗口占终端的百分比, 0.8 即80%.
 let g:Lf_PopupWidth = 0.8
 let g:Lf_PreviewInPopup = 1
+"""""""""""""""""""""
+
+"""""" lyokha/vim-xkbswitch 插件配置
+" doc: https://github.com/lyokha/vim-xkbswitch
+" 功能:
+"   从 insert 模式切换到 normal 模式时, 如果 insert 模式下为中文输入法, 则自动切换为英文输入法,
+"   然后从 normal 模式重新进入 insert 模式时, 还原上一次 insert 模式下的输入法.
+" 系统依赖安装(macOS):
+"   git clone https://github.com/myshov/xkbswitch-macosx.git
+"   cp xkbswitch-macosx/bin/xkbswitch /usr/local/bin/
+"   git clone https://github.com/myshov/libxkbswitch-macosx
+"   cp libxkbswitch-macosx/bin/libxkbswitch.dylib /usr/local/lib/
+
+" 是否开启输入法切换功能.
+let g:XkbSwitchEnabled = 1
+
+let g:XkbSwitchLib = '/usr/local/lib/libxkbswitch.dylib'
+
+" 默认情况从 insert 模式到 normal 模式, 将还原 normal 的上一次输入法, 如果 normal 上一次是中文, 这次还是中文;
+" 添加此指令后, 将始终保持 normal 模式是英文输入法.
+let g:XkbSwitchNLayout = 'us'
+
+" 同上一条, 区别是这条指令针对的是 insert 模式,
+" 目前的输入体验是不建议启用这条指令, 可根据自身的使用场景调整.
+"let g:XkbSwitchILayout = 'us'
+
+" 默认情况下, 从 insert 模式切换到 normal 模式, 输入法从 中文 切换到 英文有一定的延迟, 非常影响体验,
+" 此条指令解决这个问题, 可以将数字改的更小以或得更快的切换体验.
+set ttimeoutlen=50
+"""""""""""""""""""""
 
 " }}
 
