@@ -24,7 +24,7 @@
 "    cp libxkbswitch-macosx/bin/libxkbswitch.dylib /usr/local/lib/
 "
 "    # macvim 安装
-"    brew install cmake python mono go nodejs
+"    brew install cmake python mono go nodejs yarn
 "    brew install ctags rg
 "    brew install macvim
 "
@@ -150,7 +150,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 " 已映射为快捷键来方便操作: `,e`
 Plug 'majutsushi/tagbar'
 
-" 深度集成 git 的插件
+" 深度集成 git 的插件.
 Plug 'tpope/vim-fugitive'
 
 " git commit 的浏览插件, 该插件依赖vim-fugitive插件.
@@ -167,6 +167,7 @@ Plug 'airblade/vim-gitgutter'
 
 " 美化状态栏插件.
 Plug 'itchyny/lightline.vim'
+
 " 为 lightline 插件提供显示 ale 检查出来的错误或警告的统计信息;
 " 另外安装此插件可以解决 vim 打开文件同时显示目录树窗口的场景时,
 " 无法正常加载 lightline 状态栏的问题.
@@ -188,6 +189,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " ********************** 编程语言 ********************************************
+
 """""""" Go
 " 搭建 Go 开发环境的 VIM 插件, 安装该插件的过程中, 会自动安装该插件依赖的大量 Go 二进制工具,
 " 如果由于 Go 环境等问题导致自动安装失败, 可后续通过 VIM 的命令行模式安装`:GoInstallBinaries`.
@@ -211,20 +213,11 @@ Plug 'maksimr/vim-jsbeautify'
 Plug 'posva/vim-vue'
 
 """""""" markdown
-" 基本用法:
-"   [[ 跳转上一个标题
-"   ]] 跳转下一个标题
-"   zr 打开下一级折叠
-"   zR 打开所有折叠
-"   zm 折叠当前段落
-"   zM 折叠所有段落
-"   :Toc 显示目录
-Plug 'plasticboy/vim-markdown'
+" markdown 语法高亮插件.
+Plug 'godlygeek/tabular' | Plug 'tpope/vim-markdown'
 
-Plug 'iamcco/mathjax-support-for-mkdp'
-
-" 打开浏览器预览markdown文本的插件.
-Plug 'iamcco/markdown-preview.vim'
+"" 通过浏览器实时预览markdown文本的插件.
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
 """""""" toml
 Plug 'cespare/vim-toml'
@@ -316,34 +309,34 @@ let g:ycm_semantic_triggers =  {
 \    'c,cpp,java,rust,erlang,perl,perl6': ['re!\w{1}'],
 \ }
 
-" 默认值: 0
 " 表示是否将你的编码进行记录, 用来在后续的编码过程中进行相关的补全提示.
+" 默认值: 0
 let g:ycm_seed_identifiers_with_syntax = 1
 
-" 默认值: 2
 " 从键入第几个字符开始进行自动匹配提示.
+" 默认值: 2
 let g:ycm_min_num_of_chars_for_completion = 1
 
-" 默认值: 0
 " 是否从注释中输入时也能补全.
+" 默认值: 0
 let g:ycm_complete_in_comments = 1
 
-" 默认值: 1
 " 是否在字符串中输入时也能补全.
+" 默认值: 1
 let g:ycm_complete_in_strings = 1
 
-" 默认值: 0
 " 注释和字符串中的文字是否也被收入到补全数据库中.
+" 默认值: 0
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
-" 默认值是: CursorHold, 表示光标停留在函数一小会儿后自动展示文档;
 " 如果值为空, 则表示禁用此功能.
+" 默认值是: CursorHold, 表示光标停留在函数一小会儿后自动展示文档;
 let g:ycm_auto_hover = 'CurorHold'
 " 设置此 map 后, 上面的 let g:ycm_auto_hover = 'CurorHold' 功能自动失效, 需要通过`,D`来触发文档显示.
 nmap <leader>D <plug>(YCMHover)
 
-" 默认值: 1
 " 是否启用 YCM 提供的代码静态检查功能, 由于我们使用了 ale 来做静态代码检查, 所以这里禁用.
+" 默认值: 1
 let g:ycm_show_diagnostics_ui = 0
 let g:ycm_error_symbol = '>>'
 let g:ycm_warning_symbol = '>'
@@ -378,8 +371,8 @@ let g:ale_echo_msg_warning_str = 'Warning'
 " 默认值: '%code: %%s'
 let g:ale_echo_msg_format = '[%linter%] %code: %%s [%severity%]'
 
-" 设置 location list, 将 ale linter 发现的错误或警告的具体位置列表信息添加进去.
-" NOTE: 这里如果设置为1, 会和 autocmd BufWinEnter * silent NERDTreeMirror 这条配置产生冲突.
+" 是否将 ale linter 发现的错误或警告的具体位置列表信息添加到 location list 中.
+" 我们这里禁用, 以防止使用 gr 时, 破坏 gr 使用的 location list.
 " 默认值: 1
 let g:ale_set_loclist = 0
 
@@ -394,7 +387,7 @@ let g:ale_list_window_size = 5
 " 默认值: 0
 let g:ale_keep_list_window_open = 0
 
-" 退出文件时, 也一同退出错误信息窗口(loclist).
+" 退出文件时, 如果仅剩错误信息窗口, 则其也一同退出(loclist).
 augroup CloseLoclistWindowGroup
     autocmd!
     autocmd QuitPre * if empty(&buftype) | lclose | endif
@@ -500,9 +493,6 @@ let g:ale_fixers = {
 " ,w  普通模式下显示或隐藏目录树的快捷键.
 nnoremap ,w :NERDTreeToggle<CR>
 
-" ,m  在新的标签页上可以使用此命令来复用已经存在的目录树窗口, 而不是重新建一个.
-nnoremap ,m :NERDTreeMirror<CR>
-
 " 设置目录树窗口宽度.
 let NERDTreeWinSize=35
 
@@ -514,9 +504,14 @@ autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | e
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 " 每新打开一个标签页都显示当前已存在的目录树窗口.
-" NOTE: 这个配置会和 let g:ale_set_loclist = 1 产生冲突,
-"   如果确定要此配置, 需要设置: let g:ale_set_loclist = 0
-autocmd BufWinEnter * silent NERDTreeMirror
+" NOTE:
+"   官方提供的指令是: autocmd BufWinEnter * silent NERDTreeMirror,
+"   但经过实测, 会和以下2条指令产生冲突, 当 gd 或 gr 打开新的 buffer 时会报错:
+"   冲突的2条指令是:
+"       1) let g:ale_set_loclist = 1
+"       2) map gr :YcmCompleter GoToReferences<CR>
+"   修改为当前指令后, 可修复此问题.
+autocmd BufWinEnter * if empty(&buftype) | silent NERDTreeMirror | endif
 
 " 当项目下新增或删除文件时, 目录树窗口中自动更新变化, 省去了在目录树窗口中手动按 R 的动作了;
 " 注意, 需要光标移动到目录树窗口中或重新打开目录树窗口来触发更新动作.
@@ -576,6 +571,8 @@ let g:tagbar_sort = 0
 """""""""""""""""""
 
 """""" itchyny/lightline.vim 配置
+" doc: https://github.com/itchyny/lightline.vim
+
 " 本选项的值影响最后一个窗口何时有状态行:
 "     0: 永不
 "     1: 只有在有至少两个窗口时
@@ -586,21 +583,12 @@ set laststatus=2
 
 " 由于此插件已经帮我们美化显示了当前的 VIM 模式, 所以 VIM 自带的模式显示可以去除.
 set noshowmode
-
-" 定制状态栏的主题颜色.
-" doc: https://github.com/itchyny/lightline.vim
-let g:lightline = {
-    \ 'colorscheme': 'solarized',
-    \ }
 """""""""""""""""""""""""""
 
 """""" 'maximbaz/lightline-ale' 配置
-let g:lightline#ale#indicator_checking = "\uf110"
-let g:lightline#ale#indicator_ok = "\uf00c"
-" 以下三条指令的字符串值结尾多一个空格, 用来解决图标和数字重叠的问题.
-let g:lightline#ale#indicator_infos = "\uf129 "
-let g:lightline#ale#indicator_warnings = "\uf071 "
-let g:lightline#ale#indicator_errors = "\uf05e "
+" doc: https://github.com/maximbaz/lightline-ale
+
+let g:lightline = {}
 
 let g:lightline.component_expand = {
     \  'linter_checking': 'lightline#ale#checking',
@@ -634,6 +622,16 @@ let g:lightline.active = {
 let g:lightline.component_function = {
     \  'gitbranch': 'FugitiveHead'
     \ }
+
+" 美化错误与警告等信息的显示图标.
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_ok = "\uf00c"
+" 以下三条指令的字符串值结尾多一个空格, 用来解决图标和数字重叠的问题.
+let g:lightline#ale#indicator_infos = "\uf129 "
+let g:lightline#ale#indicator_warnings = "\uf071 "
+let g:lightline#ale#indicator_errors = "\uf05e "
+
+
 """""""""""""""""""""""""""
 
 """""" Yggdroot/indentLine 插件配置
@@ -738,50 +736,119 @@ set ttimeoutlen=50
 
 """""""" Go {{
 
-" 在安装完vim-go插件的前提下, 命令行模式下`:w`保存文件时将自动import和gofmt.
-let g:go_fmt_command = "goimports"
+"""""" fatih/vim-go 插件配置
+" doc: https://github.com/fatih/vim-go
 
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
+" *** 代码自动格式化 ***
+" 默认值: 1
+let g:go_fmt_autosave = 1
+" 默认值: 1
+let g:go_imports_autosave = 1
 
-" 查看光标所在函数等的简要信息
+
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+
+
+" *** 代码高效阅读 ***
+" ,i  查看光标所在函数等的简要信息, 显示在终端底部.
 au FileType go nmap <Leader>i <Plug>(go-info)
-" 上下分屏查看光标所在函数等的文档
+" ,d  上下分屏查看光标所在函数等的文档, 同 K, 不过没有 K 快, 建议使用 K, 如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
 au FileType go nmap <Leader>d <Plug>(go-doc)
-" 左右分屏查看光标所在函数等的文档
+" ,dv  左右分屏查看光标所在函数等的文档, 如果设置了let g:go_doc_popup_window = 1, 则弹出浮窗.
 au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
-" go run 当前的go文件
-au FileType go nmap <leader>r <Plug>(go-run)
-" go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build
-au FileType go nmap <leader>b <Plug>(go-build)
-" 查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上
-au FileType go nmap <Leader>s <Plug>(go-implements)
-" 查看有哪些地方调用了光标所在的函数, 从弹出的列表中选择一个, 然后回车, 将跳转到调用位置
-au FileType go nmap <Leader>f <Plug>(go-callers)
+" 使用 K 查看光标下对象的文档的窗口大小. 默认值: 20
+let g:go_doc_max_height = 20
+" 查看光标下的对象的文档的时候使用悬浮窗口替代新打开一个窗口. 默认值: 0
+let g:go_doc_popup_window = 1
 
-" go test 当前的go文件
+" gr  在 location list 中列出哪些地方引用了光标所在的对象.
+" NOTE: 对 .go 类型文件, 此 gr 覆盖了 YCM 的 gr 快捷键.
+au FileType go nmap gr :GoReferrers<CR>
+" ,cl  在 location list 中列出哪些地方调用了光标所在的函数.
+au FileType go nmap <leader>cl :GoCallers<CR>
+" ,s  查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上.
+au FileType go nmap <Leader>s <Plug>(go-implements)
+
+" NOTE:
+"   Go 跳转到光标所在函数定义处的4种方式均由 vim-go 插件提供, 和 YCM 配置无关.
+"   如果光标所在函数定义处就是在当前页面, 则直接在当前页内跳转, 并不打开新页面;
+"   如果在当前页面内跳转, 推荐使用 ctrl o/i 来回跳转切换, 以提高效率.
+"
+" gd  默认以覆盖当前页面的方式跳转到函数定义处, vim-go插件默认行为, 无需配置.
+"
+" ds  上下分屏跳转到函数定义处.
+au FileType go nmap ds <Plug>(go-def-split)
+" dv  左右分屏跳转到函数定义处.
+au FileType go nmap dv <Plug>(go-def-vertical)
+" dt  新开一个标签页的方式跳转到函数定义处.
+au FileType go nmap dt <Plug>(go-def-tab).
+" 对于跳转到对象定义处的功能, 重用已经打开的buffer. 默认值: 0
+let g:go_def_reuse_buffer = 1
+
+
+" *** 代码自动生成 ***
+" ,im  自动为光标下的类型生成指定接口的实现方法.
+au FileType go nmap <leader>im :GoImpl<CR>
+" ,ki  自动把光标所在的结构体字面量(仅有value没有key的情况)补充上字段.
+au FileType go nmap <leader>ki :GoKeyify<CR>
+" ,fs  自动把光标所在的结构体字面量, 以字段零值方式补上尚未填写的字段.
+au FileType go nmap <leader>fs :GoFillStruct<CR>
+" ,ie  自动生成 if err != nil 代码段.
+au FileType go nmap <leader>ie :GoIfErr<CR>
+" ,at  为光标所在的结构体定义自动生成字段对应的tags.
+au FileType go nmap <leader>at :GoAddTags<CR>
+" 使用 :GoAddTags 时, 是否忽略未导出的结构体字段(即小写字段), 1 表示忽略. 默认值: 0
+let g:go_addtags_skip_unexported = 1
+" ,rn  级联的重命名光标下的标识符, 重命名后, 项目内的所有与其相关的地方全部会更新.
+au FileType go nmap <leader>rn :GoRename<CR>
+" 新创建一个 .go 文件时, 是否自动使用模版内容填充. 默认值: 1
+let g:go_template_autocreate = 1
+" 始终仅自动生成 package pkgname 一行代码, 将覆盖掉 let g:go_template_autocreate = 1 的作用. 默认值: 0
+let g:go_template_use_pkg = 1
+
+
+" *** 运行当前 Go 文件 ***
+" ,r  go run 当前的go文件.
+au FileType go nmap <leader>r <Plug>(go-run)
+" ,b  go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build.
+au FileType go nmap <leader>b <Plug>(go-build)
+" ,t  go test 当前的go文件.
 au FileType go nmap <leader>t <Plug>(go-test)
-" 查看当前代码文件的测试覆盖率
+" ,c  查看当前代码文件的测试覆盖率.
 au FileType go nmap <Leader>c <Plug>(go-coverage)
 
-" NOTE: Go 跳转到函数定义处的4种方式, 能力均由vim-go插件提供, 和YCM配置无关.
-"
-" 快捷键1: gd 默认以覆盖当前页面的方式跳转到函数定义处, vim-go插件默认行为, 无需配置.
-" 快捷键2: ds 上下分屏跳转到函数定义处
-au FileType go nmap ds <Plug>(go-def-split)
-" 快捷键3: dv 左右分屏跳转到函数定义处
-au FileType go nmap dv <Plug>(go-def-vertical)
-" 快捷键4: dt 新开一个标签页的方式跳转到函数定义处
-au FileType go nmap dt <Plug>(go-def-tab)
-" 以上4条如果光标所在函数定义处就是在当前页面, 则直接在当前页跳转, 并不打开新页面;
-" 如果在当前页面内跳转, 推荐使用 ctrl o/i 来回跳转切换, 以提高效率.
+
+" *** 代码语法高亮 ***
+" 以下指令默认值都是0.
+let g:go_highlight_array_whitespace_error = 1
+let g:go_highlight_chan_whitespace_error = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_space_tab_error = 1
+let g:go_highlight_trailing_whitespace_error = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_parameters = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_generate_tags = 1
+let g:go_highlight_variable_declarations = 1
+let g:go_highlight_variable_assignments = 1
+" 以下指令默认值都是1.
+let g:go_highlight_string_spellcheck = 1
+let g:go_highlight_format_strings = 1
+let g:go_highlight_diagnostic_errors = 1
+let g:go_highlight_diagnostic_warnings = 1
+""""""""""
 
 " }}
 
 """""""" Python {{
+
+" requirements文本文件内容也高亮显示.
+autocmd BufNewFile,BufRead requirements*.txt set ft=python
 
 " 新建.py结尾的文件时, 自动输入一些内容
 func SetTitleForPython()
@@ -914,34 +981,22 @@ autocmd bufnewfile *.sh call SetTitleForShell()
 
 """""""" Markdown {{
 
-" :help vim-markdown
-let g:vim_markdown_math = 1
-let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_toc_autofit = 1
-let g:vim_markdown_toml_frontmatter = 1
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_json_frontmatter = 1
-let g:vim_markdown_new_list_item_indent = 2
-let g:vim_markdown_autowrite = 1
-" 在超链接处, 按ge将以新标签页的形式打开链接
-let g:vim_markdown_edit_url_in = 'tab'
-let g:vim_markdown_emphasis_multiline = 0
-"let g:vim_markdown_no_extensions_in_markdown = 1
-"let g:vim_markdown_auto_extension_ext = 'txt'
+""""""" tpope/vim-markdown 插件配置
+" doc: https://github.com/tpope/vim-markdown
 
-" :help markdown-preview
+" 禁用 markdown 语法隐藏.
+let g:markdown_syntax_conceal = 0
+
+""""""" iamcco/markdown-preview.nvim 插件配置
+" doc: https://github.com/iamcco/markdown-preview.nvim
+
 let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
-nmap ,p :MarkdownPreview<CR>
-nmap ,pp <Plug>StopMarkdownPreview
 
-" 1. 通过命令行检查和自动修正markdown文件
-" npm install -g markdownlint-cli
-" 检查: markdownlint foo.md
-" 修复: markdownlint -f foo.md
-" 2. mdl工具, 无自动修复功能
-" sudo gem install mdl
-" mdl foo.md
-" mdl -l
+nmap ,p <Plug>MarkdownPreviewToggle
+
+let g:mkdp_auto_close=0
+
+let g:mkdp_refresh_slow=1
 
 " }}
 
@@ -949,6 +1004,12 @@ nmap ,pp <Plug>StopMarkdownPreview
 
 
 " 自定义配置 {{
+
+"augroup CursorLine
+    "au!
+    "au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    "au WinLeave * setlocal nocursorline
+"augroup END
 
 " 解决中文乱码问题.
 let $LANG='en'
@@ -1047,19 +1108,51 @@ endif
 
 " 常用配置 {{
 
-" 启用颜色主题方案,
-" 常用方案备选: molokai, solarized, peaksea, ir_black
-" 其他主题名称见~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
-colorscheme solarized
-
 " 代码高亮显示.
 syntax enable
 
-" 指定何时显示页面标签:
+if !exists('g:gruvbox_contrast_light')
+  let g:gruvbox_contrast_light='hard'
+endif
+
+" 启用颜色主题方案,
+" 常用方案备选: solarized, gruvbox, molokai
+" 其他主题名称见~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
+colorscheme solarized
+
+set background=dark
+
+if (g:colors_name == 'solarized')
+  if (&background == 'dark')
+    " 定制状态栏的主题颜色.
+    let g:lightline = {
+        \ 'colorscheme': 'solarized',
+        \ }
+  endif
+endif
+
+if (g:colors_name == 'gruvbox')
+  if (&background == 'dark')
+    hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
+  else
+    hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+    hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+    hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+  endif
+endif
+
+if (g:colors_name == 'molokai')
+  if (&background == 'dark')
+    hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+    hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+    hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
+  endif
+endif
+
+" 指定何时显示页面标签, 默认值: 1
 "   0: 永远不会
 "   1: 至少有两个标签页时才会
 "   2: 永远会
-" 默认值: 1
 set showtabline=2
 
 " 显示行号.
@@ -1074,13 +1167,9 @@ hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
 
 " 突出显示当前行.
 set cursorline
-" 可在使用 molokai 主题时选择开启.
-"hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
 
 " 突出显示当前列.
 set cursorcolumn
-" 可在使用 molokai 主题时选择开启.
-"hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
 
 " tab 键显示为 >---, 行尾空格显示为 -, 帮助我们及时发现规范问题.
 set list listchars=tab:>-,trail:-
@@ -1090,11 +1179,6 @@ hi SpecialKey cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
 
 " 第80列通过颜色标注, 提示我们对单行代码长度的掌控.
 autocmd FileType * set colorcolumn=80
-" 可在使用 molokai 主题时选择开启.
-"hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
-
-" 普通模式下允许光标移动到最后一个字符的右边.
-set virtualedit=onemore
 
 " 显示括号匹配.
 set showmatch
@@ -1157,6 +1241,12 @@ set textwidth=1000
 
 " 备用配置 {{
 
+" 设置相对行号.
+"set number relativenumber
+
+" normal 模式下允许光标移动到最后一个字符的右边.
+"set virtualedit=onemore
+
 " 输入的文字到达终端边缘时不自动折行, 所谓折行指的是一行内容视觉上显示为多行,
 " 不是真正的加换行符的换行.
 "set nowrap
@@ -1199,10 +1289,15 @@ set textwidth=1000
 " }}
 
 """""""""" VIM 常用的原生能力 {{
+" ** 查看 VIM 帮助文档:
+"     :help [object]  object 表示你要查看其文档的 VIM 某个命令或者插件名称等.
+"                  K  1)通过上个命令打开文档, 对于有下划线的文本对象, 按 K 即可直接跳转到相关的文档,
+"                       ctrl o/i 可来回跳转, 增加文档阅读效率;
+"                     2)在阅读 .vimrc 时, 可通过按 K 自动打开光标所在对象的文档.
 "
 " ** 文本对象的快捷编辑:
 "
-" 命令涉及到的常用字符说明:
+"   涉及到的常用字符说明:
 "                  y  表示复制.
 "                  v  表示选择, 选择后进入可视模式.
 "                  d  表示删除.
@@ -1248,9 +1343,11 @@ set textwidth=1000
 "                  u  undo, 撤销最近一次的修改动作.
 "                  U  撤销当前所在行的所有修改.
 "             ctrl r  redo, 恢复最近一次的撤销内容.
-"    :n,ms/old/new/g  将文件内第 n 行到第 m 行的所有 old 替换为 new.
-"      :%s/old/new/g  将文件内所有 old 替换为 new.
-"     :%s/old/new/gc  每个匹配串替换前提示是否进行替换.
+"    :n,ms/old/new/g  将文件内第 n 行到第 m 行的所有 old 替换为 new;
+"                     如果是先在 visual 模式下选择了一段内容, 再按 : , 则 command 模式栏会变为 :'<,'>,
+"                     最后我们补全为 :'<,'>s/old/new/g, 即可完成替换选择的文本部分.
+"      :%s/old/new/g  将文件内所有 old 替换为 new, g 表示全局替换, 如果没有 g, 则每行只替换第一个匹配项.
+"     :%s/old/new/gc  每个匹配串替换前先提示是否进行替换.
 "             ctrl o  插入模式下, 使临时进入 normal 模式下, 执行一个 normal 命令就自动再返回插入模式下.
 "         ctrl h/w/u  插入模式下, 向左删除 一个字符/一个单词/行首.
 "       ,)/]/}/"/'/`  将可视模式下选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹. (**自定义配置**)
@@ -1313,7 +1410,8 @@ set textwidth=1000
 
 " ** 其他:
 "              :help  顶部分屏打开帮助文档窗口.
-"            :%s/2/3  将所有行的2替换为3, 命令行模式下这种方式替换字符串时, 会实时高亮显示要替换的字符串.
+"             :[tab]  命令行模式下要擅用 tab 补全.
+"            :%s/old/new  将所有行的old替换为new, 命令行模式下这种方式替换字符串时, 会实时高亮显示要替换的字符串.
 "                 :x  保存并退出, 和`:wq`一个意思.
 "                 :q  关闭窗口.
 "                 :!  后面输入要执行的系统命令, 回车执行.
@@ -1439,8 +1537,7 @@ set textwidth=1000
 "                     4) 输入 div>p>a , 然后按此快捷键, 可自动生成: <div><p><a href=""></a></p></div>
 "
 " ** iamcco/markdown-preview.vim (https://github.com/iamcco/markdown-preview.vim)
-"                 ,p  自动打开浏览器预览当前的 .md Markdown文件.
-"                ,pp  关闭浏览器中的打开的预览.
+"                 ,p  打开/关闭 浏览器预览当前的 Markdown 文件.
 " }}
 
 """""""""" VIM 实例练习 {{
