@@ -96,6 +96,10 @@ set encoding=utf8
 " VIM 保存多少个历史命令, 一般保存在 ~/.viminfo 隐藏文件中.
 set history=1000
 
+" 如果过了这么多毫秒数以后还没有任何输入, 把交换文件写入磁盘, 也用于 CursorHold 自动命令事件.
+" 默认值: 4000(毫秒)
+set updatetime=100
+
 " 打开文件类型检测, 允许插件文件载入, 允许缩进文件载入.
 filetype plugin indent on
 
@@ -107,7 +111,7 @@ let mapleader = ','
 
 " 插件安装 {{
 
-" 需要先安装用于管理Vim插件的插件: vim-plug
+" 需要先安装用于管理 VIM 插件的插件: vim-plug
 " 系统命令行下:
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 "    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -125,6 +129,9 @@ call plug#begin('~/.vim/plugged')
 " 则在本 .vimrc 文件中配置: colorscheme molokai;
 " 也可以在 command-line 模式进行主题切换, 即时看到颜色效果: `:colorscheme solarized`.
 Plug 'flazz/vim-colorschemes'
+
+" Atom One Dark / Light
+Plug 'rakr/vim-one'
 
 " ********************** 代码检查 ********************************************
 " ALE (Asynchronous Lint Engine) is a plugin providing linter(syntax checking and semantic errors)
@@ -152,20 +159,18 @@ Plug 'majutsushi/tagbar'
 "    :Git log
 "    :Git blame
 "    :Git status
-" 等等...
+"    等等...
 Plug 'tpope/vim-fugitive'
 
-" git commit 的浏览插件, 该插件依赖vim-fugitive插件.
-"    `:GV`, command-line 模式下打开commit浏览, 这个包含当前git repo的所有commit;
-"    `:GV!`, 这个只看当前文件的commit历史;
-"    `o`或`O`或回车, 打开光标所在commit;
-"    `q`, 命令模式下退出commit浏览.
+" git commit 的浏览插件, 该插件依赖 vim-fugitive 插件.
+"    `:GV`, command-line 模式下打开 commit 浏览, 这个包含当前 git repo 的所有 commit;
+"    `:GV!`, 这个只看当前文件的 commit 历史;
+"    `o`或`O`或回车, 打开光标所在 commit;
+"    `q`, 命令模式下退出 commit 浏览.
 Plug 'junegunn/gv.vim'
 
-" 标记通过 git 管理的文件的变化, 文件左侧会通过显示 +(添加) 或 -(删除) 或 ~(变更) 来提示文件变化.
-"    `]c`普通模式下光标跳到后一个变化处,
-"    `[c`普通模式下光标跳到前一个变化处.
-Plug 'airblade/vim-gitgutter'
+" 在文件窗口左侧标记列显示内容变化的行.
+Plug 'mhinz/vim-signify'
 
 " 美化状态栏插件.
 Plug 'itchyny/lightline.vim'
@@ -232,8 +237,7 @@ Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 " `, c <space>` 注释或取消注释选中的代码.
 Plug 'preservim/nerdcommenter'
 
-" normal 模式下通过快捷键`,,w`, 将显示光标后的可见内容的各种字母高亮显示,
-" 然后输入相关高亮字符组合, 光标会跳转到相关位置.
+" 光标高效跳转插件.
 Plug 'easymotion/vim-easymotion'
 
 " 使用指定符号(比如 ' 等)包围光标所在单词,
@@ -256,6 +260,9 @@ Plug 'haya14busa/is.vim'
 
 " 切换到 normal 模式时切换到英文输入法.
 Plug 'lyokha/vim-xkbswitch'
+
+" VIM 从菜鸟到高手之路必备, 禁止连续按 jkhl 等低效操作, 强制你根据不同场景来思考使用更高效的命令的习惯.
+Plug 'takac/vim-hardtime'
 
 
 " 最后 command-line 模式下执行`:PlugInstall`自动安装上面未安装的插件;
@@ -294,7 +301,7 @@ map gd :tab YcmCompleter GoTo<CR>
 map gr :YcmCompleter GoToReferences<CR>
 
 " 以什么方式打开 gd 命令跳转的位置.
-" Default: 'same-buffer'
+" 默认值: 'same-buffer'
 "    'same-buffer': 覆盖当前窗口;
 "    'split-or-existing-window': 如果要跳转的位置之前已经打开了一个标签页,
 "                                就直接跳转到那个已经打开的页面, 否则新打开一个标签页;
@@ -496,7 +503,7 @@ let g:ale_fixers = {
 
 """""""" 目录树相关配置 {{
 
-"""""" NERDTree插件的配置
+"""""" preservim/nerdtree 插件的配置.
 " doc: https://github.com/preservim/nerdtree
 
 " ,t  normal 模式下显示或隐藏目录树的快捷键.
@@ -574,7 +581,7 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ }
 """""""""""""""""""
 
-"""""" Tagbar 插件配置
+"""""" majutsushi/tagbar
 " 显示或隐藏大纲视图的快捷键: `,e`
 nmap ,e :TagbarToggle<CR>
 
@@ -655,7 +662,7 @@ let g:lightline#ale#indicator_warnings = "\uf071 "
 let g:lightline#ale#indicator_errors = "\uf05e "
 """""""""""""""""""""""""""
 
-"""""" Yggdroot/indentLine 插件配置
+"""""" Yggdroot/indentLine
 " 是否显示缩进线, 默认值: 1
 let g:indentLine_enabled = 1
 
@@ -684,6 +691,24 @@ set guifont=Hack_Nerd_Font:h13
 " }}
 
 """""""" 效率相关 {{
+
+"""""" takac/vim-hardtime
+" doc: https://github.com/takac/vim-hardtime
+
+" 是否使每一个窗口 buffer 都应用此插件功能, 默认值: 0.
+let g:hardtime_default_on = 1
+
+" 连续按 jklh 等命令时, 每次按键的超时时间, 默认值: 1000毫秒.
+let g:hardtime_timeout = 2000
+
+" 启用 hardtime 模式后, 是否进行模式已启用的提示, 默认值: 0, 表示不提示.
+let g:hardtime_showmsg = 1
+
+" 是否允许连续按2个不同的简单指令, 比如 jh, 默认值: 0, 表示不允许.
+let g:hardtime_allow_different_key = 1
+
+" 允许连续按几次简单命令, 默认值: 1.
+let g:hardtime_maxcount = 1
 
 """""" easymotion/vim-easymotion
 " doc: https://github.com/easymotion/vim-easymotion
@@ -722,7 +747,7 @@ let g:EasyMotion_smartcase = 1
 let g:EasyMotion_use_smartsign_us = 1
 """""""""""""""""""""
 
-"""""" Yggdroot/LeaderF 插件配置
+"""""" Yggdroot/LeaderF
 " 需要在系统上提前安装 rg 命令: brew install rg
 " doc: https://github.com/Yggdroot/LeaderF
 
@@ -751,7 +776,7 @@ noremap <Leader>rg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<C
 " visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
 xnoremap rg :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
 
-" ,rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, normal 模式下按 rc 即可.
+" ,rg 搜索内容关闭后, 想再次搜索上次搜索的内容, normal 模式下按 rc 即可.
 noremap ,rc :<C-U>Leaderf! rg --recall<CR>
 
 " 弹出独立的窗口来显示搜索文件.
@@ -768,10 +793,9 @@ let g:Lf_PopupColorscheme = 'default'
 
 " 弹出的窗口的高度, 默认值: 0.4, 表示占屏幕的 40%.
 let g:Lf_PopupHeight = 0.6
-
 """""""""""""""""""""
 
-"""""" lyokha/vim-xkbswitch 插件配置
+"""""" lyokha/vim-xkbswitch
 " doc: https://github.com/lyokha/vim-xkbswitch
 " 功能:
 "   从 insert 模式切换到 normal 模式时, 如果 insert 模式下为中文输入法, 则自动切换为英文输入法,
@@ -799,17 +823,18 @@ let g:XkbSwitchNLayout = 'us'
 set ttimeoutlen=25
 """""""""""""""""""""
 
-"""""" machakann/vim-highlightedyank 插件配置
+"""""" machakann/vim-highlightedyank
 " doc: https://github.com/machakann/vim-highlightedyank
 
-" 复制文本对象的高亮颜色显示的时间, 单位毫秒.
+" 被复制的文本对象的高亮颜色显示的时间, 单位毫秒.
 " 如果值为 -1, 则表示高亮颜色永久显示.
 let g:highlightedyank_highlight_duration = 1000
 
+" 解决个别主题或 terminal 配置下高亮不生效的问题, 一般可不配置此项.
 highlight HighlightedyankRegion cterm=reverse gui=reverse
 """""""""""""""""""""
 
-"""""" unblevable/quick-scope 插件配置
+"""""" unblevable/quick-scope
 " doc: https://github.com/unblevable/quick-scope
 
 " 是否禁用此插件, 默认值1, 表示启用.
@@ -823,7 +848,7 @@ let g:qs_lazy_highlight = 0
 
 """""""" Go {{
 
-"""""" fatih/vim-go 插件配置
+"""""" fatih/vim-go
 " doc: https://github.com/fatih/vim-go
 
 " *** 代码自动格式化 ***
@@ -1037,13 +1062,13 @@ autocmd bufnewfile *.sh call SetTitleForShell()
 
 """""""" Markdown {{
 
-""""""" tpope/vim-markdown 插件配置
+""""""" tpope/vim-markdown
 " doc: https://github.com/tpope/vim-markdown
 
 " 禁用 markdown 语法隐藏.
 let g:markdown_syntax_conceal = 0
 
-""""""" iamcco/markdown-preview.nvim 插件配置
+""""""" iamcco/markdown-preview.nvim
 " doc: https://github.com/iamcco/markdown-preview.nvim
 
 " 打开或关闭预览.
@@ -1070,22 +1095,21 @@ if !exists('g:gruvbox_contrast_light')
 endif
 
 " 启用颜色主题方案.
-" 常用方案备选: solarized, gruvbox, molokai
+" 优秀方案备选: solarized, gruvbox, molokai, one
 " 其他主题名称见 ~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
 " NOTE:
-"   如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 举例:
-"   Iterm2: Preferences -> Profiles -> Colors -> Color Presets -> Solarized Dark/Solarized Light
+"   1)如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 举例:
+"     Iterm2: Preferences -> Profiles -> Colors -> Color Presets -> Solarized Dark/Solarized Light
+"   2)如果使用 molokai 主题, set backgroud 不能设置为 light.
 colorscheme solarized
 
-" 设置背景色为黑色.
+" 设置背景色为黑色或亮色, dark or light.
 set background=dark
 
 " solarized 主题的特殊配置.
 if (g:colors_name == 'solarized')
-  if (&background == 'dark')
     " 定制状态栏的主题颜色.
     let g:lightline.colorscheme = 'solarized'
-  endif
 endif
 
 " gruvbox 主题的特殊配置.
@@ -1200,10 +1224,6 @@ set noerrorbells
 " 第1次按下 tab, 会显示所有匹配的操作指令的清单, 第2次按下 tab, 会依次选择各个指令.
 set wildmenu
 set wildmode=longest:list,full
-
-" 如果过了这么多毫秒数以后还没有任何输入, 把交换文件写入磁盘, 也用于 CursorHold 自动命令事件.
-" 默认值: 4000(毫秒)
-set updatetime=1000
 
 " 打字的时候隐藏鼠标光标.
 set mousehide
@@ -1364,6 +1384,7 @@ endif
 "
 " ** 持续优化你的 vimrc 文件:
 "     :help [object]  object 表示你要查看其文档的 VIM 某个命令或者插件名称等.
+"        :h [object]  同上.
 "                  K  1)通过上个命令打开文档, 对于有下划线的文本对象, 按 K 即可直接跳转到相关的文档,
 "                       ctrl o/i 可来回跳转, 增加文档阅读效率;
 "                     2)在阅读 .vimrc 时, 可通过按 K 自动打开光标所在对象的文档.
@@ -1448,6 +1469,8 @@ endif
 "     :%s/old/new/gc  每个匹配串替换前先提示是否进行替换.
 "             ctrl o  insert 模式下, 使临时进入 normal 模式下, 执行一个 normal 命令就自动再返回 insert 模式下.
 "         ctrl h/w/u  insert 模式下, 向左删除 1个字符/1个单词/到行首.
+"      ctrl od l/w/e  insert 模式下, 向右删除 1个字符/1个单词/1个不含空格的单词.
+"            ctrl oD  insert 模式下, 向右删除到行尾.
 "
 " ** 移动光标:
 "               kjhl  上下左右移动光标.
