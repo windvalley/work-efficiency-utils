@@ -87,20 +87,20 @@
 
 " 基础环境配置 {{
 
-" 关闭兼容模式, 也就是不再兼容VI, 必需放在第一行
+" 关闭兼容模式, 也就是不再兼容 VI, 必需放在第一行.
 set nocompatible
 
+" 设置 VIM 内部使用的字符编码, 默认值 latin1 或者操作系统 $LANG 环境变量对应的编码.
 set encoding=utf8
 
-" VIM记住多少次历史操作.
+" VIM 保存多少个历史命令, 一般保存在 ~/.viminfo 隐藏文件中.
 set history=1000
 
-" 基于文件类型区别对待插件和缩进,
-" 比如对于 .go 文件, 按tab键将显示tab字符`<---`, 其他类型文件, 按tab键显示4个空格`----`
+" 打开文件类型检测, 允许插件文件载入, 允许缩进文件载入.
 filetype plugin indent on
 
-" 重新设置 map leader 键, 即 normal 模式下一些VIM命令的prefix, 由默认的`/`改为`,`
-let mapleader = ","
+" 重新设置 leader 键, 即一些自定义命令的前缀, 默认值: '\'
+let mapleader = ','
 
 " }}
 
@@ -245,6 +245,15 @@ Plug 'tpope/vim-surround'
 " 自动补全引号(单引号/双引号/反引号)、括号(小括号/中括号/大括号)的插件.
 Plug 'Raimondi/delimitMate'
 
+" 复制文本对象的时候, 高亮显示复制的文本对象.
+Plug 'machakann/vim-highlightedyank'
+
+" 为行内跳转指令 f F t T 提供高亮字符显示.
+Plug 'unblevable/quick-scope'
+
+" 移动光标后, / 或 ? 模式下搜索的文本或通过 * 或 # 搜索的文本, 自动去除高亮显示.
+Plug 'haya14busa/is.vim'
+
 " 切换到 normal 模式时切换到英文输入法.
 Plug 'lyokha/vim-xkbswitch'
 
@@ -333,22 +342,21 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " 如果值为空, 则表示禁用此功能.
 " 默认值是: CursorHold, 表示光标停留在函数一小会儿后自动展示文档;
 let g:ycm_auto_hover = 'CurorHold'
+
 " 设置此 map 后, 上面的 let g:ycm_auto_hover = 'CurorHold' 功能自动失效, 需要通过`,D`来触发文档显示.
 nmap <leader>D <plug>(YCMHover)
 
 " 是否启用 YCM 提供的代码静态检查功能, 由于我们使用了 ale 来做静态代码检查, 所以这里禁用.
 " 默认值: 1
 let g:ycm_show_diagnostics_ui = 0
-let g:ycm_error_symbol = '>>'
-let g:ycm_warning_symbol = '>'
 """"""""""""""""""""""""""
 
 " }}
 
 """""""" 代码静态检查配置 {{
 
-" ale用于替代syntastic插件.
-" NOTE: `:ALEInfo`, 用于查看当前文件的语法检查配置情况,
+" ale 用于替代 syntastic 插件.
+" NOTE: :ALEInfo  用于查看当前文件的语法检查配置情况,
 " 内容尾部是对当前文件内容执行检查的日志, 可通过这些日志排查问题.
 " doc: https://github.com/dense-analysis/ale
 
@@ -417,11 +425,10 @@ nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " NOTE:
-" 其他没有在这里配置的语言将使用ale默认配置的linter,
-" 可以使用`:ALEInfo`来查看当前文件使用了哪些默认的linter.
+" 其他没有在这里配置的语言将使用 ale 默认配置的 linter,
+" 可以使用 :ALEInfo 来查看当前文件使用了哪些默认的 linter.
 "
-" 注意需要在本地安装涉及到的 command 工具:
-"   brew update
+" 注意需要在本地安装涉及到的命令行工具:
 "   brew install golangci-lint lua luarocks tidy-html5 shellcheck jq
 "   luarocks install luacheck
 "   npm install -g eslint standard eslint-plugin-vue vls \
@@ -431,16 +438,16 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 "   go get -u github.com/mgechev/revive
 "   sudo gem install mdl
 "
-" eslint配置文件, 项目根目录下的.eslintrc.json, 需要通过如下命令生成, 我们这里使用standard风格:
+" eslint 配置文件, 项目根目录下的 .eslintrc.json, 需要通过如下命令生成, 我们这里使用 standard 风格:
 "   eslint --init
-"   或 vue create project-demo(需要选择手动配置, 选择standard风格), 将配置生成到package.json的eslintConfig字段.
-" prettier配置文件, 项目根目录下的.prettierrc.json:
+"   或 vue create project-demo(需要选择手动配置, 选择standard风格), 将配置生成到 package.json 的 eslintConfig 字段.
+" prettier 配置文件, 项目根目录下的 .prettierrc.json:
 "    {
 "      "singleQuote": true,
 "      "semi": false
 "    }
 "
-" 对于Python项目, 如果使用虚拟环境, 需要在虚拟环境下安装相关lint工具, 拿poetry依赖工具举例:
+" 对于Python项目, 如果使用虚拟环境, 需要在虚拟环境下安装相关 linter 工具, 拿 poetry 依赖工具举例:
 "    poetry init
 "    poetry shell
 "    poetry add pylint flake8 autoimport black isort -D
@@ -457,21 +464,22 @@ let g:ale_linters = {
     \    'markdown': ['mdl', 'markdownlint', 'proselint', 'alex'],
     \ }
 
-" 覆盖掉~/.vim/plugged/ale/ale_linters/go/golangci_lint.vim中的个别默认配置;
-" golanci-lint run 命令不加额外参数, 解决默认加的--enable-all参数导致的错误.
+" 覆盖掉 ~/.vim/plugged/ale/ale_linters/go/golangci_lint.vim 中的个别默认配置;
+" golanci-lint run 命令不加额外参数, 解决默认加的 --enable-all 参数导致的错误.
 call ale#Set('go_golangci_lint_options', '')
-" golangci-lint run 命令以包为单位进行检查, 解决默认以文件方式检查时的typecheck错误误报的问题.
+
+" golangci-lint run 命令以包为单位进行检查, 解决默认以文件方式检查时的 typecheck 错误误报的问题.
 call ale#Set('go_golangci_lint_package', 1)
 
 " 安装相关的命令行工具:
 "   npm install -g prettier importjs lua-fmt
 "   pip3 install black isort
 "   go get mvdan.cc/sh/v3/cmd/shfmt
-" prettier等工具自身就有trim_whitespace和remove_trailing_lines的能力, 所以不用重复添加.
+" prettier 等工具自身就有 trim_whitespace 和 remove_trailing_lines 的能力, 所以不用重复添加.
 "
-" 注意:
-" 不要使用python的autoimport工具, 重新排版的import可能发生错误;
-" 用于python的isort, 可选择性使用, 我这里也不启用, 直接用black的import排版能力即可.
+" NOTE:
+"   不要使用 python 的 autoimport 工具, 重新排版的 import 可能发生错误;
+"   用于 python 的 isort, 可选择性使用, 我这里也不启用, 直接用 black 的 import 排版能力即可.
 let g:ale_fixers = {
     \    'python': ['black', 'add_blank_lines_for_python_control_statements'],
     \    'lua': ['luafmt', 'trim_whitespace', 'remove_trailing_lines'],
@@ -491,8 +499,8 @@ let g:ale_fixers = {
 """""" NERDTree插件的配置
 " doc: https://github.com/preservim/nerdtree
 
-" ,w  normal 模式下显示或隐藏目录树的快捷键.
-nnoremap ,w :NERDTreeToggle<CR>
+" ,t  normal 模式下显示或隐藏目录树的快捷键.
+nnoremap <Leader>t :NERDTreeToggle<CR>
 
 " 目录树显示在左侧还是右侧.
 " 可选值: 'right', 'left', 默认值: 'left'
@@ -501,11 +509,11 @@ let NERDTreeWinPos = 'left'
 " 设置目录树窗口宽度, 默认值: 31
 let NERDTreeWinSize=35
 
-" 不显示目录树上方的'Bookmarks' 和 'Press ? for help'文本,
+" 不显示目录树上方的 'Bookmarks' 和 'Press ? for help' 文本,
 " 默认值为 0, 表示显示, 1 表示不显示.
 let NERDTreeMinimalUI=1
 
-" 按m键触发menu的时候, 是否使用精简版menu, 类似这种:
+" 按 m 键触发 menu 的时候, 是否使用精简版 menu, 类似这种:
 "   Menu: [ (a)dd ,m,d,r,o,q,c,l] (Use j/k/enter or shortcut):
 " 默认值: 0, 表示不使用.
 let NERDTreeMinimalMenu=1
@@ -537,19 +545,17 @@ autocmd BufEnter NERD_tree_* | execute 'normal R'
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
-" 标签页切换快捷键: `shift h`向左, `shift l`向右.
+" 标签页切换快捷键: `shift h` 向左, `shift l` 向右.
 map <S-h> gT
 map <S-l> gt
 
-" 是否显示隐藏文件.
-" 默认值: 0
+" 是否显示隐藏文件, 默认值: 0, 表示不显示.
 let NERDTreeShowHidden=1
 
 " 忽略哪些文件的显示, 开启这个将默认显示隐藏文件.
 let NERDTreeIgnore=['\.git$','\.pyc$','__pycache__','\.swp$']
 
-" 是否显示目录树的行号.
-" 默认值: 0
+" 是否显示目录树的行号, 默认值: 0, 表示不显示.
 let NERDTreeShowLineNumbers=0
 """""""""""""""""""
 
@@ -568,23 +574,22 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ }
 """""""""""""""""""
 
-"""""" Tagbar插件配置
+"""""" Tagbar 插件配置
 " 显示或隐藏大纲视图的快捷键: `,e`
 nmap ,e :TagbarToggle<CR>
 
-" tagbar 窗口是否显示在左侧, 默认值: 0, 表示显示在右测.
+" Tagbar 窗口是否显示在左侧, 默认值: 0, 表示显示在右测.
 let g:tagbar_left = 0
 
-" 设置Tagbar窗口宽度, 默认值: 40
+" 设置 Tagbar 窗口宽度, 默认值: 40
 let g:tagbar_width = 35
 
-" 是否开启自动预览, 如果开启, 将光标移动到 tagbar 窗口时, 会自动打开一个新窗口用于预览,
+" 是否开启自动预览, 如果开启, 将光标移动到 Tagbar 窗口时, 会自动打开一个新窗口用于预览,
 " 随着光标在标签上移动, 预览窗口也会实时进行代码定位.
 " 默认值: 0, 表示不开启预览.
 let g:tagbar_autopreview = 1
 
-" 根据 tag 的名称排序.
-" 默认值: 1
+" 根据 tag 的名称排序, 默认值: 1.
 " 设置为 0 表示禁用排序, 即按标签本身在代码文件中的位置排序.
 let g:tagbar_sort = 0
 """""""""""""""""""
@@ -651,31 +656,27 @@ let g:lightline#ale#indicator_errors = "\uf05e "
 """""""""""""""""""""""""""
 
 """""" Yggdroot/indentLine 插件配置
-" 是否显示缩进线.
-" 默认值: 1
+" 是否显示缩进线, 默认值: 1
 let g:indentLine_enabled = 1
 
-" 自定义缩进线样式.
-" 默认值: '¦'
+" 自定义缩进线样式, 默认值: '¦'
 let g:indentLine_char = '¦'
 
-" 不同层级显示不同的缩进线.
-" 默认值: []
+" 不同层级显示不同的缩进线, 默认值: []
 let g:indentLine_char_list = ['¦', '┆', '┊']
 
-" 缩进线的颜色定义
+" 缩进线的颜色定义.
 let g:indentLine_defaultGroup = 'SpecialKey'
 """""""""""""""""""""""""""
 
 """""" 'ryanoasis/vim-devicons' 配置
 " doc: https://github.com/ryanoasis/vim-devicons
 "
-" 启用文件类型显示.
-" 默认值: 1
+" 是否启用文件类型图标显示, 默认值: 1, 表示启用.
 let g:webdevicons_enable = 1
 
 " 为 gvim/mvim 设置字体和字号.
-" NOTE: 如果使用 iterm2 终端, 需要通过更改 iterm2 的font字体才可以, 此处的配置对 iterm2 无效;
+" NOTE: 如果使用 iterm2 终端, 需要通过更改 iterm2 的 font 字体才可以, 此处的配置对 iterm2 无效;
 "   Iterm2: Preferences -> Text -> Font, 选择 Hack Nerd Font 或 Hack Nerd Font Mono.
 set guifont=Hack_Nerd_Font:h13
 """""""""""""""""""
@@ -684,39 +685,90 @@ set guifont=Hack_Nerd_Font:h13
 
 """""""" 效率相关 {{
 
+"""""" easymotion/vim-easymotion
+" doc: https://github.com/easymotion/vim-easymotion
+
+" 标记所有窗口的单词.
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+" 仅标记当前窗口的单词.
+"map  <Leader>w <Plug>(easymotion-bd-w)
+
+" 标记所有窗口的所有行首字符.
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+" 标记当前窗口的所有行首字符.
+"map <Leader>L <Plug>(easymotion-bd-jk)
+
+" 标记当前行光标右侧的字符.
+map <Leader>l <Plug>(easymotion-lineforward)
+" 标记当前行光标左侧的字符.
+map <Leader>h <Plug>(easymotion-linebackward)
+
+" 输入1个目标字符即可高亮定位, 支持多窗口同时定位.
+nmap s <Plug>(easymotion-overwin-f)
+" 需要输入2个目标字符才可高亮定位, 支持多窗口同时定位.
+"nmap s <Plug>(easymotion-overwin-f2)
+
+" 覆盖 VIM 自带的 / 搜索模式.
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+
+" 是否启用默认的快捷键映射, 默认值: 1, 表示启用.
+let g:EasyMotion_do_mapping = 1
+
+" 搜索字母的时候是否忽略大小写和 VIM 的 smartcase 表现一致.
+let g:EasyMotion_smartcase = 1
+
+" 搜索小写字母, 搜索结果大小写字母都包含, 但搜索大写字母时, 搜索结果仅包含大写字母.
+let g:EasyMotion_use_smartsign_us = 1
+"""""""""""""""""""""
+
 """""" Yggdroot/LeaderF 插件配置
 " 需要在系统上提前安装 rg 命令: brew install rg
 " doc: https://github.com/Yggdroot/LeaderF
 
-" normal 模式下 ff  进入文件搜索的 模糊搜索方式;
-" 再 ctrl r  进入 正则匹配 方式;
-let g:Lf_ShortcutF = "ff"
+" normal 模式下 ,f  进入文件搜索的模糊搜索方式;
+" 再 ctrl r  进入 正则匹配 方式.
+let g:Lf_ShortcutF = ",f"
+
+" 搜索当前已经打开的所有文件的内容.
+noremap <leader>b :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
 
 " 显示最近打开过的文件列表.
 noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
 
-" 搜索当前文件的内容.
-noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+" 显示当前文件的 tag 信息.
 noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+
+" 显示当前文件去除空行之外的所有行.
 noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
 
-" 从 normal 模式下按 rg 进入 command-line 模式下, 然后输入要搜索的文本(支持正则表达式),
+" 从 normal 模式下按 ,rg 进入 command-line 模式下, 然后输入要搜索的文本(支持正则表达式),
 " 回车即可显示此项目内包含此文本的文件列表;
 " 在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
 " 然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后, 按 t 将以新建标签页的方式打开选择的文件.
-noremap rg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+noremap <Leader>rg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
 
 " visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
 xnoremap rg :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
 
-" rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, normal 模式下按 rc 即可.
-noremap rc :<C-U>Leaderf! rg --recall<CR>
+" ,rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, normal 模式下按 rc 即可.
+noremap ,rc :<C-U>Leaderf! rg --recall<CR>
 
 " 弹出独立的窗口来显示搜索文件.
 let g:Lf_WindowPosition = 'popup'
-" 弹出的窗口占终端的百分比, 0.8 即80%.
+
+" 弹出的窗口占终端屏幕的百分比, 0.8 即 80%.
 let g:Lf_PopupWidth = 0.8
+
+" 是否在弹出的窗口中预览搜索结果, 默认值: 0
 let g:Lf_PreviewInPopup = 1
+
+" 弹出的窗口的颜色模式, 默认值: 'default'.
+let g:Lf_PopupColorscheme = 'default'
+
+" 弹出的窗口的高度, 默认值: 0.4, 表示占屏幕的 40%.
+let g:Lf_PopupHeight = 0.6
+
 """""""""""""""""""""
 
 """""" lyokha/vim-xkbswitch 插件配置
@@ -747,6 +799,26 @@ let g:XkbSwitchNLayout = 'us'
 set ttimeoutlen=25
 """""""""""""""""""""
 
+"""""" machakann/vim-highlightedyank 插件配置
+" doc: https://github.com/machakann/vim-highlightedyank
+
+" 复制文本对象的高亮颜色显示的时间, 单位毫秒.
+" 如果值为 -1, 则表示高亮颜色永久显示.
+let g:highlightedyank_highlight_duration = 1000
+
+highlight HighlightedyankRegion cterm=reverse gui=reverse
+"""""""""""""""""""""
+
+"""""" unblevable/quick-scope 插件配置
+" doc: https://github.com/unblevable/quick-scope
+
+" 是否禁用此插件, 默认值1, 表示启用.
+let g:qs_enable=1
+
+" 性能考虑, 是否延迟显示高亮字符, 默认值: 0, 表示实时显示.
+let g:qs_lazy_highlight = 0
+"""""""""""""""""""""
+
 " }}
 
 """""""" Go {{
@@ -762,13 +834,11 @@ let g:go_imports_autosave = 1
 
 
 " *** 代码高效阅读 ***
-" ,i  查看光标所在函数等的简要信息, 显示在终端底部.
-au FileType go nmap <Leader>i <Plug>(go-info)
 " ,d  上下分屏查看光标所在函数等的文档, 同 K, 不过没有 K 快, 建议使用 K, 如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
 au FileType go nmap <Leader>d <Plug>(go-doc)
 " ,dv  左右分屏查看光标所在函数等的文档, 如果设置了let g:go_doc_popup_window = 1, 则弹出浮窗.
 au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
-" 使用 K 查看光标下对象的文档的窗口大小. 默认值: 20
+" 查看光标下对象的文档的窗口大小. 默认值: 20
 let g:go_doc_max_height = 20
 " 查看光标下的对象的文档的时候使用悬浮窗口替代新打开一个窗口. 默认值: 0
 let g:go_doc_popup_window = 1
@@ -788,12 +858,12 @@ au FileType go nmap <Leader>s <Plug>(go-implements)
 "
 " gd  默认以覆盖当前页面的方式跳转到函数定义处, vim-go插件默认行为, 无需配置.
 "
-" ds  上下分屏跳转到函数定义处.
-au FileType go nmap ds <Plug>(go-def-split)
-" dv  左右分屏跳转到函数定义处.
-au FileType go nmap dv <Plug>(go-def-vertical)
-" dt  新开一个标签页的方式跳转到函数定义处.
-au FileType go nmap dt <Plug>(go-def-tab).
+" gb  新开一个标签页的方式跳转到函数定义处.
+au FileType go nmap gb <Plug>(go-def-tab).
+" gs  上下分屏跳转到函数定义处.
+au FileType go nmap gs <Plug>(go-def-split)
+" gv  左右分屏跳转到函数定义处.
+au FileType go nmap gv <Plug>(go-def-vertical)
 " 对于跳转到对象定义处的功能, 重用已经打开的buffer. 默认值: 0
 let g:go_def_reuse_buffer = 1
 
@@ -820,14 +890,14 @@ let g:go_template_use_pkg = 1
 
 
 " *** 运行当前 Go 文件 ***
-" ,r  go run 当前的go文件.
-au FileType go nmap <leader>r <Plug>(go-run)
-" ,b  go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build.
-au FileType go nmap <leader>b <Plug>(go-build)
-" ,t  go test 当前的go文件.
-au FileType go nmap <leader>t <Plug>(go-test)
-" ,c  查看当前代码文件的测试覆盖率.
-au FileType go nmap <Leader>c <Plug>(go-coverage)
+" ,gr  go run 当前的go文件.
+au FileType go nmap ,gr <Plug>(go-run)
+" ,gb  go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build.
+au FileType go nmap ,gb <Plug>(go-build)
+" ,gt  go test 当前的go文件.
+au FileType go nmap ,gt <Plug>(go-test)
+" ,gc  查看当前代码文件的测试覆盖率.
+au FileType go nmap ,gc <Plug>(go-coverage)
 
 
 " *** 代码语法高亮 ***
@@ -858,10 +928,10 @@ let g:go_highlight_diagnostic_warnings = 1
 
 """""""" Python {{
 
-" requirements文本文件内容也高亮显示.
+" requirements 文本文件内容也高亮显示.
 autocmd BufNewFile,BufRead requirements*.txt set ft=python
 
-" 新建.py结尾的文件时, 自动输入一些内容
+" 新建 .py 结尾的文件时, 自动输入一些内容
 func SetTitleForPython()
     call setline(1, "\#!/usr/bin/env python3")
     call setline(2, "\"\"\"")
@@ -871,12 +941,12 @@ func SetTitleForPython()
     normal G
     normal o
     normal o
-    " 为新创建的.py文件自动赋予可执行权限
+    " 为新创建的 .py 文件自动赋予可执行权限
     au BufWritePost *.py silent !chmod a+x <afile>
 endfunc
 autocmd bufnewfile *.py call SetTitleForPython()
 
-" 如果一个.py文件开头第一行不是以#!开头, 就去除掉文件的可执行权限.
+" 如果一个 .py 文件开头第一行不是以 #! 开头, 就去除掉文件的可执行权限.
 function! NoShabang(line1, current_file)
   if a:line1 !~ '^#!'
     let chmod_command = "silent !chmod ugo-x " . a:current_file
@@ -951,13 +1021,14 @@ func SetTitleForShell()
     call setline(1, "\#!/usr/bin/env bash")
     call setline(2, "# " . current_filename)
     call setline(3, "#")
-    "call setline(4, "# Author: windvalley") " 改成你自己的名字
+    " 改成你自己的名字
+    "call setline(4, "# Author: windvalley")
     "call setline(5, "# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
     call setline(4, "")
     normal G
     normal o
     normal o
-    " 为新创建的.sh文件自动赋予可执行权限
+    " 为新创建的 .sh 文件自动赋予可执行权限
     au BufWritePost *.sh silent !chmod a+x <afile>
 endfunc
 autocmd bufnewfile *.sh call SetTitleForShell()
@@ -975,9 +1046,10 @@ let g:markdown_syntax_conceal = 0
 """"""" iamcco/markdown-preview.nvim 插件配置
 " doc: https://github.com/iamcco/markdown-preview.nvim
 
-let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
-
+" 打开或关闭预览.
 nmap ,p <Plug>MarkdownPreviewToggle
+
+let g:mkdp_path_to_chrome = "open -a Google\\ Chrome"
 
 let g:mkdp_auto_close=0
 
@@ -1091,6 +1163,7 @@ set cmdwinheight=8
 
 " 一个 tab 显示几个空格长度, 默认是8个空格, 这里改为4个空格.
 set ts=4
+
 " 将 tab 缩进用空格来表示, 提高效率.
 set expandtab
 
@@ -1279,7 +1352,7 @@ endif
 """""""""" VIM 常用命令行 {{
 "
 " vim -u NONE                   无插件方式运行 VIM.
-" vim -g 或 mvim 或 gvim              macOS 下运行 VIM 的图形界面模式, 需安装 macvim.
+" vim -g 或 mvim 或 gvim        macOS 下运行 VIM 的图形界面模式, 需安装 macvim.
 " vim -V9myVIM.log              将 VIM 运行的详细日志保存到 myVIM.log 文件中.
 " vim --startuptime vim.log     记录带时间字段的启动日志.
 " vim -c 'normal 5G36|'         normal 模式下跳转到第 5 行第 36 列.
@@ -1307,7 +1380,8 @@ endif
 "                  d  表示删除.
 "                  x  表示删除, 但删除对象只能是字符单位.
 "                  c  表示修改, 修改的意思是删除文本对象后进入 insert 模式等待输入新内容.
-"                  s  表示修改, 但修改对象只能是字符单位.
+"                  s  表示修改, 但修改对象只能是字符单位, 但本 vimrc 已经配置将 s 给 easymotion 插件使用.
+"                  J  表示join, 合并多行到当前行.
 "
 "                  l  表示光标右侧1个字符.
 "                  h  表示光标左侧1个字符.
@@ -1319,12 +1393,15 @@ endif
 "                  B  表示光标左侧1个单词(非空白字符也是单词的组成部分).
 "                  s  sentence, 句子.
 "                  p  paragraph, 段落.
+"                  t  tag, html 标签.
 "
 "                  n  表示要操作的文本对象的数量, 不写 n 的话, 默认是 1.
 "                  i  inside, 表示光标在要操作的文本对象的内部, 不包含边界.
 "                  a  around, 表示光标在要操作的文本对象的内部, 包含边界.
-"                  t  till, 向前到某个字符, 不包含目标字符.
-"                  f  forward, 向前到某个字符, 包含目标字符.
+"                  t  till, 向右到某个字符, 不包含目标字符.
+"                  T  向左到某个字符, 不包含目标字符.
+"                  f  forward, 向右到某个字符, 包含目标字符.
+"                  F  向左到某个字符, 包含目标字符.
 "
 " 以上字符可按基本规则自由组合:
 "       y/v/d/c [n]l  复制/选择/删除/修改光标右 n 个字符, n 可不输入, 默认是1.
@@ -1338,6 +1415,7 @@ endif
 "         y/v/d/c t*  复制/选择/删除/修改光标右侧直到*的文本, 不包含*, *表示一个具体的字符.
 "        [n]yy/dd/cc  复制/删除/修改 n 行.
 "         y/v/d/c ip  复制/选择/删除/修改 光标所在段落.
+"         y/v/d/c it  复制/选择/删除/修改 光标所在的 html 标签.
 "          y/v/d/c 0  从光标位置 复制/选择/删除/修改 到行首.
 "          y/v/d/c $  从光标位置 复制/选择/删除/修改 到行尾.
 "         di "/(/{/[  删除 "" 或 () 或 {} 等之间的所有字符, 不包括它们本身.
@@ -1354,7 +1432,9 @@ endif
 "               [n]x  剪切光标右侧 n 个字符, 同 d[n]l.
 "               [n]X  剪切光标左侧 n 个字符, 同 d[n]h.
 "               [n]s  修改光标后 n 个字符, 同 c[n]l.
+"                     NOTE: 本 vimrc 文件配置已将 s 命令给 easymotion 插件使用.
 "               [n]S  修改整行, 同 [n]cc.
+"               [n]J  合并包含光标所在行在内的 n 行到当前行, 如果只是 J, 则是合并下一行到光标所在行.
 "                p/P  在光标 右侧/左侧 粘贴.
 "               [n]r  替换当前光标右侧 n 个字符.
 "                  R  进入 replace 模式, 每次按键替换一个字符, 直到按 ESC 键退出 replace 模式.
@@ -1371,7 +1451,7 @@ endif
 "
 " ** 移动光标:
 "               kjhl  上下左右移动光标.
-"              gk/gj  对于折行的情况, 向上/向下 在折行间移动光标.
+"              gk/gj  对于折行的情况, 向上/向下在折行间移动光标.
 "                w/W  向右移动一个单词位置, 光标在单词开头,
 "                     大写表示特殊符号也算单词的组成部分, 可前置数字表示移动的单词数量.
 "                e/E  同上, 区别是移动到单词末尾.
@@ -1386,8 +1466,10 @@ endif
 "                 N%  光标移动到 N% 行处.
 "                 N|  至第 N 列, 这里的 | 是竖线字符.
 "                */#  匹配当前光标所在单词并跳转到下一个单词/上一个单词.
-"                 f*  这里的 * 表示的是任意你要跳转到的本行字符, 比如你要跳转到`,`, 则`f,`,
+"                 f*  这里的 * 表示任意你要跳转到的本行字符, 比如你要跳转到 m, 则`fm`,
 "                     然后按`;`继续向右匹配, 按`,`向左匹配, 直到跳转到自己想去的位置.
+"                 t*  同上, 区别是不包含目标字符.
+"              F*/T*  同上, 区别是方向是向左的.
 "           ctrl o/i  将光标跳转到之前/之后的位置.
 "           ctrl f/b  向下/向上翻整屏.
 "           ctrl d/u  向下/向上翻半屏.
@@ -1395,7 +1477,7 @@ endif
 "           zt/zz/zb  把光标所在行放置到屏幕的顶部、中间、底部.
 "
 " ** 排版:
-"              >>/<<  在 normal 模式下向 右/左 缩进4个空格.
+"              >>/<<  normal 模式下向 右/左 缩进4个空格.
 "                >/<  visual 模式下向 右/左 缩进4个空格.
 "                :ce  本行文字居中(center).
 "                :le  本行文字靠左(left).
@@ -1419,10 +1501,11 @@ endif
 " ** 分屏:
 "            :sp/:vs  上下/左右 分割窗口.
 "       :sp/:vs file  上下/左右 分屏创建新文件.
-"            ctrl ww  光标在多个分屏窗口之间移动.
+"            ctrl ww  光标在多个分屏窗口之间循环移动.
 "     ctrl w j/k/h/l  光标移动到 下面/上面/左边/右边 的窗口.
+"            ctrl wp  光标移动到上一次所在的窗口.
 "              :only  多个分屏窗口的场景下, 使用此命令仅保留当前光标所在窗口, 关闭所有其他窗口.
-
+"
 " ** 其他:
 "              :help  顶部分屏打开帮助文档窗口.
 "             :[tab]  command-line 模式下要擅用 tab 补全.
@@ -1462,18 +1545,28 @@ endif
 "                     也可使用`ctrl l`主动触发语义补全提示, 然后按tab键进行选择.
 "
 " ** Yggdroot/LeaderF (https://github.com/Yggdroot/LeaderF)
-"                 ff  进入文件搜索的 模糊搜索 方式;
-"             ctrl r  在 ff 命令的基础上, 按这个快捷键进入文件搜索的 正则匹配 方式;
+"                 ,f  进入文件搜索的模糊搜索方式;
+"             ctrl r  在 ,ff 命令的基础上, 按这个快捷键进入文件搜索的正则匹配方式;
+"                 ,b  搜索当前已经打开的所有文件的内容.
 "                ,fm  显示最近打开过的文件列表.
 "                ,ft  显示当前文件的 tags 列表.
 "                ,fl  显示当前文件的去除空行的所有行.
-"                 rg  1) 从 normal 模式下按 rg 进入 command-line 模式下, 然后输入要搜索的文本(支持正则表达式),
-"                        回车即可显示此项目内包含此文本的文件列表;
-"                        在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
-"                        然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后,
-"                        按 t 将以新建标签页的方式打开选择的文件.
-"                     2) visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
-"                 rc  rg 搜索内容关闭后, 想再次搜索上次是搜索的内容, normal 模式下按 rc 即可.
+"                ,rg  从 normal 模式下按 ,rg 进入 command-line 模式下, 然后输入要搜索的文本(支持正则表达式),
+"                     回车即可显示此项目内包含此文本的文件列表;
+"                     在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
+"                     然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后,
+"                     按 t 将以新建标签页的方式打开选择的文件.
+"                 rg  visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
+"                ,rc  ,rg/rg 搜索内容关闭后, 想再次搜索上次搜索的内容, normal 模式下按 ,rc 即可.
+"
+" ** easymotion/vim-easymotion (https://github.com/easymotion/vim-easymotion)
+"                ,s  按此快捷键后, 再输入一个光标要跳转到的字符 x, 你会发现 x 变成了另外一个字符 g, 你直接输入 g 即可完成跳转.
+"                ,w  标记所有窗口的单词.
+"                ,L  标记所有窗口的所有行首字符.
+"                ,l  标记当前行光标右侧的字符.
+"                ,h  标记当前行光标左侧的字符.
+"                 s  输入1个目标字符即可高亮定位, 支持多窗口同时定位.
+"                 /  覆盖了 VIM 自带的 / 搜索模式.
 "
 " ** preservim/nerdcommenter (https://github.com/preservim/nerdcommenter)
 "       [n],c<space>  注释或取消注释光标所在行, 或 visual 模式下选择多行来注释或取消注释.
@@ -1483,33 +1576,41 @@ endif
 "             [n],cy  添加注释并复制被被注释的部分.
 "             [n],cA  跳转到该行结尾添加注释符号，并进入 insert 模式.
 "
-" ** easymotion/vim-easymotion (https://github.com/easymotion/vim-easymotion)
-"                ,,w  把光标下方的所有可见内容进行高亮符号标记, 想让光标跳转到哪里,
-"                     就输入那里的高亮字符或字符组合, 即可跳转到那里.
-"
 " ** fatih/vim-go (https://github.com/fatih/vim-go/wiki/Tutorial) 只适用于Go
-"                 ,i  窗口底部显示光标所在函数等的简要信息.
-"                 ,d  顶部分屏显示光标所在函数等的文档.
-"                ,dv  左侧分屏查看光标所在函数等的文档.
+"   代码阅读相关:
+"                 ,d  上下分屏查看光标所在函数等的文档, 如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
+"                  K  同 ,d 并且显示速度更快, 建议优先使用.
+"                ,dv  左右分屏查看光标所在函数等的文档, 如果设置了let g:go_doc_popup_window = 1, 则弹出浮窗.
+"                 gr  在 location list 中列出哪些地方引用了光标所在的对象.
+"                ,cl  在 location list 中列出哪些地方调用了光标所在的函数.
 "                 ,s  查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上.
-"                 ,f  查看哪些地方调用了光标所在的函数.
-"                 ,t  go test 测试当前go文件.
-"                 ,c  查看当前文件的测试覆盖率.
-"                 ,r  go run 运行当前go文件.
-"                 ,b  go build 编译当前的go文件.
 "
-"                 normal 模式跳转到对象(函数)定义或声明处的几种方式:
+"   跳转到对象(函数)定义或声明处的几种方式:
 "                 gd  覆盖当前页面.
-"                 dt  新开一个标签页.
-"                 ds  在上方分屏.
-"                 dv  在右侧分屏.
+"                 gb  新开一个标签页.
+"                 gs  在上方分屏.
+"                 gv  在右侧分屏.
+"
+"   代码自动生成相关:
+"                ,im  自动为光标下的类型生成指定接口的实现方法.
+"                ,ki  自动把光标所在的结构体字面量(仅有value没有key的情况)补充上字段.
+"                ,fs  自动把光标所在的结构体字面量, 以字段零值方式补上尚未填写的字段.
+"                ,ie  自动生成 if err != nil 代码段.
+"                ,at  为光标所在的结构体定义自动生成字段对应的tags.
+"                ,rn  级联的重命名光标下的标识符, 重命名后, 项目内的所有与其相关的地方全部会更新.
+"
+"   代码运行相关:
+"                ,gr  go run 当前的go文件.
+"                ,gb  go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build.
+"                ,gt  go test 当前的go文件.
+"                ,gc  查看当前代码文件的测试覆盖率.
 "
 " ** python-mode/python-mode (https://github.com/python-mode/python-mode)
 "                 ,r  运行当前Python文件.
 "                 ,b  添加或删除断点, 添加完成后需要在命令行来执行该Python脚本进行断点测试, 不能使用`,r`来运行.
 "
 " ** scrooloose/nerdtree (https://github.com/preservim/nerdtree)
-"                 ,w  打开或关闭左侧目录树.
+"                 ,t  打开或关闭左侧目录树.
 "                  q  关闭目录树窗口.
 "                  ?  打开/关闭该插件的帮助文档.
 "                o/O  展开目录/递归的展开目录, 原地再按一次则对应关闭目录.
