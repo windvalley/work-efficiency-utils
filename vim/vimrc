@@ -7,7 +7,7 @@
 " 查看折叠内容的方法:
 "    za: normal 模式下按`za`, 表示当光标在关闭折叠上时打开之, 在打开折叠上时关闭之;
 "        在打开的折叠内部任意处按`za`, 也会关闭折叠.
-"    zA: 是`za`的递归操作, 针对嵌套折叠的场景.
+"    zA: 是`za`的递归操作, 是针对嵌套折叠的场景.
 
 
 " 安装步骤 {{
@@ -91,7 +91,7 @@
 set nocompatible
 
 " 设置 VIM 内部使用的字符编码, 默认值 latin1 或者操作系统 $LANG 环境变量对应的编码.
-set encoding=utf8
+set encoding=utf-8
 
 " VIM 保存多少个历史命令, 一般保存在 ~/.viminfo 隐藏文件中.
 set history=1000
@@ -255,11 +255,11 @@ Plug 'machakann/vim-highlightedyank'
 " 为行内跳转指令 f F t T 提供高亮字符显示.
 Plug 'unblevable/quick-scope'
 
-" 移动光标后, / 或 ? 模式下搜索的文本或通过 * 或 # 搜索的文本, 自动去除高亮显示.
-Plug 'haya14busa/is.vim'
-
 " 切换到 normal 模式时切换到英文输入法.
 Plug 'lyokha/vim-xkbswitch'
+
+" 在 .tmux.conf 中直接通过 K 查看 tmux 文档等功能.
+Plug 'tmux-plugins/vim-tmux'
 
 " VIM 从菜鸟到高手之路必备, 禁止连续按 jkhl 等低效操作, 强制你根据不同场景来思考使用更高效的命令的习惯.
 Plug 'takac/vim-hardtime'
@@ -523,24 +523,30 @@ let NERDTreeMinimalUI=1
 " 按 m 键触发 menu 的时候, 是否使用精简版 menu, 类似这种:
 "   Menu: [ (a)dd ,m,d,r,o,q,c,l] (Use j/k/enter or shortcut):
 " 默认值: 0, 表示不使用.
-let NERDTreeMinimalMenu=1
+let NERDTreeMinimalMenu=0
 
-" 打开目录树. 如果 vim 后面接了文件, 则将光标自动移动到文件窗口.
+" 运行 VIM 时, 后面不接任何文件的情况, 自动打开目录树窗口.
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+
+" 运行 VIM 的时候自动打开目录树. 如果 vim 后面接了文件, 则将光标自动移动到文件窗口.
+" NOTE: 如果使用 tmux, 不建议启用此条配置.
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
 
 " 如果文件都退出了, 只剩目录树窗口的情况下自动退出 VIM.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 " 每新打开一个标签页都显示当前已存在的目录树窗口.
 " NOTE:
-"   官方提供的指令是: autocmd BufWinEnter * silent NERDTreeMirror,
-"   但经过实测, 会和以下2条指令产生冲突, 当 gd 或 gr 打开新的 buffer 时会报错:
-"   冲突的2条指令是:
-"       1) let g:ale_set_loclist = 1
-"       2) map gr :YcmCompleter GoToReferences<CR>
-"   修改为当前指令后, 可修复此问题.
-autocmd BufWinEnter *.* silent NERDTreeMirror
+"   1)官方提供的指令是: autocmd BufWinEnter * silent NERDTreeMirror,
+"     但经过实测, 会和以下2条指令产生冲突, 当 gd 或 gr 打开新的 buffer 时会报错:
+"     冲突的2条指令是:
+"         1) let g:ale_set_loclist = 1
+"         2) map gr :YcmCompleter GoToReferences<CR>
+"     修改为当前指令后, 可修复此问题.
+"   2) 如果使用 tmux, 不建议启用此条配置.
+"autocmd BufWinEnter *.* silent NERDTreeMirror
 
 " 当项目下新增或删除文件时, 目录树窗口中自动更新变化, 省去了在目录树窗口中手动按 R 的动作了;
 " 注意, 需要光标移动到目录树窗口中或重新打开目录树窗口来触发更新动作.
@@ -699,7 +705,7 @@ set guifont=Hack_Nerd_Font:h13
 let g:hardtime_default_on = 1
 
 " 连续按 jklh 等命令时, 每次按键的超时时间, 默认值: 1000毫秒.
-let g:hardtime_timeout = 2000
+let g:hardtime_timeout = 1000
 
 " 启用 hardtime 模式后, 是否进行模式已启用的提示, 默认值: 0, 表示不提示.
 let g:hardtime_showmsg = 1
@@ -708,7 +714,7 @@ let g:hardtime_showmsg = 1
 let g:hardtime_allow_different_key = 1
 
 " 允许连续按几次简单命令, 默认值: 1.
-let g:hardtime_maxcount = 1
+let g:hardtime_maxcount = 2
 
 """""" easymotion/vim-easymotion
 " doc: https://github.com/easymotion/vim-easymotion
@@ -753,10 +759,10 @@ let g:EasyMotion_use_smartsign_us = 1
 
 " normal 模式下 ,f  进入文件搜索的模糊搜索方式;
 " 再 ctrl r  进入 正则匹配 方式.
-let g:Lf_ShortcutF = ",f"
+let g:Lf_ShortcutF = ",ff"
 
 " 搜索当前已经打开的所有文件的内容.
-noremap <leader>b :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
 
 " 显示最近打开过的文件列表.
 noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
@@ -1162,11 +1168,17 @@ autocmd FileType * set colorcolumn=80
 
 " 常用配置 {{
 
+" 设置相对行号.
+set number relativenumber
+
+" 一行内容超过终端宽度时是否折行, 默认就是折行.
+set wrap
+
 " 指定何时显示页面标签, 默认值: 1
 "   0: 永远不会
 "   1: 至少有两个标签页时才会
 "   2: 永远会
-set showtabline=2
+set showtabline=1
 
 " 显示括号匹配.
 set showmatch
@@ -1239,6 +1251,15 @@ set textwidth=1000
 
 
 " 自定义配置 {{
+
+" ,R  变更 ~/.vimrc 文件后不需要退出, 直接使用此命令进行 reload 生效.
+noremap <silent> <leader>R :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
+
+" 多窗口之间上下左右移动的快捷键重新映射.
+noremap <C-h> <C-w>h
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
 
 " 解决中文乱码问题.
 let $LANG='en'
@@ -1336,9 +1357,6 @@ endif
 
 " 备用配置 {{
 
-" 设置相对行号.
-"set number relativenumber
-
 " 输入的文字到达终端边缘时不自动折行, 所谓折行指的是一行内容视觉上显示为多行,
 " 不是真正的加换行符的换行.
 "set nowrap
@@ -1389,6 +1407,7 @@ endif
 "                       ctrl o/i 可来回跳转, 增加文档阅读效率;
 "                     2)在阅读 .vimrc 时, 可通过按 K 自动打开光标所在对象的文档.
 "              :so %  优化变更你的 ~/.vimrc 文件内容并保存后, 使用此 command-line 模式命令, 可以直接使配置生效.
+"                 ,R  同上, 只不过这个是为了操作简便做的自定义配置.
 "          :messages  如果出现报错信息, 但是你还没看清楚就消息就已经退出了, 使用此命令可以重新看到错误信息.
 "        :help error  查看 VIM 都有哪些错误信息.
 "          :help E11  查看具体的某一个错误编号的释义.
@@ -1521,7 +1540,7 @@ endif
 "             ctrl v  进入 visual block 模式.
 "                  o  使光标在选择范围的开头和结尾来回跳转.
 "
-" ** 分屏:
+" ** 分屏/多窗口管理:
 "            :sp/:vs  上下/左右 分割窗口.
 "       :sp/:vs file  上下/左右 分屏创建新文件.
 "            ctrl ww  光标在多个分屏窗口之间循环移动.
@@ -1550,6 +1569,8 @@ endif
 "          ctrl bfpn  insert 模式下左右上下移动光标.
 "           ctrl a/e  insert 模式下跳转到行首/行尾.
 "      , )/]/}/"/'/`  将 visual 模式下选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹.
+"       ctrl j/k/h/l  光标移动到 下面/上面/左边/右边 的窗口.
+"                 ,R  文件 ~/.vimrc 发生变化后, 正在编辑的文件不需要退出, 通过该快捷键即可重新加载 VIM 配置文件, 使变更马上生效.
 
 " }}
 
@@ -1568,9 +1589,9 @@ endif
 "                     也可使用`ctrl l`主动触发语义补全提示, 然后按tab键进行选择.
 "
 " ** Yggdroot/LeaderF (https://github.com/Yggdroot/LeaderF)
-"                 ,f  进入文件搜索的模糊搜索方式;
+"                ,ff  进入文件搜索的模糊搜索方式;
 "             ctrl r  在 ,ff 命令的基础上, 按这个快捷键进入文件搜索的正则匹配方式;
-"                 ,b  搜索当前已经打开的所有文件的内容.
+"                ,fb  搜索当前已经打开的所有文件的内容.
 "                ,fm  显示最近打开过的文件列表.
 "                ,ft  显示当前文件的 tags 列表.
 "                ,fl  显示当前文件的去除空行的所有行.
