@@ -130,18 +130,33 @@ call plug#begin('~/.vim/plugged')
 " 也可以在 command-line 模式进行主题切换, 即时看到颜色效果: `:colorscheme solarized`.
 Plug 'flazz/vim-colorschemes'
 
-" Atom One Dark / Light
+" Atom theme: One Dark / Light
 Plug 'rakr/vim-one'
+
+" ********************** 代码补全 ********************************************
+
+" 速度更快, 体验更优且支持更多编程语言的代码补全平台.
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" 为 coc-ultisnips 提供代码片段源.
+Plug 'SirVer/ultisnips'
+
+" 为 coc-snippets 提供代码片段源.
+Plug 'honza/vim-snippets'
+
+" 为 viml 脚本语言提供补全支持.
+Plug 'Shougo/neco-vim'
+Plug 'neoclide/coc-neco'
+
+" 使用`:PlugInstall`安装完该插件后或在使用`:PlugUpdate`更新完所有插件后,
+" " 需要手动做如下工作: cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --all
+" " NOTE: 不再使用.
+" "Plug 'ycm-core/YouCompleteMe'
 
 " ********************** 代码检查 ********************************************
 " ALE (Asynchronous Lint Engine) is a plugin providing linter(syntax checking and semantic errors)
 " 保存文件时将自动进行静态检查, 有错误将给出高亮提示, 如果配置了修复工具, 也可进行自动修复.
 Plug 'dense-analysis/ale'
-
-" ********************** 代码补全 ********************************************
-" NOTE: `:PlugInstall`安装完该插件后或在使用`:PlugUpdate`更新完所有插件后, 需要手动做如下工作:
-"    cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --all
-Plug 'ycm-core/YouCompleteMe'
 
 " ********************** GUI *************************************************
 " 目录树窗口插件.
@@ -170,7 +185,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 
 " 在文件窗口左侧标记列显示内容变化的行.
-Plug 'mhinz/vim-signify'
+"Plug 'mhinz/vim-signify'
+Plug 'airblade/vim-gitgutter'
 
 " 美化状态栏插件.
 Plug 'itchyny/lightline.vim'
@@ -183,9 +199,6 @@ Plug 'maximbaz/lightline-ale'
 " 彩虹括号插件, 层级较多的括号场景使用不同颜色区分.
 Plug 'luochen1990/rainbow'
 
-" 缩进线插件.
-Plug 'Yggdroot/indentLine'
-
 " 为目录树或LeaderF等插件显示文件类型.
 " NOTE:
 " 1) 需要提前安装 nerd-fonts, 并设置iterm2 (或其他类型终端) 的字体为 Hack Nerd Font 或 Hack Nerd Font Mono;
@@ -197,6 +210,9 @@ Plug 'ryanoasis/vim-devicons'
 " 在上一个插件的基础上, 根据文件类型的不同, 改变图标的颜色.
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
+" 悬浮终端插件.
+Plug 'voldikss/vim-floaterm'
+
 " ********************** 编程语言 ********************************************
 
 """""""" Go
@@ -204,25 +220,25 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " 如果由于 Go 环境等问题导致自动安装失败, 可后续通过 VIM 的 command-line 模式安装`:GoInstallBinaries`.
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
-"""""""" python
-Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
-
 """""""" openresty
 " 提供 nginx/openresty 语法高亮与指令补全.
 Plug 'spacewander/openresty-vim'
 
-"""""""" javascript/html/css/vue
+"""""""" javascript/html/css/vue/json
 " 前端利器 html/css/js
 Plug 'mattn/emmet-vim'
 
 " Vue 语法高亮插件, 注意会拖慢 VIM, 需要配置这条来解决: `let g:vue_pre_processors = []`
 Plug 'posva/vim-vue'
 
+" 高亮 jsonc 类型文件.
+Plug 'neoclide/jsonc.vim'
+
 """""""" markdown
 " markdown 语法高亮插件.
 Plug 'godlygeek/tabular' | Plug 'tpope/vim-markdown'
 
-"" 通过浏览器实时预览markdown文本的插件.
+" 通过浏览器实时预览 Markdown 文本的插件.
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
 """""""" toml
@@ -279,84 +295,251 @@ call plug#end()
 
 """""""" 代码自动补全配置 {{
 
-"""""" ycm-core/YouCompleteMe 配置
-" doc: https://github.com/ycm-core/YouCompleteMe
-
-" gd 跳转到函数定义处, 然后可以通过 ctrl o/i 来回跳转;
-" 支持的文件类型:
-"    c, cpp, objc(object-c), objcpp, cuda, cs(c#), go, java, javascript, python, rust, typescript
-"    NOTE: gd 快捷键已被 go-vim 插件的配置占用来实现类似能力, 此处的配置对 Go 不起作用.
+"""""""" neoclide/coc.nvim
+" CoC 的全称是: Conqure of Completion
+" doc: https://github.com/neoclide/coc.nvim
 "
-" 如果 ycm_goto_buffer_command 设置了非 same-buffer 的值, 默认是在窗口上方分屏跳转.
-"map gd :YcmCompleter GoTo<CR>
-" 新打开标签页的方式跳转, 需要 ycm_goto_buffer_command 设置非 same-buffer 的值, 否则不会打开新的标签页.
-map gd :tab YcmCompleter GoTo<CR>
-" 右侧分屏的方式跳转, 需要 ycm_goto_buffer_command 设置非 same-buffer 的值, 否则不会分屏跳转.
-"map gd :rightbelow vertical YcmCompleter GoTo <CR>
+" *** 补全菜单的符号说明 ***
+"   [LS]  Language Server, 补全来自语言服务器.
+"    [S]  Snippets, 补全来自 Snippets.
+"   [US]  UltiSnips, 补全来自 UltiSnips.
+"  [GOC]  Gocode, 补全来自 gocode.
+"  [NEC]  Neco-vim, 补全来自 Shougo/neco-vim 插件.
+"    [A]  Around, 补全来自当前文件(buffer).
+"    [B]  Buffer, 补全来自其他已经打开的文件(buffer).
+"    [F]  File, 补全来自文件名自动检测.
+"      M  Module, 此条补全是一个模块.
+"      I  Interface, 是一个接口.
+"      S  Struct, 是一个结构体.
+"      f  func, 是一个函数.
+" **************************
 
-" gr 跳转到引用当前光标所在对象的位置, 会列出引用光标所在对象的所有文件,
-" 然后我们选择一个文件名回车, 即可跳转到引用位置.
-" 支持的文件类型:
-"    c, cpp, objc, objcpp, cuda, java, javascript, python, typescript, rust, 官方没写支持Go, 但实测支持Go.
-map gr :YcmCompleter GoToReferences<CR>
+" *** 基本命令 ***
+"                  :CocInfo  补全服务启动失败原因查看.
+"               :CocOpenLog  查看补全服务的日志.
+"                :CocConfig  打开 ~/.vim/coc-settings.json
+"       :CocList extensions  查看安装了哪些扩展.
+"      :CocInstall coc-json  安装 Json language server
+"                :CocUpdate  更新所有扩展.
+"    :CocUninstall coc-json  卸载 Json language server
+"  ~/.vim/coc-settings.json  如果不想使用 :CocInstall 方式安装语言服务器,
+"                            可以直接通过此文件配置.
 
-" 以什么方式打开 gd 命令跳转的位置.
-" 默认值: 'same-buffer'
-"    'same-buffer': 覆盖当前窗口;
-"    'split-or-existing-window': 如果要跳转的位置之前已经打开了一个标签页,
-"                                就直接跳转到那个已经打开的页面, 否则新打开一个标签页;
-"    'split': 不管要跳转的位置之前有没有已经打开了, 都再新打开一个标签页.
-let g:ycm_goto_buffer_command = 'split-or-existing-window'
+" *** 通过 :CocInstall 安装语言服务器或其他扩展 ***
+"   @@ Go
+"      https://github.com/josa42/coc-go
+"      :CocInstall coc-go
+"   @@ Python3.6.1+
+"      https://github.com/pappasam/coc-jedi
+"      :CocInstall coc-jedi
+"   @@ Javascript/Typescript
+"      https://github.com/neoclide/coc-tsserver
+"      :CocInstall coc-tsserver
+"   @@ Css/Less/Sass
+"      https://github.com/neoclide/coc-css
+"      :CocInstall coc-css
+"   @@ html
+"      https://github.com/neoclide/coc-html
+"      :CocInstall coc-html
+"   @@ json
+"      https://github.com/neoclide/coc-json
+"      :CocInstall coc-json
+"   @@ Vue
+"      https://github.com/neoclide/coc-vetur
+"      NOTE: 需要在 vue 项目根路径下运行: npm i eslint eslint-plugin-vue -D
+"      :CocInstall coc-vetur
+"   @@ snippets
+"      https://github.com/neoclide/coc-snippets
+"      NOTE: 需要安装 vim 插件: Plug 'honza/vim-snippets'
+"      :CocInstall coc-snippets
+"   @@ ultisnips
+"      https://github.com/SirVer/ultisnips
+"      NOTE: 需要安装 vim 插件: Plug 'SirVer/ultisnips'
+"      :CocInstall coc-ultisnips
+"   @@ coc-gocode
+"      使用 gocode 为 Go 语言补全.
+"      :CocInstall coc-gocode
+"   @@ coc-emoji
+"      Emoji words, 默认只对 markdown 类型文件开启, 通过 : 触发.
+"      :CocInstall coc-emoji
+" ************************************************
 
-" 基于语义补全的快捷键:
-" 语义补全非字符补全, 字符补全是根据当前所有 buffer 中收集到的符号来提示,
-" 符号补全只有一个符号名, 不能像语义补全一样给出参数格式, 返回值等丰富信息;
-"
-" 默认是用 CTRL+SPACE 来触发语义补全的, 中文操作系统下,
-" CTRL+SPACE 被系统劫持用作输入法切换, 无法正确传到终端, 所以需要自定义 CTRL+l,
-" 有了这个快捷键, 就解决了只能通过`.`号来触发语义补全的局限性了.
-let g:ycm_key_invoke_completion = '<c-l>'
+" *** 通过 ~/.vim/coc-settings.json 安装语言服务器及其 coc.nvim 的通用配置 ***
+"   具体配置请见 ~/.vim/coc-settings.json 文件.
 
-" 自动语义补全配置, 无需按 ctrl l 即可自动做语义补全提示:
-" 默认的 . / -> / :: 语义补全触发符号是不会被覆盖的, 只会追加成新的 trigger,
-" 这里我们追加了一个正则表达式, 代表相关语言的源文件中, 用户只需要输入1个字母, 即可自动弹出语义补全.
-let g:ycm_semantic_triggers =  {
-\    'go,python,lua': ['re!\w{1}'],
-\    'javascript,typescript': ['re!\w{1}'],
-\    'c,cpp,java,rust,erlang,perl,perl6': ['re!\w{1}'],
-\ }
+" :C  打开 ~/.vim/coc-settings.json 配置文件.
+function! SetupCommandAbbrs(from, to)
+    exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() ==# ":" && getcmdline() ==# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+call SetupCommandAbbrs('C', 'CocConfig')
+" ****************************************************************************
 
-" 表示是否将你的编码进行记录, 用来在后续的编码过程中进行相关的补全提示.
-" 默认值: 0
-let g:ycm_seed_identifiers_with_syntax = 1
+" coc-css 配置
+autocmd FileType scss setl iskeyword+=@-@
 
-" 从键入第几个字符开始进行自动匹配提示.
-" 默认值: 2
-let g:ycm_min_num_of_chars_for_completion = 1
+" 如果不设置这个, TextEdit 可能失败.
+set hidden
 
-" 是否从注释中输入时也能补全.
-" 默认值: 0
-let g:ycm_complete_in_comments = 1
+" 底部命令模式的显示高度, 默认值1.
+" 设置为2是为了给提示信息更多的展示空间, 防止信息截断.
+set cmdheight=2
 
-" 是否在字符串中输入时也能补全.
-" 默认值: 1
-let g:ycm_complete_in_strings = 1
+" 不要将信息传递给 ins-completion-menu.
+set shortmess+=c
 
-" 注释和字符串中的文字是否也被收入到补全数据库中.
-" 默认值: 0
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
+" 使用 tab 键触发补全, 选择补全.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
-" 如果值为空, 则表示禁用此功能.
-" 默认值是: CursorHold, 表示光标停留在函数一小会儿后自动展示文档;
-let g:ycm_auto_hover = 'CurorHold'
+" SirVer/ultisnips 插件触发补全的默认配置是 tab 键, 会和 coc 的冲突, 需要修改掉.
+" 实际上并不会用到这里设置的快捷键.
+let g:UltiSnipsExpandTrigger="<Leader>,f"
 
-" 设置此 map 后, 上面的 let g:ycm_auto_hover = 'CurorHold' 功能自动失效, 需要通过`,D`来触发文档显示.
-nmap <leader>D <plug>(YCMHover)
+" 使用 <CR>(回车键) 来自动选择补全条目的第一条并格式化代码.
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+    \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" 是否启用 YCM 提供的代码静态检查功能, 由于我们使用了 ale 来做静态代码检查, 所以这里禁用.
-" 默认值: 1
-let g:ycm_show_diagnostics_ui = 0
+" gd  跳转到定义处.
+nmap <silent> gd <Plug>(coc-definition)
+" gy  跳转到类型定义处.
+nmap <silent> gy <Plug>(coc-type-definition)
+" gi  跳转到实现处.
+nmap <silent> gi <Plug>(coc-implementation)
+" gr  在 location list 中列出相关条目, 如果相关的只有1条, 则直接跳转过去.
+nmap <silent> gr <Plug>(coc-references)
+
+" 级联的进行重命名.
+nmap <leader>rn <Plug>(coc-rename)
+
+" 使用 K 在预览窗口中查看文档.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" 使用 <C-f> 和 <C-b> 在悬浮窗口向下翻页和向上翻页, 比如在查看较长的文档时使用.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" CocList 相关命令快捷键映射.
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 """"""""""""""""""""""""""
+
+"""""" ycm-core/YouCompleteMe 已注释, 不再使用 {{
+"" doc: https://github.com/ycm-core/YouCompleteMe
+"" NOTE: YCM 很强大, 但也有很多缺点目前无法克服, 比如:
+""       1) 选择补全的时候会出现卡顿, 严重影响体验;
+""       2) 不支持悬浮窗口;
+""       3) 很多语言不支持等.
+""       故不再使用 YCM, 使用 coc.nvim 来替代.
+
+"" gd 跳转到函数定义处, 然后可以通过 ctrl o/i 来回跳转;
+"" 支持的文件类型:
+""    c, cpp, objc(object-c), objcpp, cuda, cs(c#), go, java, javascript, python, rust, typescript
+""    NOTE: gd 快捷键已被 go-vim 插件的配置占用来实现类似能力, 此处的配置对 Go 不起作用.
+""
+"" 如果 ycm_goto_buffer_command 设置了非 same-buffer 的值, 默认是在窗口上方分屏跳转.
+""map gd :YcmCompleter GoTo<CR>
+"" 新打开标签页的方式跳转, 需要 ycm_goto_buffer_command 设置非 same-buffer 的值, 否则不会打开新的标签页.
+"map gd :tab YcmCompleter GoTo<CR>
+"" 右侧分屏的方式跳转, 需要 ycm_goto_buffer_command 设置非 same-buffer 的值, 否则不会分屏跳转.
+""map gd :rightbelow vertical YcmCompleter GoTo <CR>
+
+"" gr 跳转到引用当前光标所在对象的位置, 会列出引用光标所在对象的所有文件,
+"" 然后我们选择一个文件名回车, 即可跳转到引用位置.
+"" 支持的文件类型:
+""    c, cpp, objc, objcpp, cuda, java, javascript, python, typescript, rust, 官方没写支持Go, 但实测支持Go.
+"map gr :YcmCompleter GoToReferences<CR>
+
+"" 以什么方式打开 gd 命令跳转的位置.
+"" 默认值: 'same-buffer'
+""    'same-buffer': 覆盖当前窗口;
+""    'split-or-existing-window': 如果要跳转的位置之前已经打开了一个标签页,
+""                                就直接跳转到那个已经打开的页面, 否则新打开一个标签页;
+""    'split': 不管要跳转的位置之前有没有已经打开了, 都再新打开一个标签页.
+"let g:ycm_goto_buffer_command = 'split-or-existing-window'
+
+"" 基于语义补全的快捷键:
+"" 语义补全非字符补全, 字符补全是根据当前所有 buffer 中收集到的符号来提示,
+"" 符号补全只有一个符号名, 不能像语义补全一样给出参数格式, 返回值等丰富信息;
+""
+"" 默认是用 CTRL+SPACE 来触发语义补全的, 中文操作系统下,
+"" CTRL+SPACE 被系统劫持用作输入法切换, 无法正确传到终端, 所以需要自定义 CTRL+l,
+"" 有了这个快捷键, 就解决了只能通过`.`号来触发语义补全的局限性了.
+"let g:ycm_key_invoke_completion = '<c-l>'
+
+"" 自动语义补全配置, 无需按 ctrl l 即可自动做语义补全提示:
+"" 默认的 . / -> / :: 语义补全触发符号是不会被覆盖的, 只会追加成新的 trigger,
+"" 这里我们追加了一个正则表达式, 代表相关语言的源文件中, 用户只需要输入1个字母, 即可自动弹出语义补全.
+"let g:ycm_semantic_triggers =  {
+"\    'go,python,lua': ['re!\w{1}'],
+"\    'javascript,typescript': ['re!\w{1}'],
+"\    'c,cpp,java,rust,erlang,perl,perl6': ['re!\w{1}'],
+"\ }
+
+"" 表示是否将你的编码进行记录, 用来在后续的编码过程中进行相关的补全提示.
+"" 默认值: 0
+"let g:ycm_seed_identifiers_with_syntax = 1
+
+"" 从键入第几个字符开始进行自动匹配提示.
+"" 默认值: 2
+"let g:ycm_min_num_of_chars_for_completion = 1
+
+"" 是否从注释中输入时也能补全.
+"" 默认值: 0
+"let g:ycm_complete_in_comments = 1
+
+"" 是否在字符串中输入时也能补全.
+"" 默认值: 1
+"let g:ycm_complete_in_strings = 1
+
+"" 注释和字符串中的文字是否也被收入到补全数据库中.
+"" 默认值: 0
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+
+"" 如果值为空, 则表示禁用此功能.
+"" 默认值是: CursorHold, 表示光标停留在函数一小会儿后自动展示文档;
+"let g:ycm_auto_hover = 'CurorHold'
+
+"" 设置此 map 后, 上面的 let g:ycm_auto_hover = 'CurorHold' 功能自动失效, 需要通过`,D`来触发文档显示.
+"nmap <leader>D <plug>(YCMHover)
+
+"" 是否启用 YCM 提供的代码静态检查功能, 由于我们使用了 ale 来做静态代码检查, 所以这里禁用.
+"" 默认值: 1
+"let g:ycm_show_diagnostics_ui = 0
+""""""""""""""""""""""""""" }}
 
 " }}
 
@@ -459,15 +642,16 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 "    poetry shell
 "    poetry add pylint flake8 autoimport black isort -D
 let g:ale_linters = {
-    \    'go': ['golangci-lint', 'revive'],
+    \    'go': ['golangci-lint', 'revive', 'gopls'],
     \    'python': ['pylint', 'flake8'],
     \    'lua': ['luac', 'luacheck'],
-    \    'sh': ['shellcheck'],
+    \    'sh': ['shellcheck', 'language_server'],
     \    'javascript': ['eslint', 'standard'],
     \    'vue': ['eslint', 'vls'],
     \    'html': ['tidy', 'stylelint', 'alex', 'writegood', 'proselint'],
     \    'yaml': ['yamllint'],
     \    'json': ['jq', 'jsonlint'],
+    \    'jsonc': ['jq', 'jsonlint'],
     \    'markdown': ['mdl', 'markdownlint', 'proselint', 'alex'],
     \ }
 
@@ -495,19 +679,20 @@ let g:ale_fixers = {
     \    'vue': ['eslint'],
     \    'html': ['prettier'],
     \    'json': ['jq'],
+    \    'jsonc': ['jq'],
     \    'yaml': ['prettier'],
     \    'markdown': ['prettier'],
     \ }
 
 " }}
 
-"""""""" 目录树相关配置 {{
+"""""""" 图形接口相关配置 {{
 
-"""""" preservim/nerdtree 插件的配置.
+"""""" preservim/nerdtree
 " doc: https://github.com/preservim/nerdtree
 
 " ,t  normal 模式下显示或隐藏目录树的快捷键.
-nnoremap <Leader>t :NERDTreeToggle<CR>
+nnoremap <Leader>x :NERDTreeToggle<CR>
 
 " 目录树显示在左侧还是右侧.
 " 可选值: 'right', 'left', 默认值: 'left'
@@ -572,7 +757,7 @@ let NERDTreeIgnore=['\.git$','\.pyc$','__pycache__','\.swp$']
 let NERDTreeShowLineNumbers=0
 """""""""""""""""""
 
-"""""" nerdtree-git-plugin 的配置
+"""""" nerdtree-git-plugin
 let g:NERDTreeGitStatusIndicatorMapCustom = {
     \   "Modified"  : "✹",
     \   "Staged"    : "✚",
@@ -607,7 +792,7 @@ let g:tagbar_autopreview = 1
 let g:tagbar_sort = 0
 """""""""""""""""""
 
-"""""" itchyny/lightline.vim 配置
+"""""" itchyny/lightline.vim
 " doc: https://github.com/itchyny/lightline.vim
 
 " 本选项的值影响最后一个窗口何时有状态行:
@@ -621,7 +806,7 @@ set laststatus=2
 set noshowmode
 """""""""""""""""""""""""""
 
-"""""" 'maximbaz/lightline-ale' 配置
+"""""" 'maximbaz/lightline-ale'
 " doc: https://github.com/maximbaz/lightline-ale
 
 let g:lightline = {}
@@ -668,23 +853,9 @@ let g:lightline#ale#indicator_warnings = "\uf071 "
 let g:lightline#ale#indicator_errors = "\uf05e "
 """""""""""""""""""""""""""
 
-"""""" Yggdroot/indentLine
-" 是否显示缩进线, 默认值: 1
-let g:indentLine_enabled = 1
-
-" 自定义缩进线样式, 默认值: '¦'
-let g:indentLine_char = '¦'
-
-" 不同层级显示不同的缩进线, 默认值: []
-let g:indentLine_char_list = ['¦', '┆', '┊']
-
-" 缩进线的颜色定义.
-let g:indentLine_defaultGroup = 'SpecialKey'
-"""""""""""""""""""""""""""
-
-"""""" 'ryanoasis/vim-devicons' 配置
+"""""" 'ryanoasis/vim-devicons'
 " doc: https://github.com/ryanoasis/vim-devicons
-"
+
 " 是否启用文件类型图标显示, 默认值: 1, 表示启用.
 let g:webdevicons_enable = 1
 
@@ -694,9 +865,27 @@ let g:webdevicons_enable = 1
 set guifont=Hack_Nerd_Font:h13
 """""""""""""""""""
 
+"""""" 'voldikss/vim-floaterm'
+" doc: https://github.com/voldikss/vim-floaterm
+
+" 显示或隐藏悬浮终端窗口, 如果悬浮窗口还不存在则新建.
+let g:floaterm_keymap_toggle = '<Leader>t'
+
+" 新建一个悬浮窗口.
+let g:floaterm_keymap_new = '<Leader>tc'
+
+" 关闭当前悬浮窗口.
+let g:floaterm_keymap_kill = '<Leader>tk'
+
+" 切换到下一个悬浮窗口.
+let g:floaterm_keymap_next = '<Leader>tn'
+
+" 显示目前存在的悬浮窗口.
+let g:floaterm_keymap_show = '<Leader>ts'
+
 " }}
 
-"""""""" 效率相关 {{
+"""""""" 效率相关配置 {{
 
 """""" takac/vim-hardtime
 " doc: https://github.com/takac/vim-hardtime
@@ -865,18 +1054,23 @@ let g:go_imports_autosave = 1
 
 
 " *** 代码高效阅读 ***
-" ,d  上下分屏查看光标所在函数等的文档, 同 K, 不过没有 K 快, 建议使用 K, 如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
-au FileType go nmap <Leader>d <Plug>(go-doc)
+
+" NOTE: coc-go 的 K 表现更好, 下面文档查看相关全部注释.
+" ,d  上下分屏查看光标所在函数等的文档, 同 K, 不过没有 K 快, 建议使用 K,
+"     如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
+"au FileType go nmap <Leader>d <Plug>(go-doc)
 " ,dv  左右分屏查看光标所在函数等的文档, 如果设置了let g:go_doc_popup_window = 1, 则弹出浮窗.
-au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
+"au FileType go nmap <Leader>dv <Plug>(go-doc-vertical)
+
 " 查看光标下对象的文档的窗口大小. 默认值: 20
 let g:go_doc_max_height = 20
 " 查看光标下的对象的文档的时候使用悬浮窗口替代新打开一个窗口. 默认值: 0
 let g:go_doc_popup_window = 1
 
 " gr  在 location list 中列出哪些地方引用了光标所在的对象.
-" NOTE: 对 .go 类型文件, 此 gr 覆盖了 YCM 的 gr 快捷键.
-au FileType go nmap gr :GoReferrers<CR>
+" NOTE: coc-go 的 gr 表现的更好, 不使用此配置.
+"au FileType go nmap gr :GoReferrers<CR>
+
 " ,cl  在 location list 中列出哪些地方调用了光标所在的函数.
 au FileType go nmap <leader>cl :GoCallers<CR>
 " ,s  查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上.
@@ -889,14 +1083,14 @@ au FileType go nmap <Leader>s <Plug>(go-implements)
 "
 " gd  默认以覆盖当前页面的方式跳转到函数定义处, vim-go插件默认行为, 无需配置.
 "
-" gb  新开一个标签页的方式跳转到函数定义处.
-au FileType go nmap gb <Plug>(go-def-tab).
+" gj  新开一个标签页的方式跳转到函数定义处.
+au FileType go nmap gj <Plug>(go-def-tab).
 " gs  上下分屏跳转到函数定义处.
 au FileType go nmap gs <Plug>(go-def-split)
 " gv  左右分屏跳转到函数定义处.
 au FileType go nmap gv <Plug>(go-def-vertical)
 " 对于跳转到对象定义处的功能, 重用已经打开的buffer. 默认值: 0
-let g:go_def_reuse_buffer = 1
+let g:go_def_reuse_buffer = 0
 
 
 " *** 代码自动生成 ***
@@ -913,7 +1107,8 @@ au FileType go nmap <leader>at :GoAddTags<CR>
 " 使用 :GoAddTags 时, 是否忽略未导出的结构体字段(即小写字段), 1 表示忽略. 默认值: 0
 let g:go_addtags_skip_unexported = 1
 " ,rn  级联的重命名光标下的标识符, 重命名后, 项目内的所有与其相关的地方全部会更新.
-au FileType go nmap <leader>rn :GoRename<CR>
+"      coc.nvim 的 ,rn 表现的更好, 注释此配置.
+"au FileType go nmap <leader>rn :GoRename<CR>
 " 新创建一个 .go 文件时, 是否自动使用模版内容填充. 默认值: 1
 let g:go_template_autocreate = 1
 " 始终仅自动生成 package pkgname 一行代码, 将覆盖掉 let g:go_template_autocreate = 1 的作用. 默认值: 0
@@ -986,15 +1181,6 @@ function! NoShabang(line1, current_file)
 endfunction
 autocmd BufWritePost *.py call NoShabang(getline(1), expand("%:p"))
 
-"""""" 'python-mode/python-mode'配置
-" doc: https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
-
-" 专心用YCM, 禁用rope
-let g:pymode_rope = 0
-
-" 已经使用ale来做检查, 禁用pymode的检查
-let g:pymode_lint = 0
-
 " }}
 
 """""""" OpenResty/Lua {{
@@ -1021,6 +1207,9 @@ autocmd bufnewfile *.lua call SetTitleForLua()
 
 """""""" Javascript/vue/html/css {{
 
+" 将 .json 文件设置为 jsonc 文件类型, 这样就可以在其中进行 // 或 /**/ 注释了.
+autocmd BufRead,BufNewFile *.json set filetype=jsonc
+
 " css
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
@@ -1028,7 +1217,7 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 " 解决 vim-vue 插件导致的 VIM 速度变慢的问题.
 let g:vue_pre_processors = []
 
-"""""" 'mattn/emmet-vim'配置
+"""""" 'mattn/emmet-vim'
 " 使用方法:
 " https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
 " 1. 打开 *.html 文件, 输入`html:5`, 然后`ctrl y ,`, 即可自动生成html代码模版
@@ -1096,9 +1285,9 @@ let g:mkdp_refresh_slow=1
 " 代码高亮显示.
 syntax enable
 
-if !exists('g:gruvbox_contrast_light')
-  let g:gruvbox_contrast_light='hard'
-endif
+"if !exists('g:gruvbox_contrast_light')
+  "let g:gruvbox_contrast_light='hard'
+"endif
 
 " 启用颜色主题方案.
 " 优秀方案备选: solarized, gruvbox, molokai, one
@@ -1143,7 +1332,7 @@ set nu
 " 设置行号颜色.
 hi LineNr cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
 
-" 设置 提示列 的颜色方案;
+" 设置提示列的颜色方案;
 " 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列,
 " gitgutter 插件的文件变化信息也会出现在此列.
 hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
@@ -1185,9 +1374,6 @@ set showmatch
 
 " normal 模式下显示输入的 VIM 命令.
 set showcmd
-
-" 底部命令模式的显示高度, 默认值1.
-set cmdheight=1
 
 " 命令行窗口的函数, 默认值7.
 " 命令行窗口打开的方法:
@@ -1356,6 +1542,13 @@ endif
 
 
 " 备用配置 {{
+
+" 将 sign 列合并到行号列.
+" 会影响到 [n]k/j 快速跳转到指定行, 所以不建议开启此配置.
+"set signcolumn=number
+
+" sign 列始终显示, 根据个人喜好决定是否启用.
+"set signcolumn=yes
 
 " 输入的文字到达终端边缘时不自动折行, 所谓折行指的是一行内容视觉上显示为多行,
 " 不是真正的加换行符的换行.
@@ -1576,17 +1769,17 @@ endif
 
 """""""""" VIM 插件提供的部分能力 {{
 "
+" ** neoclide/coc.nvim (https://github.com/neoclide/coc.nvim)
+"                 gd  跳转到定义处, `ctrl o`跳转回来, `ctrl i`再跳转过去.
+"                 gy  跳转到类型定义处.
+"                 gi  跳转到接口实现处.
+"                 gr  在 location list 中列出相关条目,
+"                     如果相关的只有1条, 则直接跳转过去.
+"                  K  使用 K 在预览窗口中查看文档.
+"
 " ** dense-analysis/ale (https://github.com/dense-analysis/ale)
 "                 :w  保存代码文件的时候, 将自动检查语法错误并提示.
 "           ctrl k/j  向上或向下跳转到下一个错误提示的位置.
-"
-" ** ycm-core/YouCompleteMe (https://github.com/ycm-core/YouCompleteMe)
-"                  K  顶部分屏的方式, 查看光标所在模块或函数的帮助文档.
-"                 ,D  浮现光标所在对象的对应文档.
-"                 gd  跳转到光标所在函数的定义位置, `ctrl o`跳转回来, `ctrl i`再跳转过去.
-"                 gr  跳转到引用光标所在函数的位置, 同样使用`ctrl o/i`来回跳转.
-"             ctrl l  编写各种主流语言代码时, 输入1个字符时就会自动有代码补全提示,
-"                     也可使用`ctrl l`主动触发语义补全提示, 然后按tab键进行选择.
 "
 " ** Yggdroot/LeaderF (https://github.com/Yggdroot/LeaderF)
 "                ,ff  进入文件搜索的模糊搜索方式;
@@ -1631,7 +1824,7 @@ endif
 "
 "   跳转到对象(函数)定义或声明处的几种方式:
 "                 gd  覆盖当前页面.
-"                 gb  新开一个标签页.
+"                 gj  新开一个标签页.
 "                 gs  在上方分屏.
 "                 gv  在右侧分屏.
 "
@@ -1649,12 +1842,8 @@ endif
 "                ,gt  go test 当前的go文件.
 "                ,gc  查看当前代码文件的测试覆盖率.
 "
-" ** python-mode/python-mode (https://github.com/python-mode/python-mode)
-"                 ,r  运行当前Python文件.
-"                 ,b  添加或删除断点, 添加完成后需要在命令行来执行该Python脚本进行断点测试, 不能使用`,r`来运行.
-"
 " ** scrooloose/nerdtree (https://github.com/preservim/nerdtree)
-"                 ,t  打开或关闭左侧目录树.
+"                 ,x  打开或关闭左侧目录树.
 "                  q  关闭目录树窗口.
 "                  ?  打开/关闭该插件的帮助文档.
 "                o/O  展开目录/递归的展开目录, 原地再按一次则对应关闭目录.
@@ -1711,6 +1900,14 @@ endif
 "
 " ** iamcco/markdown-preview.vim (https://github.com/iamcco/markdown-preview.vim)
 "                 ,p  打开/关闭 浏览器预览当前的 Markdown 文件.
+"
+" ** voldikss/vim-floaterm (https://github.com/voldikss/vim-floaterm)
+"                 ,t  显示或隐藏悬浮终端窗口, 如果悬浮窗口还不存在则新建.
+"                ,tc  新建一个悬浮窗口.
+"                ,tk  关闭当前悬浮窗口.
+"                ,tn  切换到下一个悬浮窗口.
+"                ,ts 显示目前存在的悬浮窗口.
+"
 " }}
 
 """""""""" VIM 实例练习 {{
@@ -1752,6 +1949,15 @@ endif
 "       接下来我们把这个宏 a 运用在每一行上, 我们选择文本所有的行, 然后 command-line 模式`:normal @a`,
 "       或者`:% normal @a`(%表示所有行), 这样所有行就都完成双引号包裹了.
 "
+" }}
+
+"""""""""" 注意事项 {{
+"
+"   1. Yggdroot/indentLine  显示缩进线插件会自动设置set conceallevel=2,
+"      导致 .json 类型文件不显示双引号等问题, 尽量不使用,
+"      或针对具体文件类型重新设置: au filetype json set conceallevel=0
+"   2. python-mode/python-mode  建议不要使用这个插件, 不太好用,
+"      文档显示方式很蹩脚, 会影响到 coc-jedi 的正常发挥, coc-jedi 足矣.
 " }}
 
 " }}

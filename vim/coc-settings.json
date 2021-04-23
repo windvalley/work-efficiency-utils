@@ -1,0 +1,45 @@
+{
+   // split, vsplit, edit, tab drop
+  "coc.preferences.jumpCommand": "tab drop",
+  "languageserver": {
+    // npm i -g bash-language-server
+    // doc: https://github.com/bash-lsp/bash-language-server
+    "bash": {
+      "command": "bash-language-server",
+      "args": [
+        "start"
+      ],
+      "filetypes": [
+        "sh"
+      ],
+      "ignoredRootPaths": [
+        "~"
+      ]
+    },
+    // npm i -g dockerfile-language-server-nodejs
+    // doc: https://github.com/rcjsuen/dockerfile-language-server-nodejs
+    "dockerfile": {
+      "command": "docker-langserver",
+      "filetypes": [
+        "dockerfile"
+      ],
+      "args": [
+        "--stdio"
+      ]
+    },
+    // npm i -g sql-language-server
+    // doc: https://github.com/joe-re/sql-language-server
+    "sql": {
+      "command": "sql-language-server",
+      "args": [
+        "up",
+        "--method",
+        "stdio"
+      ],
+      "filetypes": [
+        "sql",
+        "mysql"
+      ]
+    }
+  }
+}
