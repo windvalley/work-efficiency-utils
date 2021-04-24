@@ -85,7 +85,7 @@
 " }}
 
 
-" 基础环境配置 {{
+" 基础环境 {{
 
 " 关闭兼容模式, 也就是不再兼容 VI, 必需放在第一行.
 set nocompatible
@@ -96,7 +96,8 @@ set encoding=utf-8
 " VIM 保存多少个历史命令, 一般保存在 ~/.viminfo 隐藏文件中.
 set history=1000
 
-" 如果过了这么多毫秒数以后还没有任何输入, 把交换文件写入磁盘, 也用于 CursorHold 自动命令事件.
+" 如果过了这么多毫秒数以后还没有任何输入, 则把交换文件写入磁盘,
+" 也用于 CursorHold 自动命令事件.
 " 默认值: 4000(毫秒)
 set updatetime=100
 
@@ -112,13 +113,13 @@ let mapleader = ','
 " 插件安装 {{
 
 " 需要先安装用于管理 VIM 插件的插件: vim-plug
-" 系统命令行下:
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 "    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
 " 下面每一个 Plug 对应一个 VIM 插件, 插件名称就是相应 github 项目名称,
 " 可通过访问`https://github.com/插件名称`来查看相关插件的详细使用文档;
-" 也可以通过 command-line 模式`:help 插件名称`来查看相关插件文档, 注意这里插件名称不包括插件作者名字和`/`.
+" 也可以通过 command-line 模式`:help 插件名称`来查看相关插件文档,
+" 注意这里插件名称不包括插件作者名字和`/`.
 call plug#begin('~/.vim/plugged')
 
 " ********************** VIM 主题 ********************************************
@@ -148,14 +149,10 @@ Plug 'honza/vim-snippets'
 Plug 'Shougo/neco-vim'
 Plug 'neoclide/coc-neco'
 
-" 使用`:PlugInstall`安装完该插件后或在使用`:PlugUpdate`更新完所有插件后,
-" " 需要手动做如下工作: cd ~/.vim/plugged/YouCompleteMe/; python3 install.py --all
-" " NOTE: 不再使用.
-" "Plug 'ycm-core/YouCompleteMe'
-
 " ********************** 代码检查 ********************************************
-" ALE (Asynchronous Lint Engine) is a plugin providing linter(syntax checking and semantic errors)
-" 保存文件时将自动进行静态检查, 有错误将给出高亮提示, 如果配置了修复工具, 也可进行自动修复.
+
+" 代码静态检查与自动修复插件.
+" ALE: Asynchronous Lint Engine
 Plug 'dense-analysis/ale'
 
 " ********************** GUI *************************************************
@@ -165,28 +162,19 @@ Plug 'preservim/nerdtree'
 " 使目录树支持 git 的插件.
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
-" 为正在编辑的文件生成大纲视图, 包括接口/方法/变量等, 可选中快速跳转, 适合单个文件代码较多的场景.
+" 为正在编辑的文件生成大纲视图, 包括接口/方法/变量等,
+" 可选中快速跳转, 适合单个文件代码较多的场景.
 " 需要先在系统命令行安装 ctags, 比如如果是 macOS 系统, 则: brew install ctags
-" command-line 模式下`:Tagbar`, 则右边栏显示视图, 再次`:Tagbar`隐藏, 已映射为快捷键来方便操作: `,e`
 Plug 'majutsushi/tagbar'
 
 " 深度集成 git 的插件.
-"    :Git log
-"    :Git blame
-"    :Git status
-"    等等...
 Plug 'tpope/vim-fugitive'
 
-" git commit 的浏览插件, 该插件依赖 vim-fugitive 插件.
-"    `:GV`, command-line 模式下打开 commit 浏览, 这个包含当前 git repo 的所有 commit;
-"    `:GV!`, 这个只看当前文件的 commit 历史;
-"    `o`或`O`或回车, 打开光标所在 commit;
-"    `q`, 命令模式下退出 commit 浏览.
+" git 历史版本的浏览插件, 该插件依赖 vim-fugitive 插件.
 Plug 'junegunn/gv.vim'
 
 " 在文件窗口左侧标记列显示内容变化的行.
-"Plug 'mhinz/vim-signify'
-Plug 'airblade/vim-gitgutter'
+"Plug 'airblade/vim-gitgutter'
 
 " 美化状态栏插件.
 Plug 'itchyny/lightline.vim'
@@ -216,8 +204,10 @@ Plug 'voldikss/vim-floaterm'
 " ********************** 编程语言 ********************************************
 
 """""""" Go
-" 搭建 Go 开发环境的 VIM 插件, 安装该插件的过程中, 会自动安装该插件依赖的大量 Go 二进制工具,
-" 如果由于 Go 环境等问题导致自动安装失败, 可后续通过 VIM 的 command-line 模式安装`:GoInstallBinaries`.
+" 搭建 Go 开发环境的 VIM 插件, 安装该插件的过程中,
+" 会自动安装该插件依赖的大量 Go 二进制工具;
+" 如果由于 Go 环境等问题导致自动安装失败,
+" 可后续通过 VIM 的 command-line 模式安装`:GoInstallBinaries`.
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 """""""" openresty
@@ -291,9 +281,7 @@ call plug#end()
 " }}
 
 
-" 主要配置 {{
-
-"""""""" 代码自动补全配置 {{
+" 代码自动补全 {{
 
 """""""" neoclide/coc.nvim
 " CoC 的全称是: Conqure of Completion
@@ -371,7 +359,6 @@ let g:coc_global_extensions = [
 	\ 'coc-ultisnips',
 	\ 'coc-emoji',
 	\ 'coc-swagger',
-	\ 'coc-yank',
 	\ ]
 " *************************
 
@@ -560,7 +547,8 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " }}
 
-"""""""" 代码静态检查配置 {{
+
+" 代码静态检查 {{
 
 " ale 用于替代 syntastic 插件.
 " NOTE: :ALEInfo  用于查看当前文件的语法检查配置情况,
@@ -698,7 +686,177 @@ let g:ale_fixers = {
 
 " }}
 
-"""""""" 图形接口相关配置 {{
+
+" 状态栏定制 {{
+
+"""""" itchyny/lightline.vim
+" doc: https://github.com/itchyny/lightline.vim
+
+" 本选项的值影响最后一个窗口何时有状态行:
+"     0: 永不
+"     1: 只有在有至少两个窗口时
+"     2: 总是
+" 默认值: 1, 为了单窗口也可以显示状态栏, 此处设置为2.
+set laststatus=2
+
+" 由于此插件已经帮我们美化显示了当前的 VIM 模式, 所以 VIM 自带的模式显示可以去除.
+set noshowmode
+"""""""""""""""""""""""""""
+
+"""""" 'maximbaz/lightline-ale'
+" doc: https://github.com/maximbaz/lightline-ale
+
+" 美化错误与警告等信息的显示图标.
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_ok = "\uf00c"
+" 以下三条指令的字符串值结尾多一个空格, 用来解决图标和数字重叠的问题.
+let g:lightline#ale#indicator_infos = "\uf129 "
+let g:lightline#ale#indicator_warnings = "\uf071 "
+let g:lightline#ale#indicator_errors = "\uf05e "
+
+let g:lightline = {}
+
+let g:lightline.component_expand = {
+    \  'linter_checking': 'lightline#ale#checking',
+    \  'linter_infos': 'lightline#ale#infos',
+    \  'linter_warnings': 'lightline#ale#warnings',
+    \  'linter_errors': 'lightline#ale#errors',
+    \  'linter_ok': 'lightline#ale#ok',
+    \ }
+
+let g:lightline.component_type = {
+    \  'linter_checking': 'right',
+    \  'linter_infos': 'right',
+    \  'linter_warnings': 'warning',
+    \  'linter_errors': 'error',
+    \  'linter_ok': 'right',
+    \ }
+
+" 已从 left 中去除 cocstatus, 可选择性加入.
+let g:lightline.active = {
+    \  'left': [ [ 'mode', 'paste' ],
+    \            [ 'git', 'bgit', 'method', 'readonly', 'filename', 'modified' ],
+    \  ],
+    \  'right': [ [ 'lineinfo' ],
+    \             [ 'percent' ],
+    \             [ 'fileformat', 'fileencoding', 'filetype' ],
+    \             [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+    \             [ 'blame' ],
+    \  ],
+    \ }
+
+let g:lightline.component_function = {
+   \  'cocstatus': 'coc#status',
+   \  'git': 'LightlineGitStatus',
+   \  'bgit': 'LightlineBufferGitStatus',
+   \  'blame': 'LightlineGitBlame',
+   \ }
+
+" doc: https://github.com/neoclide/coc-git
+"   *  表示 git 仓库内容有变更;
+"   x  表示 git 仓库内容有冲突;
+"   ●  表示 git 新增或变化内容已经提交到暂存区;
+"   …  表示 git 仓库内有未跟踪的新文件;
+"   以上符号可同时在分支后显示, 如果分支名称后没有任何上述符号, 说明分支是干净的.
+function! LightlineGitStatus() abort
+  let gstatus = get(g:, 'coc_git_status', '')
+  return gstatus
+endfunction
+
+function! LightlineBufferGitStatus() abort
+  let gbstatus = get(b:, 'coc_git_status', '')
+  return gbstatus
+endfunction
+
+function! LightlineGitBlame() abort
+  let blame = get(b:, 'coc_git_blame', '')
+  " 窗口宽度大于120时, 状态栏才显示 git blame 信息.
+  return winwidth(0) > 120 ? blame : ''
+endfunction
+"""""""""""""""""""""""""""
+
+" }}
+
+
+" 主题定制 {{
+
+" 代码高亮显示.
+syntax enable
+
+if !exists('g:gruvbox_contrast_light')
+  let g:gruvbox_contrast_light='hard'
+endif
+
+" 启用颜色主题方案.
+" 优秀方案备选: solarized, gruvbox, molokai, one
+" 其他主题名称见 ~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
+" NOTE:
+"   1)如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 举例:
+"     Iterm2: Preferences -> Profiles -> Colors -> Color Presets -> Solarized Dark/Solarized Light
+"   2)如果使用 molokai 主题, set backgroud 不能设置为 light.
+colorscheme solarized
+
+" 设置背景色为黑色或亮色, dark or light.
+set background=dark
+
+" solarized 主题的特殊配置.
+if (g:colors_name == 'solarized')
+    " 定制状态栏的主题颜色.
+    let g:lightline.colorscheme = 'solarized'
+endif
+
+" gruvbox 主题的特殊配置.
+if (g:colors_name == 'gruvbox')
+  if (&background == 'dark')
+    hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
+  else
+    hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+    hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+    hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
+  endif
+endif
+
+" molokai 主题的特殊配置.
+if (g:colors_name == 'molokai')
+  if (&background == 'dark')
+    hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+    hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
+    hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
+  endif
+endif
+
+" 显示行号.
+set nu
+
+" 设置行号颜色.
+" NOTE: VIM 识别三种不同的终端, term 黑白终端, cterm 彩色终端, gui Gvim窗口.
+hi LineNr cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
+
+" 突出显示当前行.
+set cursorline
+
+" 突出显示当前列.
+set cursorcolumn
+
+" tab 键显示为 >---, 行尾空格显示为 -, 帮助我们及时发现规范问题.
+set list listchars=tab:>-,trail:-
+
+" 非可见字符 nbsp、tab、trail 是由 SpecialKey 高亮组来定义的,
+" 所以这里使用 SpecialKey 来改变 tab 键和行尾空格的颜色样式.
+hi SpecialKey cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
+
+" 第 80 列通过颜色标注, 提示我们对单行代码长度的掌控.
+autocmd FileType * set colorcolumn=80
+
+" 设置提示列的颜色方案;
+" 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列,
+" gitgutter 插件的文件变化信息也会出现在此列.
+hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+
+" }}
+
+
+" 目录树等图形接口 {{
 
 """""" preservim/nerdtree
 " doc: https://github.com/preservim/nerdtree
@@ -804,67 +962,6 @@ let g:tagbar_autopreview = 1
 let g:tagbar_sort = 0
 """""""""""""""""""
 
-"""""" itchyny/lightline.vim
-" doc: https://github.com/itchyny/lightline.vim
-
-" 本选项的值影响最后一个窗口何时有状态行:
-"     0: 永不
-"     1: 只有在有至少两个窗口时
-"     2: 总是
-" 默认值: 1, 为了单窗口也可以显示状态栏, 此处设置为2.
-set laststatus=2
-
-" 由于此插件已经帮我们美化显示了当前的 VIM 模式, 所以 VIM 自带的模式显示可以去除.
-set noshowmode
-"""""""""""""""""""""""""""
-
-"""""" 'maximbaz/lightline-ale'
-" doc: https://github.com/maximbaz/lightline-ale
-
-let g:lightline = {}
-
-let g:lightline.component_expand = {
-    \  'linter_checking': 'lightline#ale#checking',
-    \  'linter_infos': 'lightline#ale#infos',
-    \  'linter_warnings': 'lightline#ale#warnings',
-    \  'linter_errors': 'lightline#ale#errors',
-    \  'linter_ok': 'lightline#ale#ok',
-    \ }
-
-let g:lightline.component_type = {
-    \  'linter_checking': 'right',
-    \  'linter_infos': 'right',
-    \  'linter_warnings': 'warning',
-    \  'linter_errors': 'error',
-    \  'linter_ok': 'right',
-    \ }
-
-" 其中 'gitbranch' 依赖 vim-fugitive 插件.
-let g:lightline.active = {
-    \  'left': [ [ 'mode', 'paste' ],
-    \            [ 'gitbranch', 'readonly', 'filename', 'modified' ],
-    \  ],
-    \  'right': [ [ 'lineinfo' ],
-    \             [ 'percent' ],
-    \             [ 'fileformat', 'fileencoding', 'filetype' ],
-    \             [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
-    \  ],
-    \ }
-
-" 显示当前 git 分支, 依赖 vim-fugitive 插件.
-let g:lightline.component_function = {
-    \  'gitbranch': 'FugitiveHead'
-    \ }
-
-" 美化错误与警告等信息的显示图标.
-let g:lightline#ale#indicator_checking = "\uf110"
-let g:lightline#ale#indicator_ok = "\uf00c"
-" 以下三条指令的字符串值结尾多一个空格, 用来解决图标和数字重叠的问题.
-let g:lightline#ale#indicator_infos = "\uf129 "
-let g:lightline#ale#indicator_warnings = "\uf071 "
-let g:lightline#ale#indicator_errors = "\uf05e "
-"""""""""""""""""""""""""""
-
 """""" 'ryanoasis/vim-devicons'
 " doc: https://github.com/ryanoasis/vim-devicons
 
@@ -875,7 +972,7 @@ let g:webdevicons_enable = 1
 " NOTE: 如果使用 iterm2 终端, 需要通过更改 iterm2 的 font 字体才可以, 此处的配置对 iterm2 无效;
 "   Iterm2: Preferences -> Text -> Font, 选择 Hack Nerd Font 或 Hack Nerd Font Mono.
 set guifont=Hack_Nerd_Font:h13
-"""""""""""""""""""
+"""""""""""""""""""""""""""""""
 
 """""" 'voldikss/vim-floaterm'
 " doc: https://github.com/voldikss/vim-floaterm
@@ -894,10 +991,12 @@ let g:floaterm_keymap_next = '<Leader>tn'
 
 " 显示目前存在的悬浮窗口.
 let g:floaterm_keymap_show = '<Leader>ts'
+""""""""""""""""""""""""""""""
 
 " }}
 
-"""""""" 效率相关配置 {{
+
+" 效率相关 {{
 
 """""" takac/vim-hardtime
 " doc: https://github.com/takac/vim-hardtime
@@ -1060,6 +1159,9 @@ let g:qs_lazy_highlight = 0
 """""""""""""""""""""
 
 " }}
+
+
+" 编程语言 {{
 
 """""""" Go {{
 
@@ -1304,84 +1406,9 @@ let g:mkdp_refresh_slow=1
 " }}
 
 
-" 主题定制 {{
+" 常用原生选项 {{
 
-" 代码高亮显示.
-syntax enable
-
-"if !exists('g:gruvbox_contrast_light')
-  "let g:gruvbox_contrast_light='hard'
-"endif
-
-" 启用颜色主题方案.
-" 优秀方案备选: solarized, gruvbox, molokai, one
-" 其他主题名称见 ~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
-" NOTE:
-"   1)如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 举例:
-"     Iterm2: Preferences -> Profiles -> Colors -> Color Presets -> Solarized Dark/Solarized Light
-"   2)如果使用 molokai 主题, set backgroud 不能设置为 light.
-colorscheme solarized
-
-" 设置背景色为黑色或亮色, dark or light.
-set background=dark
-
-" solarized 主题的特殊配置.
-if (g:colors_name == 'solarized')
-    " 定制状态栏的主题颜色.
-    let g:lightline.colorscheme = 'solarized'
-endif
-
-" gruvbox 主题的特殊配置.
-if (g:colors_name == 'gruvbox')
-  if (&background == 'dark')
-    hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
-  else
-    hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
-    hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
-    hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
-  endif
-endif
-
-" molokai 主题的特殊配置.
-if (g:colors_name == 'molokai')
-  if (&background == 'dark')
-    hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
-    hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
-    hi colorcolumn  cterm=NONE ctermbg=236 ctermfg=NONE guibg=NONE guifg=NONE
-  endif
-endif
-
-" 显示行号.
-set nu
-" 设置行号颜色.
-hi LineNr cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
-
-" 设置提示列的颜色方案;
-" 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列,
-" gitgutter 插件的文件变化信息也会出现在此列.
-hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
-
-" 突出显示当前行.
-set cursorline
-
-" 突出显示当前列.
-set cursorcolumn
-
-" tab 键显示为 >---, 行尾空格显示为 -, 帮助我们及时发现规范问题.
-set list listchars=tab:>-,trail:-
-" 非可见字符nbsp、tab、trail是由SpecialKey高亮组来定义的,
-" 所以这里使用SpecialKey来改变tab键和行尾空格的颜色样式.
-hi SpecialKey cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
-
-" 第 80 列通过颜色标注, 提示我们对单行代码长度的掌控.
-autocmd FileType * set colorcolumn=80
-
-" }}
-
-
-" 常用配置 {{
-
-" 设置相对行号.
+" 设置相对行号, 便于跨行的文本对象操作, 比如: [n]j/k/y/v/c/d 等.
 set number relativenumber
 
 " 一行内容超过终端宽度时是否折行, 默认就是折行.
@@ -1450,6 +1477,10 @@ set wildmode=longest:list,full
 " 打字的时候隐藏鼠标光标.
 set mousehide
 
+" 打开文件监视, 在修改内容后保存文件, 如果文件已经被其他 VIM 实例打开, 则会进行提示,
+" 如果忽略提示强制进行保存, 则其他 VIM 实例打开的此文件也会同步变更.
+set autoread
+
 " normal 模式下允许光标移动到最后一个字符的右边.
 set virtualedit=onemore
 
@@ -1516,10 +1547,6 @@ set whichwrap+=<,>,h,l
 
 " `:W`, 普通用户没有权限时使用 sudo 保存文件.
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
-
-" 打开文件监视, 在修改内容后保存文件, 如果文件已经被其他 VIM 实例打开, 则会进行提示,
-" 如果忽略提示强制进行保存, 则其他 VIM 实例打开的此文件也会同步变更.
-set autoread
 
 " 保留撤销历史, VIM会在编辑时保存操作历史, 用来供用户撤消更改;
 " 默认情况下, 操作记录只在本次编辑时有效, 一旦编辑结束、文件关闭, 操作历史就消失了;

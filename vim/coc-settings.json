@@ -1,6 +1,8 @@
 {
    // edit, split, vsplit, tab drop
   "coc.preferences.jumpCommand": "tab drop",
+  "git.addGBlameToBufferVar": true,
+  "git.showCommitInFloating": true,
   "languageserver": {
     // luarocks install --server=http://luarocks.org/dev lua-lsp
     // luarocks install luacheck
