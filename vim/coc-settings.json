@@ -1,20 +1,14 @@
 {
-   // split, vsplit, edit, tab drop
+   // edit, split, vsplit, tab drop
   "coc.preferences.jumpCommand": "tab drop",
   "languageserver": {
-    // npm i -g bash-language-server
-    // doc: https://github.com/bash-lsp/bash-language-server
-    "bash": {
-      "command": "bash-language-server",
-      "args": [
-        "start"
-      ],
-      "filetypes": [
-        "sh"
-      ],
-      "ignoredRootPaths": [
-        "~"
-      ]
+    // luarocks install --server=http://luarocks.org/dev lua-lsp
+    // luarocks install luacheck
+    // luarocks-5.3 install lcf
+    // doc: https://github.com/Alloyed/lua-lsp
+    "lua": {
+      "command": "lua-lsp",
+      "filetypes": ["lua"]
     },
     // npm i -g dockerfile-language-server-nodejs
     // doc: https://github.com/rcjsuen/dockerfile-language-server-nodejs
@@ -25,20 +19,6 @@
       ],
       "args": [
         "--stdio"
-      ]
-    },
-    // npm i -g sql-language-server
-    // doc: https://github.com/joe-re/sql-language-server
-    "sql": {
-      "command": "sql-language-server",
-      "args": [
-        "up",
-        "--method",
-        "stdio"
-      ],
-      "filetypes": [
-        "sql",
-        "mysql"
       ]
     }
   }
