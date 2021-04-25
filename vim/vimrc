@@ -430,6 +430,9 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  " 使支持 tmux-plugins/vim-tmux 插件.
+  elseif (index(['tmux'], &filetype) >= 0)
+    call tmux#man()
   elseif (coc#rpc#ready())
     call CocActionAsync('doHover')
   else
