@@ -117,19 +117,21 @@ let mapleader = ','
 "    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
 " 下面每一个 Plug 对应一个 VIM 插件, 插件名称就是相应 github 项目名称,
-" 可通过访问`https://github.com/插件名称`来查看相关插件的详细使用文档;
-" 也可以通过 command-line 模式`:help 插件名称`来查看相关插件文档,
-" 注意这里插件名称不包括插件作者名字和`/`.
+" 可通过访问 https://github.com/插件名称 来查看相关插件的详细使用文档;
+" 也可以通过 command-line 模式 :help 插件名称 来查看相关插件文档.
 call plug#begin('~/.vim/plugged')
 
+
 " ********************** VIM 主题 ********************************************
-" 集成了900多种流行的 VIM 颜色主题的插件, 包括有名的 molokai 主题,
-" 可在 ~/.vim/plugged/vim-colorschemes/colors/ 目录下查看主题名称,
-" 一个文件一个主题, 也可以通过 command-line 模式`:colorscheme `,
-" 然后按 tab 键查看支持的主题名称. 比如要启用 molokai 主题,
-" 则在本 .vimrc 文件中配置: colorscheme molokai;
-" 也可以在 command-line 模式进行主题切换, 即时看到颜色效果: `:colorscheme solarized`.
-Plug 'flazz/vim-colorschemes'
+
+" solarized
+Plug 'altercation/vim-colors-solarized'
+
+" gruvbox
+Plug 'morhetz/gruvbox'
+
+" molokai
+Plug 'tomasr/molokai'
 
 " Atom theme: One Dark / Light
 Plug 'rakr/vim-one'
@@ -151,11 +153,11 @@ Plug 'neoclide/coc-neco'
 
 " ********************** 代码检查 ********************************************
 
-" 代码静态检查与自动修复插件.
-" ALE: Asynchronous Lint Engine
+" 代码静态检查与自动修复插件: ALE(Asynchronous Lint Engine)
 Plug 'dense-analysis/ale'
 
 " ********************** GUI *************************************************
+
 " 目录树窗口插件.
 Plug 'preservim/nerdtree'
 
@@ -174,7 +176,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 
 " 在文件窗口左侧标记列显示内容变化的行.
-"Plug 'airblade/vim-gitgutter'
+" NOTE: 这里只使用到此插件的配色, 为 coc-git 提供标记的配色.
+Plug 'airblade/vim-gitgutter'
 
 " 美化状态栏插件.
 Plug 'itchyny/lightline.vim'
@@ -189,10 +192,10 @@ Plug 'luochen1990/rainbow'
 
 " 为目录树或LeaderF等插件显示文件类型.
 " NOTE:
-" 1) 需要提前安装 nerd-fonts, 并设置iterm2 (或其他类型终端) 的字体为 Hack Nerd Font 或 Hack Nerd Font Mono;
+" 1) 需安装 nerd-fonts, 并设置iterm2 的字体为: Hack Nerd Font 或 Hack Nerd Font Mono;
 "    # doc: https://github.com/ryanoasis/nerd-fonts#font-installation
 "    brew tap homebrew/cask-fonts && brew install font-hack-nerd-font
-" 2) 此插件要安装在目录树等插件的后面.
+" 2) 此插件要安装在目录树 或 LeaderF 等插件的后面.
 Plug 'ryanoasis/vim-devicons'
 
 " 在上一个插件的基础上, 根据文件类型的不同, 改变图标的颜色.
@@ -218,20 +221,15 @@ Plug 'spacewander/openresty-vim'
 " 前端利器 html/css/js
 Plug 'mattn/emmet-vim'
 
-" Vue 语法高亮插件, 注意会拖慢 VIM, 需要配置这条来解决: `let g:vue_pre_processors = []`
-Plug 'posva/vim-vue'
-
 " 高亮 jsonc 类型文件, 有此插件就可以对 json 进行注释了.
 Plug 'neoclide/jsonc.vim'
 
 """""""" markdown
-" markdown 语法高亮插件.
-Plug 'godlygeek/tabular' | Plug 'tpope/vim-markdown'
-
 " 通过浏览器实时预览 Markdown 文本的插件.
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
 """""""" toml
+" toml 语法高亮插件.
 Plug 'cespare/vim-toml'
 
 " ********************** 效率相关 ********************************************
@@ -267,15 +265,17 @@ Plug 'lyokha/vim-xkbswitch'
 " 在 .tmux.conf 中直接通过 K 查看 tmux 文档等功能.
 Plug 'tmux-plugins/vim-tmux'
 
-" VIM 从菜鸟到高手之路必备, 禁止连续按 jkhl 等低效操作, 强制你根据不同场景来思考使用更高效的命令的习惯.
+" VIM 从菜鸟到高手之路必备, 禁止连续按 jkhl 等低效操作,
+" 强制你根据不同场景来思考使用更高效的命令的习惯.
 Plug 'takac/vim-hardtime'
 
 
-" 最后 command-line 模式下执行`:PlugInstall`自动安装上面未安装的插件;
-" 查看状态: `:PlugStatus`, 查看当前状态, 安装进度等;
-" 更新插件: `:PlugUpdate`, 更新所有插件, 建议定期更新所有插件;
-" 删除插件: `:PlugClean`, 卸载插件, 需要先在上面注释掉或删除相关插件, 然后重新打开此文件执行此命令;
-" 更新 vim-plug 本身: `:PlugUpgrade`.
+" 最后 command-line 模式下执行 :PlugInstall 自动安装上面未安装的插件, 其他常用命令:
+"    :PlugStatus  查看当前状态, 安装进度等;
+"    :PlugUpdate  更新所有插件, 建议定期更新所有插件;
+"    :PlugClean   卸载插件, 需要先在上面注释掉或删除相关插件,
+"                 然后重新打开此文件或 normal 模式下按 ,R 执行此命令;
+"    :PlugUpgrade  更新 vim-plug 本身.
 call plug#end()
 
 " }}
@@ -448,7 +448,7 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
 endif
 
 " *** CocList 相关命令快捷键映射 ***
-" NOTE: 按快捷键出现相关列表后, 使用 ctrl j/k/f 进行浏览, 使用 tab 进行管理.
+" NOTE: 按快捷键出现相关列表后, 使用 ctrl j/k/f/b 进行浏览, 使用 tab 进行管理.
 "
 " space e  列出所有扩展.
 nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
@@ -654,7 +654,8 @@ let g:ale_linters = {
 " golanci-lint run 命令不加额外参数, 解决默认加的 --enable-all 参数导致的错误.
 call ale#Set('go_golangci_lint_options', '')
 
-" golangci-lint run 命令以包为单位进行检查, 解决默认以文件方式检查时的 typecheck 错误误报的问题.
+" golangci-lint run 命令以包为单位进行检查,
+" 解决默认以文件方式检查时的 typecheck 错误误报的问题.
 call ale#Set('go_golangci_lint_package', 1)
 
 " 针对不同语言的自动修复功能.
@@ -783,41 +784,51 @@ endfunction
 " 代码高亮显示.
 syntax enable
 
-if !exists('g:gruvbox_contrast_light')
-  let g:gruvbox_contrast_light='hard'
-endif
-
-" 启用颜色主题方案.
-" 优秀方案备选: solarized, gruvbox, molokai, one
-" 其他主题名称见 ~/.vim/plugged/vim-colorschemes/colors/, 文件名即主题名.
-" NOTE:
-"   1)如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 举例:
-"     Iterm2: Preferences -> Profiles -> Colors -> Color Presets -> Solarized Dark/Solarized Light
-"   2)如果使用 molokai 主题, set backgroud 不能设置为 light.
-colorscheme solarized
-
 " 设置背景色为黑色或亮色, dark or light.
 set background=dark
 
-" solarized 主题的特殊配置.
+" 启用颜色主题方案, 优秀方案:
+"   solarized: https://github.com/altercation/vim-colors-solarized
+"   gruvbox: https://github.com/morhetz/gruvbox
+"   molokai: https://github.com/tomasr/molokai
+"   one: https://github.com/rakr/vim-one
+"
+" NOTE:
+"   1) 如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 拿 iterm2 举例:
+"      Preferences->Profiles->Colors->Color Presets->Solarized Dark/Solarized Light
+"   2) 如果使用 molokai 主题, set backgroud 不能设置为 light.
+"
+colorscheme solarized
+
+" solarized 主题的自定义配置.
 if (g:colors_name == 'solarized')
-    " 定制状态栏的主题颜色.
-    let g:lightline.colorscheme = 'solarized'
+  " 定制状态栏的主题颜色.
+  let g:lightline.colorscheme = 'solarized'
 endif
 
-" gruvbox 主题的特殊配置.
+" gruvbox 主题的自定义配置.
+" doc: https://github.com/morhetz/gruvbox/wiki/Configuration
 if (g:colors_name == 'gruvbox')
+  let g:lightline.colorscheme = 'gruvbox'
+  let g:gruvbox_underline = 0  " defaut: 1
   if (&background == 'dark')
+    let g:gruvbox_contrast_dark = 'hard'  " default: medium
+    let g:gruvbox_italicize_strings = 1  " default: 0
+    let g:gruvbox_invert_signs = 1  " default: 0
+    let g:gruvbox_improved_strings = 1  " default: 0
+    let g:gruvbox_improved_warnings = 1  " default: 0
     hi Visual cterm=NONE ctermfg=NONE ctermbg=237 guibg=#3a3a3a
   else
+    let g:gruvbox_contrast_light = 'hard'  " default: medium
     hi Visual cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
     hi CursorLine cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
     hi ColorColumn cterm=NONE ctermfg=NONE ctermbg=228 guibg=#f2e5bc
   endif
 endif
 
-" molokai 主题的特殊配置.
+" molokai 主题的自定义配置.
 if (g:colors_name == 'molokai')
+  let g:lightline.colorscheme = 'molokai'
   if (&background == 'dark')
     hi CursorLine cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
     hi Cursorcolumn cterm=NONE ctermbg=234 ctermfg=NONE guibg=NONE guifg=NONE
@@ -825,12 +836,23 @@ if (g:colors_name == 'molokai')
   endif
 endif
 
+" one 主题的自定义配置.
+if (g:colors_name == 'one')
+  let g:lightline.colorscheme = 'one'
+endif
+
 " 显示行号.
 set nu
 
 " 设置行号颜色.
-" NOTE: VIM 识别三种不同的终端, term 黑白终端, cterm 彩色终端, gui Gvim窗口.
+" NOTE: VIM 识别三种不同的终端, term 黑白终端, cterm 彩色终端, gui Gvim 窗口.
 hi LineNr cterm=NONE ctermbg=NONE ctermfg=238 guibg=NONE guifg=NONE
+
+" 设置相对行号, 便于跨行的文本对象操作, 比如: [n]j/k/y/v/c/d 等.
+set number relativenumber
+
+" 显示当前光标所在的行号和列号.
+set ruler
 
 " 突出显示当前行.
 set cursorline
@@ -850,8 +872,22 @@ autocmd FileType * set colorcolumn=80
 
 " 设置提示列的颜色方案;
 " 比如 ale 插件的代码静态检查的错误或警告信息就会出现在此列,
-" gitgutter 插件的文件变化信息也会出现在此列.
+" coc-git 扩展的文件变化信息也会出现在此列.
 hi SignColumn cterm=NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+
+" 指定何时显示页面标签, 默认值: 1
+"   0: 永远不会
+"   1: 至少有两个标签页时才会
+"   2: 永远会
+set showtabline=1
+
+" 命令行窗口的函数, 默认值7.
+" 命令行窗口打开的方法:
+"   1) command-line 模式下, 按快捷键 ctrl f 打开命令行窗口并显示命令历史记录.
+"   2) normal 模式下, 按快捷键 q: 打开命令行窗口并显示命令历史记录.
+"   3) normal 模式下, 按快捷键 q/ 将会打开命令行窗口并显示向下搜索的历史记录.
+"   4) normal 模式下, 按快捷键 q? 将会打开命令行窗口并显示向上搜索的历史记录.
+set cmdwinheight=8
 
 " }}
 
@@ -903,12 +939,12 @@ autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTr
 "   2) 如果使用 tmux, 不建议启用此条配置.
 "autocmd BufWinEnter *.* silent NERDTreeMirror
 
-" 当项目下新增或删除文件时, 目录树窗口中自动更新变化, 省去了在目录树窗口中手动按 R 的动作了;
+" 当项目下新增或删除文件时, 目录树窗口中自动更新变化,
+" 省去了在目录树窗口中手动按 R 的动作了;
 " 注意, 需要光标移动到目录树窗口中或重新打开目录树窗口来触发更新动作.
 autocmd BufEnter NERD_tree_* | execute 'normal R'
 
-" 目录树中目录折叠与展开的样式.
-" 默认值: '▸' 和 '▾';
+" 目录树中目录折叠与展开的样式, 默认值: '▸' 和 '▾';
 " 可供选择: '+' 与 '~', '<' 与 'v', 等等.
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
@@ -969,9 +1005,19 @@ let g:tagbar_sort = 0
 let g:webdevicons_enable = 1
 
 " 为 gvim/mvim 设置字体和字号.
-" NOTE: 如果使用 iterm2 终端, 需要通过更改 iterm2 的 font 字体才可以, 此处的配置对 iterm2 无效;
-"   Iterm2: Preferences -> Text -> Font, 选择 Hack Nerd Font 或 Hack Nerd Font Mono.
+" NOTE: 如果使用 iterm2 终端, 需要通过更改 iterm2 的 font 字体才可以,
+"       此处的配置对 iterm2 无效, 更改 iterm2 的 font 字体:
+"       Preferences -> Text -> Font, 选择 Hack Nerd Font 或 Hack Nerd Font Mono.
 set guifont=Hack_Nerd_Font:h13
+"""""""""""""""""""""""""""""""
+
+"""""" 'airblade/vim-gitgutter'
+" doc: https://github.com/airblade/vim-gitgutter
+
+" 设置提示标识的高亮颜色.
+hi GitGutterAdd    guifg=#009900 ctermfg=2
+hi GitGutterChange guifg=#bbbb00 ctermfg=3
+hi GitGutterDelete guifg=#ff2222 ctermfg=1
 """""""""""""""""""""""""""""""
 
 """""" 'voldikss/vim-floaterm'
@@ -1099,7 +1145,8 @@ noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
 " 从 normal 模式下按 ,rg 进入 command-line 模式下,
 " 然后输入要搜索的文本(支持正则表达式), 回车即可显示此项目内包含此文本的文件列表;
 " 在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
-" 然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后, 按 t 将以新建标签页的方式打开选择的文件.
+" 然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后,
+" 按 t 将以新建标签页的方式打开选择的文件.
 noremap <Leader>rg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
 
 " visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
@@ -1112,8 +1159,9 @@ noremap ,rc :<C-U>Leaderf! rg --recall<CR>
 """""" lyokha/vim-xkbswitch
 " doc: https://github.com/lyokha/vim-xkbswitch
 " 功能:
-"   从 insert 模式切换到 normal 模式时, 如果 insert 模式下为中文输入法, 则自动切换为英文输入法,
-"   然后从 normal 模式重新进入 insert 模式时, 还原上一次 insert 模式下的输入法.
+"   从 insert 模式切换到 normal 模式时, 如果 insert 模式下为中文输入法,
+"   则自动切换为英文输入法, 然后从 normal 模式重新进入 insert 模式时,
+"   还原上一次 insert 模式下的输入法.
 " 系统依赖安装(macOS):
 "   git clone https://github.com/myshov/xkbswitch-macosx.git
 "   cp xkbswitch-macosx/bin/xkbswitch /usr/local/bin/
@@ -1125,14 +1173,17 @@ let g:XkbSwitchEnabled = 1
 
 let g:XkbSwitchLib = '/usr/local/lib/libxkbswitch.dylib'
 
-" 默认情况从 insert 模式到 normal 模式, 将还原 normal 的上一次输入法, 如果 normal 上一次是中文, 这次还是中文;
+" 默认情况从 insert 模式到 normal 模式, 将还原 normal 的上一次输入法,
+" 如果 normal 上一次是中文, 这次还是中文;
 " 添加此指令后, 将始终保持 normal 模式是英文输入法.
 let g:XkbSwitchNLayout = 'us'
 
-" 同上一条, 区别是这条指令针对的是 insert 模式, 目前的输入体验是不建议启用这条指令, 可根据自身的使用场景调整.
+" 同上一条, 区别是这条指令针对的是 insert 模式,
+" 目前的输入体验是不建议启用这条指令, 可根据自身的使用场景调整.
 "let g:XkbSwitchILayout = 'us'
 
-" 默认情况下, 从 insert 模式切换到 normal 模式, 输入法从 中文 切换到 英文有一定的延迟, 非常影响体验,
+" 默认情况下, 从 insert 模式切换到 normal 模式,
+" 输入法从中文切换到英文有一定的延迟, 非常影响体验,
 " 此条指令解决这个问题, 可以将数字改的更小以或得更快的切换体验.
 set ttimeoutlen=25
 """""""""""""""""""""
@@ -1232,12 +1283,13 @@ au FileType go nmap <leader>ie :GoIfErr<CR>
 au FileType go nmap <leader>at :GoAddTags<CR>
 " 使用 :GoAddTags 时, 是否忽略未导出的结构体字段(即小写字段), 1 表示忽略. 默认值: 0
 let g:go_addtags_skip_unexported = 1
-" ,rn  级联的重命名光标下的标识符, 重命名后, 项目内的所有与其相关的地方全部会更新.
-"      coc.nvim 的 ,rn 表现的更好, 注释此配置.
+" ,rn  级联的重命名光标下的标识符, 重命名后, 项目内的所有与其相关的地方全部会更新;
+"      由于 coc.nvim 的 ,rn 表现的更好, 注释此配置.
 "au FileType go nmap <leader>rn :GoRename<CR>
-" 新创建一个 .go 文件时, 是否自动使用模版内容填充. 默认值: 1
+" 新创建一个 .go 文件时, 是否自动使用模版内容填充, 默认值: 1
 let g:go_template_autocreate = 1
-" 始终仅自动生成 package pkgname 一行代码, 将覆盖掉 let g:go_template_autocreate = 1 的作用. 默认值: 0
+" 始终仅自动生成 package pkgname 一行代码,
+" 将覆盖掉 let g:go_template_autocreate = 1 的作用, 默认值: 0
 let g:go_template_use_pkg = 1
 
 
@@ -1344,8 +1396,8 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 let g:vue_pre_processors = []
 
 """""" 'mattn/emmet-vim'
+" doc: https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
 " 使用方法:
-" https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
 " 1. 打开 *.html 文件, 输入`html:5`, 然后`ctrl y ,`, 即可自动生成html代码模版
 " 2. 输入`div`, 然后`ctrl y ,`, 即可自动生成: <div></div>
 " 3. 输入`#foo`, 然后`ctrl y ,`, 可自动生成: <div id="foo"></div>
@@ -1386,7 +1438,8 @@ autocmd bufnewfile *.sh call SetTitleForShell()
 """"""" tpope/vim-markdown
 " doc: https://github.com/tpope/vim-markdown
 
-" 禁用 markdown 语法隐藏.
+" 禁用 markdown 语法隐藏, 如果开启此项, 在 markdown 类型文件中将看不到一些字符,
+" 比如 **NOTEICE** 中的 * 就看不到了.
 let g:markdown_syntax_conceal = 0
 
 """"""" iamcco/markdown-preview.nvim
@@ -1408,31 +1461,14 @@ let g:mkdp_refresh_slow=1
 
 " 常用原生选项 {{
 
-" 设置相对行号, 便于跨行的文本对象操作, 比如: [n]j/k/y/v/c/d 等.
-set number relativenumber
-
 " 一行内容超过终端宽度时是否折行, 默认就是折行.
 set wrap
-
-" 指定何时显示页面标签, 默认值: 1
-"   0: 永远不会
-"   1: 至少有两个标签页时才会
-"   2: 永远会
-set showtabline=1
 
 " 显示括号匹配.
 set showmatch
 
 " normal 模式下显示输入的 VIM 命令.
 set showcmd
-
-" 命令行窗口的函数, 默认值7.
-" 命令行窗口打开的方法:
-"   1) command-line 模式下, 按快捷键 ctrl f 打开命令行窗口并显示命令历史记录.
-"   2) normal 模式下, 按快捷键 q: 打开命令行窗口并显示命令历史记录.
-"   3) normal 模式下, 按快捷键 q/ 将会打开命令行窗口并显示向下搜索的历史记录.
-"   4) normal 模式下, 按快捷键 q? 将会打开命令行窗口并显示向上搜索的历史记录.
-set cmdwinheight=8
 
 " 一个 tab 显示几个空格长度, 默认是8个空格, 这里改为4个空格.
 set ts=4
@@ -1443,11 +1479,9 @@ set expandtab
 " insert 模式下按退格键的时候退回缩进的长度为4个空格, 默认是退回一个空格.
 set softtabstop=4
 
-" 启用智能缩进, 按回车键后自动缩进, 注意启用此模式后, 粘贴代码时要先在 command-line 模式下`:set paste`.
+" 启用智能缩进, 按回车键后自动缩进,
+" 注意启用此模式后, 粘贴代码时要先 :set paste
 set smartindent
-
-" 显示当前光标所在的行号和列号.
-set ruler
 
 " 进行搜索时会快速找到结果, 随着输入的字符进行及时匹配.
 set incsearch
@@ -1459,7 +1493,8 @@ set hlsearch
 set ignorecase
 
 " 如果同时打开了ignorecase, 那么对于搜索只有一个大写字母的搜索词, 将大小写敏感;
-" 其他情况都是大小写不敏感, 比如: 搜索 Test 时, 将不匹配 test, 但搜索 test 时, 将匹配 Test.
+" 其他情况都是大小写不敏感, 比如: 搜索 Test 时, 将不匹配 test,
+" 但搜索 test 时, 将匹配 Test.
 set smartcase
 
 " 不创建备份文件. 默认情况下, 文件保存时, 会额外创建一个备份文件,
@@ -1508,7 +1543,8 @@ set langmenu=en
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
-" ,) / ,] / ,} / ," / ,' / ,`  将 visual 模式下选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹.
+" visual 模式下选择内容, 然后通过按 ,) 或 ,] 或 ,} 或 ," 或 ,' 或 ,`
+" 将选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹.
 vnoremap <leader>) <esc>`>a)<esc>`<i(<esc>
 vnoremap <leader>] <esc>`>a]<esc>`<i[<esc>
 vnoremap <leader>} <esc>`>a}<esc>`<i{<esc>
@@ -1529,9 +1565,12 @@ imap <C-e> <End>
 " normal 模式下, 使用Y复制当前行光标之后的内容, 和C和D用法统一起来.
 nnoremap Y y$
 
-" normal 模式下`shift >>`和`shift <<`或 visual 模式下`shift >`和`shift <`每次缩进4个空格, 默认是8个空格.
+" normal 模式下 shift >> 和 shift << 或
+" visual 模式下 shift > 和 shift < 每次缩进4个空格, 默认是8个空格.
 set shiftwidth=4
-" visual 模式下进行`shift >`和`shift <`缩进操作时, 使不退出 visual 模式, 这样可方便执行多行的连续缩进.
+
+" visual 模式下进行 shift > 和 shift < 缩进操作时,
+" 使不退出 visual 模式, 这样可方便执行多行的连续缩进.
 vnoremap < <gv
 vnoremap > >gv
 
@@ -1541,27 +1580,28 @@ augroup resCur
     autocmd BufReadPost * call setpos(".", getpos("'\""))
 augroup END
 
-" insert 模式下使用 <BS> <Del> <C-W> <C-U>, 解决无法回退删除等问题, 比如按 backspace 键无反应.
+" insert 模式下使用 <BS> <Del> <C-W> <C-U>, 解决无法回退删除等问题,
+" 比如按 backspace 键无反应.
 set backspace=indent,eol,start
 set whichwrap+=<,>,h,l
 
-" `:W`, 普通用户没有权限时使用 sudo 保存文件.
+" :W  普通用户没有权限时使用 sudo 权限保存文件.
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
-" 保留撤销历史, VIM会在编辑时保存操作历史, 用来供用户撤消更改;
+" 保留撤销历史, VIM 会在编辑时保存操作历史, 用来供用户撤消更改;
 " 默认情况下, 操作记录只在本次编辑时有效, 一旦编辑结束、文件关闭, 操作历史就消失了;
-" 打开这个设置, 可以在文件关闭后, 操作记录保留在一个文件里面, 继续存在.
+" 打开这个设置, 可以在文件关闭后, 操作记录保留在一个文件里面继续存在.
 " 这意味着, 重新打开一个文件, 可以撤销上一次编辑时的操作;
-" 撤消文件是跟原文件保存在一起的隐藏文件, 文件名以.un~开头.
+" 撤消文件是跟原文件保存在一起的隐藏文件, 文件名以 .un~ 开头. 
 set undofile
 set undodir=~/.vim/undo
 if !isdirectory(&undodir)
   call mkdir(&undodir, 'p', 0700)
 endif
 
-" normal 模式下的`nyy`复制(n为数字), 或进入 visual 模式下选择内容后的`y`复制,
-" 除了可以将复制的内容粘贴(使用`p`)到其他 VIM 实例,
-" 还可以将内容粘贴(`command v`)到系统的其他任何可输入窗口.
+" normal 模式下的 nyy 复制(n为数字), 或进入 visual 模式下选择内容后的 y 复制,
+" 除了可以将复制的内容粘贴(使用 p)到其他 VIM 实例,
+" 还可以将内容粘贴(command v)到系统的其他任何可输入窗口.
 "
 " 注意: 以上所说的都是针对本地操作系统使用本地 VIM 的情况,
 " 比如 macOS/Windows/Linux 本地的 VIM 和本地的其他应用窗口之间,
@@ -1594,8 +1634,7 @@ endif
 
 " 备用配置 {{
 
-" 将 sign 列合并到行号列.
-" 会影响到 [n]k/j 快速跳转到指定行, 所以不建议开启此配置.
+" 将 sign 列合并到行号列, 会影响到 [n]k/j 快速跳转到指定行, 所以不建议开启此配置.
 "set signcolumn=number
 
 " sign 列始终显示, 根据个人喜好决定是否启用.
@@ -1620,7 +1659,7 @@ endif
 " 覆盖掉默认的拼写检查设置, 不启用拼写检查.
 "autocmd VimEnter * set nospell
 
-" 不创建交换文件, 交换文件主要用于系统崩溃时恢复文件, 文件名的开头是`.`, 结尾是 `.swp`.
+" 不创建交换文件, 交换文件主要用于系统崩溃时恢复文件, 文件名以 . 开头, 文件后缀是 .swp
 "set noswapfile
 
 " 出错时, 发出视觉提示, 通常是屏幕闪烁.
@@ -1670,17 +1709,22 @@ endif
 "                  v  表示选择, 选择后进入 visual 模式.
 "                  d  表示删除.
 "                  x  表示删除, 但删除对象只能是字符单位.
-"                  c  表示修改, 修改的意思是删除文本对象后进入 insert 模式等待输入新内容.
-"                  s  表示修改, 但修改对象只能是字符单位, 但本 vimrc 已经配置将 s 给 easymotion 插件使用.
+"                  c  表示修改, 意思是删除文本对象后进入 insert 模式等待输入新内容.
+"                  s  表示修改, 但修改对象只能是字符单位,
+"                     但本 vimrc 已经配置将 s 给 easymotion 插件使用.
 "                  J  表示join, 合并多行到当前行.
 "
 "                  l  表示光标右侧1个字符.
 "                  h  表示光标左侧1个字符.
-"                  e  表示光标右侧1个单词, end 指的是单词结尾, 也就是不包含右侧紧邻的空白字符, 相当于 iw.
-"                  w  表示光标右侧1个单词, 如果右侧挨着空白字符, 则包含右侧挨着的所有空白字符, 如果是 aw, 则仅包含右侧挨着的1个空白字符.
+"                  e  表示光标右侧1个单词, end 指的是单词结尾,
+"                     也就是不包含右侧紧邻的空白字符, 相当于 iw.
+"                  w  表示光标右侧1个单词,
+"                     如右侧挨着空白字符, 则包含右侧挨着的所有空白字符,
+"                     如果是 aw, 则仅包含右侧挨着的1个空白字符.
 "                  b  表示光标左侧1个单词.
 "                  W  表示光标右侧1个单词, 这里的单词是指非空白字符都是单词的组成部分,
-"                     也就是以空白字符作为单词分隔符, 同样如果右侧挨着空白字符, 也包含空白字符.
+"                     也就是以空白字符作为单词分隔符, 同样如果右侧挨着空白字符,
+"                     也包含空白字符.
 "                  B  表示光标左侧1个单词(非空白字符也是单词的组成部分).
 "                  s  sentence, 句子.
 "                  p  paragraph, 段落.
@@ -1699,11 +1743,14 @@ endif
 "       y/v/d/c [n]h  复制/选择/删除/修改光标左 n 个字符.
 "       y/v/d/c [n]e  复制/选择/删除/修改光标右 n 个单词, 不包含右侧空白字符.
 "       y/v/d/c [n]w  复制/选择/删除/修改光标右 n 个单词, 包含右侧空白字符.
-"       y/v/d/c [n]W  复制/选择/删除/修改光标右 n 个单词, 特殊字符也作为单词的一部分, 包含右侧空白字符.
+"       y/v/d/c [n]W  复制/选择/删除/修改光标右 n 个单词, 特殊字符也作为单词的一部分,
+"                     包含右侧空白字符.
 "       y/v/d/c [n]b  复制/选择/删除/修改光标左 n 个单词.
 "       y/v/d/c [n]B  复制/选择/删除/修改光标左 n 个单词, 特殊字符也作为单词的一部分.
-"         y/v/d/c f*  复制/选择/删除/修改光标右侧直到*的文本, 包含*, *表示一个具体的字符.
-"         y/v/d/c t*  复制/选择/删除/修改光标右侧直到*的文本, 不包含*, *表示一个具体的字符.
+"         y/v/d/c f*  复制/选择/删除/修改光标右侧直到*的文本,
+"                     包含*, *表示一个具体的字符.
+"         y/v/d/c t*  复制/选择/删除/修改光标右侧直到*的文本, 不包含*,
+"                     *表示一个具体的字符.
 "        [n]yy/dd/cc  复制/删除/修改 n 行.
 "         y/v/d/c ip  复制/选择/删除/修改 光标所在段落.
 "         y/v/d/c it  复制/选择/删除/修改 光标所在的 html 标签.
@@ -1728,19 +1775,24 @@ endif
 "               [n]s  修改光标后 n 个字符, 同 c[n]l.
 "                     NOTE: 本 vimrc 文件配置已将 s 命令给 easymotion 插件使用.
 "               [n]S  修改整行, 同 [n]cc.
-"               [n]J  合并包含光标所在行在内的 n 行到当前行, 如果只是 J, 则是合并下一行到光标所在行.
+"               [n]J  合并包含光标所在行在内的 n 行到当前行,
+"                     如果只是 J, 则是合并下一行到光标所在行.
 "                p/P  在光标 右侧/左侧 粘贴.
 "               [n]r  替换当前光标右侧 n 个字符.
-"                  R  进入 replace 模式, 每次按键替换一个字符, 直到按 ESC 键退出 replace 模式.
+"                  R  进入 replace 模式, 每次按键替换一个字符,
+"                     直到按 ESC 键退出 replace 模式.
 "                  u  undo, 撤销最近一次的修改动作.
 "                  U  撤销当前所在行的所有修改.
 "             ctrl r  redo, 恢复最近一次的撤销内容.
 "    :n,ms/old/new/g  将文件内第 n 行到第 m 行的所有 old 替换为 new;
-"                     如果是先在 visual 模式下选择了一段内容, 再按 : , 则 command-line 模式栏会变为 :'<,'>,
+"                     如果是先在 visual 模式下选择了一段内容,
+"                     再按 : 则 command-line 模式栏会变为 :'<,'>,
 "                     最后我们补全为 :'<,'>s/old/new/g, 即可完成替换选择的文本部分.
-"      :%s/old/new/g  将文件内所有 old 替换为 new, g 表示全局替换, 如果没有 g, 则每行只替换第一个匹配项.
+"      :%s/old/new/g  将文件内所有 old 替换为 new, g 表示全局替换, 如果没有 g,
+"                     则每行只替换第一个匹配项.
 "     :%s/old/new/gc  每个匹配串替换前先提示是否进行替换.
-"             ctrl o  insert 模式下, 使临时进入 normal 模式下, 执行一个 normal 命令就自动再返回 insert 模式下.
+"             ctrl o  insert 模式下, 使临时进入 normal 模式下,
+"                     执行一个 normal 命令就自动再返回 insert 模式下.
 "         ctrl h/w/u  insert 模式下, 向左删除 1个字符/1个单词/到行首.
 "      ctrl od l/w/e  insert 模式下, 向右删除 1个字符/1个单词/1个不含空格的单词.
 "            ctrl oD  insert 模式下, 向右删除到行尾.
@@ -1837,20 +1889,28 @@ endif
 "                  /  正向搜索模式.
 "                  ?  反向搜索模式.
 "                n/N  配合上面两个命令, 正向/方向跳转到搜索关键字.
-"             ctrl g  显示光标所在文件的全路径, 当前文件一共多少行, 光标所在行是当前文件的百分之多少的位置.
-"             ctrl f  command-line 模式下, 按快捷键 ctrl f 打开命令行窗口并显示命令历史记录.
-"                 q:  normal 模式下, 按快捷键 q: 打开命令行窗口并显示命令历史记录.
-"                 q/  normal 模式下, 按快捷键 q/ 将会打开命令行窗口并显示向下搜索的历史记录.
-"                 q?  normal 模式下, 按快捷键 q? 将会打开命令行窗口并显示向上搜索的历史记录.
+"             ctrl g  显示光标所在文件的全路径, 当前文件一共多少行,
+"                     光标所在行是当前文件的百分之多少的位置.
+"             ctrl f  command-line 模式下,
+"                     按快捷键 ctrl f 打开命令行窗口并显示命令历史记录.
+"                 q:  normal 模式下,
+"                     按快捷键 q: 打开命令行窗口并显示命令历史记录.
+"                 q/  normal 模式下,
+"                     按快捷键 q/ 将会打开命令行窗口并显示向下搜索的历史记录.
+"                 q?  normal 模式下,
+"                     按快捷键 q? 将会打开命令行窗口并显示向上搜索的历史记录.
 "                 z=  当你拼写一个不熟悉的英文单词时, 可以使用此快捷键给出建议列表.
 "
 " ** 不依赖插件的自定义配置提供的功能:
-"                  Y  这个命令默认是复制整行的意思, 这里更改为复制光标位置到行结尾的内容.
+"                  Y  这个命令默认是复制整行的意思,
+"                     这里更改为复制光标位置到行结尾的内容.
 "          ctrl bfpn  insert 模式下左右上下移动光标.
 "           ctrl a/e  insert 模式下跳转到行首/行尾.
-"      , )/]/}/"/'/`  将 visual 模式下选择的内容使用 () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹.
+"      , )/]/}/"/'/`  将 visual 模式下选择的内容使用
+"                     () 或 [] 或 {} 或 "" 或 '' 或 `` 包裹.
 "       ctrl j/k/h/l  光标移动到 下面/上面/左边/右边 的窗口.
-"                 ,R  文件 ~/.vimrc 发生变化后, 正在编辑的文件不需要退出, 通过该快捷键即可重新加载 VIM 配置文件, 使变更马上生效.
+"                 ,R  文件 ~/.vimrc 发生变化后, 正在编辑的文件不需要退出,
+"                     通过该快捷键即可重新加载 VIM 配置文件, 使变更马上生效.
 
 " }}
 
@@ -1875,16 +1935,21 @@ endif
 "                ,fm  显示最近打开过的文件列表.
 "                ,ft  显示当前文件的 tags 列表.
 "                ,fl  显示当前文件的去除空行的所有行.
-"                ,rg  从 normal 模式下按 ,rg 进入 command-line 模式下, 然后输入要搜索的文本(支持正则表达式),
+"                ,rg  从 normal 模式下按 ,rg 进入 command-line 模式下,
+"                     然后输入要搜索的文本(支持正则表达式),
 "                     回车即可显示此项目内包含此文本的文件列表;
-"                     在弹出的结果窗口中, 按 gi 可以将光标移动到输入框, 可以继续输入内容缩小结果列表,
+"                     在弹出的结果窗口中, 按 gi 可以将光标移动到输入框,
+"                     可以继续输入内容缩小结果列表,
 "                     然后按 tab 进入结果列表中, 按 j/k 上下选择, 选择一个文件后,
 "                     按 t 将以新建标签页的方式打开选择的文件.
-"                 rg  visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本, 显示搜索结果.
-"                ,rc  ,rg/rg 搜索内容关闭后, 想再次搜索上次搜索的内容, normal 模式下按 ,rc 即可.
+"                 rg  visual 模式下选择文本后, 按 rg 在整个项目内搜索选择的文本,
+"                     显示搜索结果.
+"                ,rc  ,rg/rg 搜索内容关闭后, 想再次搜索上次搜索的内容,
+"                     normal 模式下按 ,rc 即可.
 "
 " ** easymotion/vim-easymotion (https://github.com/easymotion/vim-easymotion)
-"                ,s  按此快捷键后, 再输入一个光标要跳转到的字符 x, 你会发现 x 变成了另外一个字符 g, 你直接输入 g 即可完成跳转.
+"                ,s  按此快捷键后, 再输入一个光标要跳转到的字符 x,
+"                    你会发现 x 变成了另外一个字符 g, 你直接输入 g 即可完成跳转.
 "                ,w  标记所有窗口的单词.
 "                ,L  标记所有窗口的所有行首字符.
 "                ,l  标记当前行光标右侧的字符.
@@ -1893,7 +1958,8 @@ endif
 "                 /  覆盖了 VIM 自带的 / 搜索模式.
 "
 " ** preservim/nerdcommenter (https://github.com/preservim/nerdcommenter)
-"       [n],c<space>  注释或取消注释光标所在行, 或 visual 模式下选择多行来注释或取消注释.
+"       [n],c<space>  注释或取消注释光标所在行,
+"                     或 visual 模式下选择多行来注释或取消注释.
 "             [n],cc  只注释, 如果原来就有注释则多一层注释.
 "             [n],cm  对被选区域用一对注释符进行注释, 比如由 // 改为 /* */.
 "             [n],cs  添加较美观的注释.
@@ -1902,12 +1968,15 @@ endif
 "
 " ** fatih/vim-go (https://github.com/fatih/vim-go/wiki/Tutorial) 只适用于Go
 "   代码阅读相关:
-"                 ,d  上下分屏查看光标所在函数等的文档, 如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
+"                 ,d  上下分屏查看光标所在函数等的文档,
+"                     如果设置了 let g:go_doc_popup_window = 1, 则弹出浮窗.
 "                  K  同 ,d 并且显示速度更快, 建议优先使用.
-"                ,dv  左右分屏查看光标所在函数等的文档, 如果设置了let g:go_doc_popup_window = 1, 则弹出浮窗.
+"                ,dv  左右分屏查看光标所在函数等的文档,
+"                     如果设置了let g:go_doc_popup_window = 1, 则弹出浮窗.
 "                 gr  在 location list 中列出哪些地方引用了光标所在的对象.
 "                ,cl  在 location list 中列出哪些地方调用了光标所在的函数.
-"                 ,s  查看光标所在的类型实现了哪些接口, 注意光标只能在类型或类型的方法上.
+"                 ,s  查看光标所在的类型实现了哪些接口,
+"                     注意光标只能在类型或类型的方法上.
 "
 "   跳转到对象(函数)定义或声明处的几种方式:
 "                 gd  覆盖当前页面.
@@ -1921,11 +1990,13 @@ endif
 "                ,fs  自动把光标所在的结构体字面量, 以字段零值方式补上尚未填写的字段.
 "                ,ie  自动生成 if err != nil 代码段.
 "                ,at  为光标所在的结构体定义自动生成字段对应的tags.
-"                ,rn  级联的重命名光标下的标识符, 重命名后, 项目内的所有与其相关的地方全部会更新.
+"                ,rn  级联的重命名光标下的标识符, 重命名后,
+"                     项目内的所有与其相关的地方全部会更新.
 "
 "   代码运行相关:
 "                ,gr  go run 当前的go文件.
-"                ,gb  go build 当前的go文件, 不产生二进制文件, 只是检查是否可以成功build.
+"                ,gb  go build 当前的go文件, 不产生二进制文件,
+"                     只是检查是否可以成功build.
 "                ,gt  go test 当前的go文件.
 "                ,gc  查看当前代码文件的测试覆盖率.
 "
@@ -1934,20 +2005,25 @@ endif
 "                  q  关闭目录树窗口.
 "                  ?  打开/关闭该插件的帮助文档.
 "                o/O  展开目录/递归的展开目录, 原地再按一次则对应关闭目录.
-"                x/X  闭合目录/闭合递归展开的目录, 进行此操作时, 光标应该在要闭合的目录中.
-"                t/T  以标签页形式打开/静默打开文件, 如果光标在空目录上则新创建一个空文件并打开,
-"                     然后使用`:w newfilename`来保存文件, 最后 r 来更新左侧目录树的显示.
+"                x/X  闭合目录/闭合递归展开的目录,
+"                     进行此操作时, 光标应该在要闭合的目录中.
+"                t/T  以标签页形式打开/静默打开文件,
+"                     如果光标在空目录上则新创建一个空文件并打开,
+"                     然后使用 :w newfilename 来保存文件, 最后 r 来更新左侧目录树的显示.
 "              gt/gT  向右/向左切换标签页.
 "                3gt  切换到第3个标签, 切换到其他标签的方法类似.
 "          shift l/h  向右/向左切换标签页, 是在.vimrc中配置的上一条快捷键的映射.
 "          3 shift l  切换到第3个标签.
 "                  R  变更目录名称后, 更新目录树中的目录显示.
-"                 CD  如果当前目录树的根目录包含了很多项目, 如果要将某个项目设置为目录树的根,
-"                     则选择这个项目目录, 按`CD`.
-"                 go  选择一个文件, 按`go`, 只是在当前窗口展示这个文件的内容, 光标还停留在目录树窗口.
+"                 CD  如果当前目录树的根目录包含了很多项目,
+"                     如果要将某个项目设置为目录树的根,
+"                     则选择这个项目目录, 按 CD.
+"                 go  选择一个文件, 按 go 只是在当前窗口展示这个文件的内容,
+"                     光标还停留在目录树窗口.
 "                  I  显示/隐藏以 . 开头的文件.
-"                  m  光标移动到某个文件或目录, 按`m`, 展示可操作的menu列表, 选择你要的操作,
-"                     比如删除/添加/移动文件或目录等, 使用 ESC 中途退出操作.
+"                  m  光标移动到某个文件或目录, 按 m 展示可操作的 menu 列表,
+"                     选择你要的操作, 比如删除/添加/移动文件或目录等,
+"                     使用 ESC 中途退出操作.
 "
 " ** majutsushi/tagbar (https://github.com/preservim/tagbar)
 "                 ,e  打开右侧大纲窗口.
@@ -1969,10 +2045,10 @@ endif
 "               :GV!  这个只看当前文件的 git log.
 
 " ** tpope/vim-surround (https://github.com/tpope/vim-surround)
-"               ysw"  使光标所在单词使用`"`包裹, 不包括光标前的字符.
-"              ysiw"  光标所在的完整单词使用`"`包裹, 包括光标前的字符.
+"               ysw"  使光标所在单词使用 " 包裹, 不包括光标前的字符.
+"              ysiw"  光标所在的完整单词使用 " 包裹, 包括光标前的字符.
 "              ysiW"  以空格作为分隔符来作为单词, 特殊符号也可以作为单词的一部分了.
-"              ys3w"  以光标所在位置为起始位置向右的3个单词使用`"`包裹.
+"              ys3w"  以光标所在位置为起始位置向右的3个单词使用 " 包裹.
 "               yss"  以光标所在行为单位包裹.
 "                ds"  删除光标周围的双引号.
 "               cs"'  把光标所在周围的双引号替换为单引号.
@@ -1980,10 +2056,11 @@ endif
 "
 " ** mattn/emmet-vim (https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL)
 "           ctrl y ,  打开 *.html 文件:
-"                     1) 输入 html:5 然后按此快捷键, 即可自动生成html代码模版.
+"                     1) 输入 html:5 然后按此快捷键, 即可自动生成 html 代码模版.
 "                     2) 输入 div 然后按此快捷键, 即可自动生成: <div></div>
 "                     3) 输入 #foo 然后按此快捷键, 可自动生成: <div id="foo"></div>
-"                     4) 输入 div>p>a , 然后按此快捷键, 可自动生成: <div><p><a href=""></a></p></div>
+"                     4) 输入 div>p>a , 然后按此快捷键, 可自动生成:
+"                        <div><p><a href=""></a></p></div>
 "
 " ** iamcco/markdown-preview.vim (https://github.com/iamcco/markdown-preview.vim)
 "                 ,p  打开/关闭 浏览器预览当前的 Markdown 文件.
@@ -2002,13 +2079,16 @@ endif
 " ** 将`one two three four five six`改为`"one","two","four","five","six"`
 "                  ^  光标移动到第一个非空字符.
 "           f<space>  光标移动到第一个空格.
-"                 cl  删除1个空格并进入到 insert 模式, 输入 ",", 按 ESC 进入到 normal 模式.
+"                 cl  删除1个空格并进入到 insert 模式,
+"                     输入 "," 之后按 ESC 进入到 normal 模式.
 "                  ;  光标跳转到下一个空格.
 "                  .  重复执行步骤3, 然后 ; 和 . 重复多次直到将所有空格都替换成 ",".
-"                  I  将光标跳转到行首并进入到 insert 模式, 输入 ", 按 ESC 进入到 normal 模式.
-"                  A  将光标跳转到行尾并进入到 insert 模式, 输入 ", 按 ESC 进入到 normal 模式.
+"                  I  将光标跳转到行首并进入到 insert 模式,
+"                     输入 " 之后按 ESC 进入到 normal 模式.
+"                  A  将光标跳转到行尾并进入到 insert 模式,
+"                     输入 " 之后按 ESC 进入到 normal 模式.
 "
-" ** 把文件内的某个连续的行尾/或行首加上`,`:
+" ** 把文件内的某个连续的行尾/或行首加上逗号:
 "             ctrl v  进入 visual block 模式, 选择要操作的那些连续行.
 "                  $  移动到行尾.
 "                I/A  进入 insert 模式, 光标在 行首/行尾, 输入要增加的字符 `,`.
@@ -2019,21 +2099,24 @@ endif
 "                  J  合并成1行.
 "
 " ** 本地编辑器之间的复制和粘贴:
-"       [n]yy / Y 或 v 选择文本使用y复制等复制命令需要的文本对象, 此时默认已复制到本地系统剪贴板,
-"       可在本文件、其他 VIM 实例文件 normal 模式下按 p/P 来粘贴, 或 insert 模式下`command v`粘贴,
+"       [n]yy / Y 或 v 选择文本使用y复制等复制命令需要的文本对象,
+"       此时默认已复制到本地系统剪贴板,
+"       可在本文件、其他 VIM 实例文件 normal 模式下按 p/P 来粘贴,
+"       或 insert 模式下`command v`粘贴,
 "       或操作系统上的任何文本框内进行`command v`粘贴.
 "
 " ** 通过 SSH 远程管理的 Linux 系统下使用 VIM 时的复制和粘贴:
-"       远程 Linux 系统 VIM 实例 normal 模式下(适用于使用termimal, 如果是iterm2则任何模式均可),
-"       需要使用鼠标(或option+command+鼠标)选择文本,
-"       通过`command c`(本地是macOS系统)将选中文本复制到 macOS 本地的剪贴板,
-"       最后通过`command v`粘贴到本地各应用的文本输入框.
+"       远程 Linux 系统 VIM 实例 normal 模式下(适用于使用termimal,
+"       如果是iterm2则任何模式均可), 需要使用鼠标(或option+command+鼠标)选择文本,
+"       通过 command c 将选中文本复制到 macOS 本地的剪贴板,
+"       最后通过 command v 粘贴到本地各应用的文本输入框.
 "
 " ** 宏的使用方法举例, 比如给文本的每一行的行首和行尾都加上双引号:
-"       normal 模式下`qa`, q 是宏指令, 表明开始录制宏, a 为宏的名称, 可以是 a-z 的任何字母,
-"       然后我们给一行的行首和行尾都加上双引号,
+"       normal 模式下按 qa,  其中 q 是宏指令, 表明开始录制宏, a 为宏的名称,
+"       可以是 a-z 的任何字母, 然后我们给一行的行首和行尾都加上双引号,
 "       最后 normal 模式下`q`, 表示结束宏的录制;
-"       接下来我们把这个宏 a 运用在每一行上, 我们选择文本所有的行, 然后 command-line 模式`:normal @a`,
+"       接下来我们把这个宏 a 运用在每一行上, 我们选择文本所有的行,
+"       然后 command-line 模式`:normal @a`,
 "       或者`:% normal @a`(%表示所有行), 这样所有行就都完成双引号包裹了.
 "
 " }}
@@ -2045,6 +2128,7 @@ endif
 "      或针对具体文件类型重新设置: au filetype json set conceallevel=0
 "   2. python-mode/python-mode  建议不要使用这个插件, 不太好用,
 "      文档显示方式很蹩脚, 会影响到 coc-jedi 的正常发挥, coc-jedi 足矣.
+"
 " }}
 
 " }}
