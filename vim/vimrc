@@ -54,7 +54,7 @@
 "    apt install mono-complete golang nodejs default-jdk npm
 
 " 注意事项:
-"    * VIM 版本要求在 8.1.2269+ 以上, 通过`vim --version`查看.
+"    * VIM 版本要求在 8.2+, 可通过`vim --version`查看.
 "    * 为了支持 python3 和复制粘贴的便利, 需要 VIM 支持 python3 和 clipboard, 可通过
 "      `vim --version|grep -Eo '\+python3|\+clipboard'`查看是否有相关输出, 没有的话请重新编译安装.
 "    * `vimrc`默认集成了 Go 开发插件`vim-go`, 需要系统已经有 Go 环境, 并配置 Go 代理解决墙的问题.
@@ -228,6 +228,9 @@ Plug 'neoclide/jsonc.vim'
 " 通过浏览器实时预览 Markdown 文本的插件.
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
+" 在 markdown 中高效编辑表格.
+Plug 'dhruvasagar/vim-table-mode'
+
 """""""" toml
 " toml 语法高亮插件.
 Plug 'cespare/vim-toml'
@@ -268,6 +271,12 @@ Plug 'tmux-plugins/vim-tmux'
 " VIM 从菜鸟到高手之路必备, 禁止连续按 jkhl 等低效操作,
 " 强制你根据不同场景来思考使用更高效的命令的习惯.
 Plug 'takac/vim-hardtime'
+
+" ********************** 其他 ************************************************
+
+" 日历插件.
+" doc: https://github.com/itchyny/calendar.vim
+Plug 'itchyny/calendar.vim'
 
 
 " 最后 command-line 模式下执行 :PlugInstall 自动安装上面未安装的插件, 其他常用命令:
@@ -321,6 +330,17 @@ call plug#end()
 "      f  func, 是一个函数.
 " **************************
 
+" 设置隐藏模式, 未保存的buffer(文件)可以被切换走或者关闭;
+" 如果不设置这个, TextEdit 可能失败.
+set hidden
+
+" 底部命令模式的显示高度, 默认值1.
+" 设置为2是为了给提示信息更多的展示空间, 防止信息截断.
+set cmdheight=2
+
+" 不要将信息传递给 ins-completion-menu.
+set shortmess+=c
+
 " *** coc.nvim 扩展安装 ***
 " 将需要安装的 coc.nvim 扩展(语言服务器等) 放到数组中,
 " 打开 vim 时, coc.nvim 会自动对扩展进行自动安装.
@@ -359,6 +379,7 @@ let g:coc_global_extensions = [
 	\ 'coc-ultisnips',
 	\ 'coc-emoji',
 	\ 'coc-swagger',
+    \ 'coc-translator',
 	\ ]
 " *************************
 
@@ -376,19 +397,22 @@ endfunction
 call SetupCommandAbbrs('C', 'CocConfig')
 " ****************************************************************************
 
-" coc-css 配置
+" *** coc-translator
+" doc: https://github.com/voldikss/coc-translator
+" normal 和 visual 模式下, 将光标下的单词以弹出漂浮窗口的方式显示翻译结果.
+nmap ts <Plug>(coc-translator-p)
+vmap ts <Plug>(coc-translator-pv)
+" 在状态栏下面显示翻译的结果.
+nmap tse <Plug>(coc-translator-e)
+vmap tse <Plug>(coc-translator-ev)
+" 将翻译结果替换掉光标下的单词.
+nmap tsr <Plug>(coc-translator-r)
+vmap tsr <Plug>(coc-translator-rv)
+" ******************
+
+" *** coc-css
 autocmd FileType scss setl iskeyword+=@-@
-
-" 设置隐藏模式, 未保存的buffer(文件)可以被切换走或者关闭;
-" 如果不设置这个, TextEdit 可能失败.
-set hidden
-
-" 底部命令模式的显示高度, 默认值1.
-" 设置为2是为了给提示信息更多的展示空间, 防止信息截断.
-set cmdheight=2
-
-" 不要将信息传递给 ins-completion-menu.
-set shortmess+=c
+" ***********
 
 " 使用 tab 键触发补全, 选择补全.
 inoremap <silent><expr> <TAB>
@@ -401,13 +425,13 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" SirVer/ultisnips 插件触发补全的默认配置是 tab 键, 会和 coc 的冲突, 需要修改掉.
-" 实际上并不会用到这里设置的快捷键.
-let g:UltiSnipsExpandTrigger="<Leader>,,,f"
-
 " 使用 <CR>(回车键) 来自动选择补全条目的第一条并格式化代码.
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" SirVer/ultisnips 插件触发补全的默认配置是 tab 键, 会和 coc 的冲突, 需要修改掉.
+" 实际上并不会用到这里设置的快捷键.
+let g:UltiSnipsExpandTrigger="<Leader>,,,f"
 
 " gd  跳转到定义处.
 nmap <silent> gd <Plug>(coc-definition)
@@ -441,14 +465,12 @@ function! s:show_documentation()
 endfunction
 
 " 使用 <C-f> 和 <C-b> 在悬浮窗口向下翻页和向上翻页, 比如在查看较长的文档时使用.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
   nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
   inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
   inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
 
 " *** CocList 相关命令快捷键映射 ***
 " NOTE: 按快捷键出现相关列表后, 使用 ctrl j/k/f/b 进行浏览, 使用 tab 进行管理.
@@ -1443,7 +1465,29 @@ autocmd bufnewfile *.sh call SetTitleForShell()
 
 " 禁用 markdown 语法隐藏, 如果开启此项, 在 markdown 类型文件中将看不到一些字符,
 " 比如 **NOTEICE** 中的 * 就看不到了.
-let g:markdown_syntax_conceal = 0
+"let g:markdown_syntax_conceal = 0
+
+""""""" dhruvasagar/vim-table-mode
+" doc: https://github.com/dhruvasagar/vim-table-mode
+
+" normal 模式下, 默认以 ,tm 来开启或关闭 table mode.
+noremap <leader>tm :TableModeToggle<CR>
+
+" 在 insert 模式下, 输入 || 后按 ESC 来开启 table mode,
+" 输入 __ 后按 ESC 关闭 table mode.
+function! s:isAtStartOfLine(mapping)
+  let text_before_cursor = getline('.')[0 : col('.')-1]
+  let mapping_pattern = '\V' . escape(a:mapping, '\')
+  let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+  return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+endfunction
+
+inoreabbrev <expr> <bar><bar>
+          \ <SID>isAtStartOfLine('\|\|') ?
+          \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
+inoreabbrev <expr> __
+          \ <SID>isAtStartOfLine('__') ?
+          \ '<c-o>:silent! TableModeDisable<cr>' : '__'
 
 """"""" iamcco/markdown-preview.nvim
 " doc: https://github.com/iamcco/markdown-preview.nvim
@@ -1530,6 +1574,9 @@ set textwidth=1000
 
 
 " 自定义配置 {{
+
+" ,E  上下分屏方式打开 ~/.vimrc 配置文件.
+noremap <leader>E :sp ~/.vimrc<CR>
 
 " ,R  变更 ~/.vimrc 文件后不需要退出, 直接使用此命令进行 reload 生效.
 noremap <silent> <leader>R :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
@@ -1671,9 +1718,9 @@ endif
 " }}
 
 
-" 使用技巧 {{
+" VIM 使用技巧 {{
 
-"""""""""" VIM 常用命令行 {{
+"""""""""" 常用命令行 {{
 "
 " vim -u NONE                   无插件方式运行 VIM.
 " vim -g 或 mvim 或 gvim        macOS 下运行 VIM 的图形界面模式, 需安装 macvim.
@@ -1684,7 +1731,7 @@ endif
 "
 " }}
 
-"""""""""" VIM 常用的原生能力 {{
+"""""""""" 常用的原生能力 {{
 "
 " ** 持续优化你的 vimrc 文件:
 "           :version  显示当前 VIM 的版本号和支持的特性.
@@ -1914,18 +1961,24 @@ endif
 "       ctrl j/k/h/l  光标移动到 下面/上面/左边/右边 的窗口.
 "                 ,R  文件 ~/.vimrc 发生变化后, 正在编辑的文件不需要退出,
 "                     通过该快捷键即可重新加载 VIM 配置文件, 使变更马上生效.
+"                 ,E  上下分屏方式打开 ~/.vimrc 文件.
 
 " }}
 
-"""""""""" VIM 插件提供的部分能力 {{
+"""""""""" 插件提供的部分能力 {{
 "
 " ** neoclide/coc.nvim (https://github.com/neoclide/coc.nvim)
 "                 gd  跳转到定义处, `ctrl o`跳转回来, `ctrl i`再跳转过去.
 "                 gy  跳转到类型定义处.
 "                 gi  跳转到接口实现处.
-"                 gr  在 location list 中列出相关条目,
-"                     如果相关的只有1条, 则直接跳转过去.
+"                 gr  在 location list 中列出相关条目, 如果只有1条, 则直接跳转过去.
 "                  K  使用 K 在预览窗口中查看文档.
+"
+" ** coc-translator (https://github.com/voldikss/coc-translator)
+"                 ts  normal 和 visual 模式下,
+"                     将光标下的单词以弹出漂浮窗口的方式显示翻译结果.
+"                tse  在状态栏下面显示翻译的结果.
+"                tsr  将翻译结果替换掉光标下的单词.
 "
 " ** dense-analysis/ale (https://github.com/dense-analysis/ale)
 "                 :w  保存代码文件的时候, 将自动检查语法错误并提示.
@@ -2068,6 +2121,11 @@ endif
 " ** iamcco/markdown-preview.vim (https://github.com/iamcco/markdown-preview.vim)
 "                 ,p  打开/关闭 浏览器预览当前的 Markdown 文件.
 "
+" ** dhruvasagar/vim-table-mode (https://github.com/dhruvasagar/vim-table-mode)
+"                ,tm  开启或关闭 table mode.
+"                 ||  在 insert 模式下, 输入 || 后按 ESC 来开启 table mode.
+"                 __  在 insert 模式下, 输入 __ 后按 ESC 来关闭 table mode.
+"
 " ** voldikss/vim-floaterm (https://github.com/voldikss/vim-floaterm)
 "                 ,t  显示或隐藏悬浮终端窗口, 如果悬浮窗口还不存在则新建.
 "                ,tc  新建一个悬浮窗口.
@@ -2077,7 +2135,7 @@ endif
 "
 " }}
 
-"""""""""" VIM 实例练习 {{
+"""""""""" 实例练习 {{
 "
 " ** 将`one two three four five six`改为`"one","two","four","five","six"`
 "                  ^  光标移动到第一个非空字符.
