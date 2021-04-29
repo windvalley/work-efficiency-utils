@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # list apps that already installed
 brew list
 
@@ -30,3 +29,6 @@ brew install typora
 
 # drawio
 brew install drawio
+
+# 按键屏幕显示
+brew install keycastr

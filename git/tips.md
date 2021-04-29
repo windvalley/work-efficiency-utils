@@ -46,7 +46,7 @@ git checkout -- file1 file2
 git checkout -- *
 ```
 
-## 4. `git push`超过100M的文件
+## 4. `git push`超过 100M 的文件
 
 ```bash
 brew install git-lfs
@@ -88,3 +88,5 @@ git checkout master
 git rebase fix-bug-xxx
 git push
 ```
+
+## 8. git status -sb

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # brew install
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -11,6 +9,8 @@ brew update
 # app list that installed by brew
 brew list
 
+# app info
+brew info grep
 # brew clean old apps installer
 brew clean
 
@@ -73,3 +73,10 @@ brew install graphviz
 # mongodb
 brew tap mongodb/brew
 brew install mongodb-community
+
+# ansifilter is a program specialized for removing (or working with) ANSI codes.
+# They enable colors in terminal, but are just making 'noise' in the textual log output.
+brew install ansifilter
+
+# z 命令依赖此包
+brew install autojump
