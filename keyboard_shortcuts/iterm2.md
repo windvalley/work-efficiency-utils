@@ -4,7 +4,7 @@
 command enter: 全屏/取消全屏
 
 command up/down: 光标在屏幕向上/向下移动
-> 以上快捷键即使在vim编辑状态下也能用
+> 以上快捷键即使在 VIM 编辑状态下也能用
 
 command d: 垂直分屏
 command shift d: 水平分屏

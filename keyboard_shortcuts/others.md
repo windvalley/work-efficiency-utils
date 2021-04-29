@@ -17,21 +17,20 @@ space l: 打开SpaceLaunch进行配置
 
 space w: 向上箭头
 space s: 向下箭头
+space a: 向左箭头
+space d: 向右箭头
 
 space i: 打开iterm2
 space g: 打开chrome
 space c: 打开vscode
-space j: 打开360家(推推)
 space x: 打开微信
 space t: 打开typora
 space p: 打开postman
 space m: 打开mail
 
-space a: 打开百度搜索
 space q: 打开google搜索
 space h: 打开github
 
-space d: 打开下载文件夹
 space f d/w: 按住space, 再按一下f, 出现一个选择框, 选择你要打开的目标字母即可
 ```
 

@@ -1,6 +1,11 @@
 # MacOS
 
+sudo mdutil -a -i off # 关闭聚焦搜索服务
+sudo mdutil -a -i on # 开启聚焦搜索服务
+
 ```text
+ctrl command k: 按键自动屏幕显示.
+
 shift option k: 打印
 
 command space: 聚焦搜索
