@@ -136,6 +136,9 @@ Plug 'tomasr/molokai'
 " Atom theme: One Dark / Light
 Plug 'rakr/vim-one'
 
+" dracula
+Plug 'dracula/vim', { 'as': 'dracula' }
+
 " ********************** 代码补全 ********************************************
 
 " 速度更快, 体验更优且支持更多编程语言的代码补全平台.
@@ -626,9 +629,9 @@ let g:ale_lint_on_save = 1
 " 保存文件时是否进行 fix,  默认值: 0
 let g:ale_fix_on_save = 1
 
-" 使用 ctrl k/j 在错误提示之间跳转.
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
+" , k/j 在错误提示之间跳转.
+nmap <silent> <leader>k <Plug>(ale_previous_wrap)
+nmap <silent> <leader>j <Plug>(ale_next_wrap)
 
 " 针对不同语言的静态代码检查工具配置.
 " NOTE:
@@ -817,13 +820,15 @@ set background=dark
 "   gruvbox: https://github.com/morhetz/gruvbox
 "   molokai: https://github.com/tomasr/molokai
 "   one: https://github.com/rakr/vim-one
+"   dracula: https://draculatheme.com/vim
 "
 " NOTE:
-"   1) 如果使用 solarized 主题, 终端的颜色配置必须也选择 Solarized, 拿 iterm2 举例:
-"      Preferences->Profiles->Colors->Color Presets->Solarized Dark/Solarized Light
-"   2) 如果使用 molokai 主题, set backgroud 不能设置为 light.
+"   1) 使用 VIM 主题, 同时请将终端主题也设置成对应的主题, 这样才能获得更好的视觉体验.
+"      拿 iterm2 举例: Preferences->Profiles->Colors->Color Presets->Solarized Dark;
+"      更多 iterm2 主题请参见: https://github.com/mbadolato/iTerm2-Color-Schemes
+"   2) molokai 主题暂时没有 light 方案.
 "
-colorscheme solarized
+colorscheme gruvbox
 
 " solarized 主题的自定义配置.
 if (g:colors_name == 'solarized')
@@ -1950,6 +1955,12 @@ endif
 "                 q?  normal 模式下,
 "                     按快捷键 q? 将会打开命令行窗口并显示向上搜索的历史记录.
 "                 z=  当你拼写一个不熟悉的英文单词时, 可以使用此快捷键给出建议列表.
+"               "ayy  将当前行拷贝到寄存器 a, a 也可以是其他字符,
+"                     yy 动作也可以是其他拷贝动作.
+"                "ap  将寄存器 a 中的内容粘贴到光标所在处,
+"                     我们可以拷贝不同内容到不同的寄存器,
+"                     粘贴时分别选择相应的寄存器的内容进行粘贴.
+"               :reg  查看当前 VIM 实例的寄存器列表.
 "
 " ** 不依赖插件的自定义配置提供的功能:
 "                  Y  这个命令默认是复制整行的意思,
@@ -1982,7 +1993,7 @@ endif
 "
 " ** dense-analysis/ale (https://github.com/dense-analysis/ale)
 "                 :w  保存代码文件的时候, 将自动检查语法错误并提示.
-"           ctrl k/j  向上或向下跳转到下一个错误提示的位置.
+"           , k/j  向上或向下跳转到下一个错误提示的位置.
 "
 " ** Yggdroot/LeaderF (https://github.com/Yggdroot/LeaderF)
 "                ,ff  进入文件搜索的模糊搜索方式;
