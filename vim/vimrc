@@ -256,6 +256,9 @@ Plug 'easymotion/vim-easymotion'
 "    `cs"'`, normal 模式下把光标所在周围的双引号 " 替换为单引号 '.
 Plug 'tpope/vim-surround'
 
+" 多光标批量操作文本对象插件.
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
 " 自动补全引号(单引号/双引号/反引号)、括号(小括号/中括号/大括号)的插件.
 Plug 'Raimondi/delimitMate'
 
@@ -1183,7 +1186,7 @@ noremap <Leader>rg :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<C
 xnoremap rg :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR><CR>
 
 " ,rg 搜索内容关闭后, 想再次搜索上次搜索的内容, normal 模式下按 rc 即可.
-noremap ,rc :<C-U>Leaderf! rg --recall<CR>
+noremap <Leader>rc :<C-U>Leaderf! rg --recall<CR>
 """""""""""""""""""""
 
 """""" lyokha/vim-xkbswitch
@@ -1199,7 +1202,8 @@ noremap ,rc :<C-U>Leaderf! rg --recall<CR>
 "   cp libxkbswitch-macosx/bin/libxkbswitch.dylib /usr/local/lib/
 
 " 是否开启输入法切换功能.
-let g:XkbSwitchEnabled = 1
+" NOTE: 在 tmux 下无法正常使用, 为避免影响切换效率, 建议禁用, 0 为禁用.
+let g:XkbSwitchEnabled = 0
 
 let g:XkbSwitchLib = '/usr/local/lib/libxkbswitch.dylib'
 
@@ -2013,6 +2017,14 @@ endif
 "                     显示搜索结果.
 "                ,rc  ,rg/rg 搜索内容关闭后, 想再次搜索上次搜索的内容,
 "                     normal 模式下按 ,rc 即可.
+" ** terryma/vim-multiple-cursors (https://github.com/mg979/vim-visual-multi)
+"             ctrl n  开启多光标模式, 默认对应 VIM 的 visual 模式.
+"                n/N  开启多光标模式后, 按 n/N 向下或向上选择光标下的单词.
+"                  q  取消选择当前行的目标单词并同时选择下一行的目标单词.
+"                  Q  不选择当前行的目标单词.
+"                tab  在多光标的 visual 模式和多光标的 normal 模式之间切换.
+"              c/d/i  多光标选择完目标单词后, 对目标单词进行修改.
+"                ESC  退出多光标模式.
 "
 " ** easymotion/vim-easymotion (https://github.com/easymotion/vim-easymotion)
 "                ,s  按此快捷键后, 再输入一个光标要跳转到的字符 x,
