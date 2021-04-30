@@ -17,8 +17,7 @@ brew clean
 # manage services
 brew services list
 
-#brew install coreutils
-#echo 'export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"' >> ~/.zshrc
+brew install fzf
 
 brew install wget
 

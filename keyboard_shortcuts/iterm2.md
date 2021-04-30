@@ -1,5 +1,13 @@
 # Iterm2
 
+## 优化设置
+
+### ssh 远程连接服务器时, 网络问题出现并修复后可以继续保持 ssh 连接
+
+在 `/etc/ssh/ssh_config` 文件末尾加上 `ServerAliveInterval 60`
+
+## 快捷键
+
 ```text
 command enter: 全屏/取消全屏
 
