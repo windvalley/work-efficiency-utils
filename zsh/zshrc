@@ -136,27 +136,37 @@ alias vimfzf="vim \$(fzf)"
 
 # --- 使用技巧 {{
 
-#           ctrl f  输入任意命令行的一部分时, 如果自动出现补全提示,
-#                   使用此快捷键自动采纳提示的补全信息.
-#                   NOTE: 如果使用了 vi-mode 插件, 此快捷键将失效, 请使用 ctrl e 替代.
-#              tab  命令行输入一部分后按 tab 键触发补全提示或在提示项中选择.
-#           ctrl g  取消选择 tab 选择的补全提示项, 回到命令行本身.
-#                z  z 后输入你要切换的目标目录的一部分, 回车即可自动跳转到目标目录.
+#             ctrl f  输入任意命令行的一部分时, 如果自动出现补全提示,
+#                     使用此快捷键自动采纳提示的补全信息.
+#                     NOTE: 如果使用了 vi-mode 插件, 此快捷键将失效, 请使用 ctrl e 替代.
+#                tab  命令行输入一部分后按 tab 键触发补全提示或在提示项中选择.
+#             ctrl g  取消选择 tab 选择的补全提示项, 回到命令行本身.
+#                  z  z 后输入你要切换的目标目录的一部分, 回车即可自动跳转到目标目录.
 #
-# *** vi-mode 插件 ***
-#           ctrl e  编辑模式下将光标移动到行尾, 如果命令行有提示的补全, 则会有补全效果,
-#                   替代不使用 vi-mode 插件时的 ctrl f 快捷键.
-#              ESC  使命令行进入 vim 的 normal 模式, 光标移动/文本对象编辑与 vim 一致.
-#               vv  将命令行文本放到 vim 中进行编辑.
-#              j/k  向下或向上翻阅历史命令行.
-#                /  输入关键字搜索历史命令行.
-#                n  翻阅通过 / 搜索的历史命令行.
+# *** vi-mode 插件 (~/.oh-my-zsh/plugins/web-search/README.md)
+#             ctrl e  编辑模式下将光标移动到行尾, 如果命令行有提示的补全, 则会有补全效果,
+#                     替代不使用 vi-mode 插件时的 ctrl f 快捷键.
+#                ESC  使命令行进入 vim 的 normal 模式, 光标移动/文本对象编辑与 vim 一致.
+#                 vv  将命令行文本放到 vim 中进行编辑.
+#                j/k  向下或向上翻阅历史命令行.
+#                  /  输入关键字搜索历史命令行.
+#                  n  翻阅通过 / 搜索的历史命令行.
 #
-# *** web-search 插件 ***
-#       google key  打开浏览器使用 google 搜索 key.
-#         bing key  打开浏览器使用 bing 搜索 key.
-#        baidu key  打开浏览器使用 baidu 搜索 key.
-#stackoverflow key  打开浏览器使用 stackoverflow 搜索 key. 
+# *** web-search 插件 (~/.oh-my-zsh/plugins/web-search/README.md)
+#         google key  打开浏览器使用 google 搜索 key.
+#           bing key  打开浏览器使用 bing 搜索 key.
+#          baidu key  打开浏览器使用 baidu 搜索 key.
+#  stackoverflow key  打开浏览器使用 stackoverflow 搜索 key. 
 #
+# *** git 插件 (~/.oh-my-zsh/plugins/git/README.md)
+#                gst  git status
+#                gsh  git show
+#                 ga  git add
+#                 gc  git commit -v
+#                 gp  git push
+#                gpf  git push -f
+#                glo  git log --oneline --decorate
+#               glog  git log --oneline --decorate --graph
+#                 gl  git pull
 
 # }}
