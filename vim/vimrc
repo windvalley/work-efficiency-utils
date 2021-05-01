@@ -207,6 +207,9 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " 悬浮终端插件.
 Plug 'voldikss/vim-floaterm'
 
+" 显示缩进线插件.
+Plug 'Yggdroot/indentLine'
+
 " ********************** 编程语言 ********************************************
 
 """""""" Go
@@ -1053,6 +1056,16 @@ hi GitGutterChange guifg=#bbbb00 ctermfg=3
 hi GitGutterDelete guifg=#ff2222 ctermfg=1
 """""""""""""""""""""""""""""""
 
+"""""" 'Yggdroot/indentLine'
+
+" 此插件会自动设置 set conceallevel=2, 导致 markdown 隐藏部分语法的显示, 比如 ** **,
+" 通过在这里排除掉 markdown 来解决这个问题.
+" NOTE: 如果 json 类型文件中无法显示双引号可能也是由此插件导致,
+" 把 json 和 jsonc 添加到下面列表中即可.
+let g:indentLine_fileTypeExclude = ['markdown']
+
+"""""""""""""""""""""""""""""""
+
 """""" 'voldikss/vim-floaterm'
 " doc: https://github.com/voldikss/vim-floaterm
 
@@ -1468,13 +1481,6 @@ autocmd bufnewfile *.sh call SetTitleForShell()
 " }}
 
 """""""" Markdown {{
-
-""""""" tpope/vim-markdown
-" doc: https://github.com/tpope/vim-markdown
-
-" 禁用 markdown 语法隐藏, 如果开启此项, 在 markdown 类型文件中将看不到一些字符,
-" 比如 **NOTEICE** 中的 * 就看不到了.
-"let g:markdown_syntax_conceal = 0
 
 """"""" dhruvasagar/vim-table-mode
 " doc: https://github.com/dhruvasagar/vim-table-mode
@@ -2207,10 +2213,7 @@ endif
 
 """""""""" 注意事项 {{
 "
-"   1. Yggdroot/indentLine  显示缩进线插件会自动设置set conceallevel=2,
-"      导致 .json 类型文件不显示双引号等问题, 尽量不使用,
-"      或针对具体文件类型重新设置: au filetype json set conceallevel=0
-"   2. python-mode/python-mode  建议不要使用这个插件, 不太好用,
+"   1. python-mode/python-mode  建议不要使用这个插件, 不太好用,
 "      文档显示方式很蹩脚, 会影响到 coc-jedi 的正常发挥, coc-jedi 足矣.
 "
 " }}
