@@ -19,6 +19,8 @@ brew services list
 
 brew install fzf
 
+brew install ranger
+
 brew install wget
 
 brew install tree
