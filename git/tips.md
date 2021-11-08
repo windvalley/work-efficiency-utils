@@ -61,12 +61,28 @@ git push
 
 ## 5. 修改远程仓库`commit`的作者信息
 
+### 修改最近一次 commit 的用户信息
+
 ```bash
 # commit后, 发现commit使用的用户名和邮箱地址不是我们想要的, 先进行如下修改
 git config --global --edit
 
 # 然后修改远程仓库的最近一次commit的用户和邮箱地址信息
 git commit --amend --reset-author
+```
+
+### 修改历史某个 commit 的用户信息
+
+```bash
+git rebase -i hash(要修改的commit的上一个commit哈希值)
+
+e
+
+:wq
+
+git commit --amend "-S" --reset-author
+
+git rebase --continue
 ```
 
 ## 6. 修改远程仓库的最新`commit`信息
@@ -90,3 +106,35 @@ git push
 ```
 
 ## 8. git status -sb
+
+## 9. tags 管理
+
+### 为当前 commit 添加 tag
+
+```sh
+git tag v0.1.0
+```
+
+### 查看本地仓库有哪个 tags
+
+```sh
+git tag
+```
+
+### 将本地的 tags 上传到远程仓库
+
+```sh
+git push --tags
+```
+
+### 删除本地仓库的某些个 tags
+
+```sh
+git tag -d v0.0.3
+```
+
+### 删除远程仓库的某些个 tags
+
+```sh
+git push origin --delete  v0.1.2 v0.1.3
+```
