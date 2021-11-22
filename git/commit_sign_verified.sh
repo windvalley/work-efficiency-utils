@@ -3,14 +3,13 @@
 #
 # commit signature verification
 
-
 brew install gpg
 
 # Check the command output to see if you have a GPG key pair
 gpg --list-secret-keys --keyid-format LONG
 
 # Generating a new GPG key
-gpg --full-generate-key
+unset GPG_TTY && gpg --full-generate-key
 
 # list GPG keys for which you have both a public and private key
 gpg --list-secret-keys --keyid-format LONG
@@ -36,7 +35,7 @@ git config --global user.signingkey 260D2A80727A4AED
 
 # paste the text below to add the GPG key to your shell profile
 # shellcheck disable=SC2016
-echo 'export GPG_TTY=$(tty)' >> ~/.zshrc
+echo 'export GPG_TTY=$(tty)' >>~/.zshrc
 
 git config --global commit.gpgsign true
 
