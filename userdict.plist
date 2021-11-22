@@ -1124,5 +1124,23 @@
  		<key>shortcut</key>
  		<string>shiyi</string>
  	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>原语</string>
+ 		<key>shortcut</key>
+ 		<string>yuanyu</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>扇出</string>
+ 		<key>shortcut</key>
+ 		<string>shanchu</string>
+ 	</dict>
+    <dict>
+ 		<key>phrase</key>
+ 		<string>扇入</string>
+ 		<key>shortcut</key>
+ 		<string>shanru</string>
+ 	</dict>
 </array>
 </plist>
