@@ -138,3 +138,14 @@ git tag -d v0.0.3
 ```sh
 git push origin --delete  v0.1.2 v0.1.3
 ```
+
+## 10. 分支更新管理
+
+如果 master 分支更新了, 自己所在的特性分支需要把 master 的更新合并过来, 合并过程中可能遇到冲突, 解决冲突即可.
+
+如果自己的特性分支和 master 分支的更新没有冲突, 不需要将 master 的更新合并过来.
+
+```sh
+# 当前在特性分支
+git merge master
+```
