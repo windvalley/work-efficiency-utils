@@ -9,7 +9,7 @@ brew install gpg
 gpg --list-secret-keys --keyid-format LONG
 
 # Generating a new GPG key
-unset GPG_TTY && gpg --full-generate-key
+unset GPG_TTY && sudo gpg --full-generate-key
 
 # list GPG keys for which you have both a public and private key
 gpg --list-secret-keys --keyid-format LONG
@@ -41,3 +41,8 @@ git config --global commit.gpgsign true
 
 # Creates a signed commit
 git commit -S -m "your commit message"
+
+# 解决需要输入pin密码的问题
+brew install pinentry-mac
+echo "pinentry-program $(which pinentry-mac)" >>~/.gnupg/gpg-agent.conf
+killall gpg-agent

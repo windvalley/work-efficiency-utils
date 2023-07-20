@@ -149,3 +149,15 @@ git push origin --delete  v0.1.2 v0.1.3
 # 当前在特性分支
 git merge master
 ```
+
+## 10. 统计 commit 代码
+
+```sh
+git log --numstat --author "xxx"
+```
+
+## 11. 空提交
+
+```sh
+git commit --allow-empty -m "Trigger Build"
+```
